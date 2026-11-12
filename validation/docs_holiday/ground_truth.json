@@ -1,0 +1,534 @@
+[
+ {
+  "doc_id": "doc_H01",
+  "file": "doc_H01.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_fw",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SRI SUSANTI",
+    "entry_date": "2027-02-01",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "SRI SUSANTI",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2027-02-16",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": ""
+   },
+   {
+    "key": "health_entry",
+    "worker": "SRI SUSANTI",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2027-02-11",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（依人事行政總處辦公日曆）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "SRI SUSANTI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-07-02",
+    "due": "2027-08-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-08-01）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "SRI SUSANTI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-07-02",
+    "due": "2028-08-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-08-01）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "SRI SUSANTI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-07-02",
+    "due": "2029-08-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-08-01）前後30日"
+   }
+  ],
+  "holiday_case": "入國後第3日為小年夜，工作日跨春節"
+ },
+ {
+  "doc_id": "doc_H02",
+  "file": "doc_H02.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "DO THI THU",
+    "entry_date": "2026-02-13",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "DO THI THU",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2026-03-02",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": "末日2026-02-28為和平紀念日，依行政程序法第48條第4項順延至2026-03-02"
+   },
+   {
+    "key": "health_entry",
+    "worker": "DO THI THU",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2026-02-25",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（依人事行政總處辦公日曆）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "DO THI THU",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-07-14",
+    "due": "2026-09-12",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2026-08-13）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "DO THI THU",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-07-14",
+    "due": "2027-09-12",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2027-08-13）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "DO THI THU",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-07-14",
+    "due": "2028-09-12",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2028-08-13）前後30日"
+   }
+  ],
+  "holiday_case": "入國後第3日為除夕，第15日為週六"
+ },
+ {
+  "doc_id": "doc_H03",
+  "file": "doc_H03.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": "2026-09-22",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2026-10-07",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": ""
+   },
+   {
+    "key": "health_entry",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2026-09-29",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（依人事行政總處辦公日曆）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-02-20",
+    "due": "2027-04-21",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-03-22）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-02-21",
+    "due": "2028-04-21",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-03-22）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-02-20",
+    "due": "2029-04-21",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-03-22）前後30日"
+   }
+  ],
+  "holiday_case": "第3日中秋、接週末與教師節"
+ },
+ {
+  "doc_id": "doc_H04",
+  "file": "doc_H04.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "WULAN WAHYUNI",
+    "entry_date": "2027-10-22",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "WULAN WAHYUNI",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2027-11-08",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": "末日2027-11-06為星期六，依行政程序法第48條第4項順延至2027-11-08"
+   },
+   {
+    "key": "health_entry",
+    "worker": "WULAN WAHYUNI",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2027-10-28",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（依人事行政總處辦公日曆）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "WULAN WAHYUNI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2028-03-23",
+    "due": "2028-05-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2028-04-22）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "WULAN WAHYUNI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2029-03-23",
+    "due": "2029-05-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2029-04-22）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "WULAN WAHYUNI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2030-03-23",
+    "due": "2030-05-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2030-04-22）前後30日"
+   }
+  ],
+  "holiday_case": "第3日為臺灣光復紀念日"
+ },
+ {
+  "doc_id": "doc_H05",
+  "file": "doc_H05.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_fw",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "LE THI MAI",
+    "entry_date": "2027-04-01",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "LE THI MAI",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2027-04-16",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": ""
+   },
+   {
+    "key": "health_entry",
+    "worker": "LE THI MAI",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2027-04-08",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（依人事行政總處辦公日曆）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "LE THI MAI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-09-01",
+    "due": "2027-10-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-10-01）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "LE THI MAI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-09-01",
+    "due": "2028-10-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-10-01）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "LE THI MAI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-09-01",
+    "due": "2029-10-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-10-01）前後30日"
+   }
+  ],
+  "holiday_case": "清明連假"
+ },
+ {
+  "doc_id": "doc_H06",
+  "file": "doc_H06.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-12-10"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2026-12-28",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內。末日2026-12-25為行憲紀念日，依行政程序法第48條第4項順延至2026-12-28"
+   }
+  ],
+  "holiday_case": "第15日為行憲紀念日"
+ },
+ {
+  "doc_id": "doc_H07",
+  "file": "doc_H07.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-05-25"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2027-06-10",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內。末日2027-06-09為端午節，依行政程序法第48條第4項順延至2027-06-10"
+   }
+  ],
+  "holiday_case": "第15日為端午節"
+ },
+ {
+  "doc_id": "doc_H08",
+  "file": "doc_H08.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc_fw",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "DEWI HANDAYANI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-02-05"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "DEWI HANDAYANI",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2026-02-23",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內。末日2026-02-20為補假，依行政程序法第48條第4項順延至2026-02-23"
+   }
+  ],
+  "holiday_case": "第15日為春節補假"
+ },
+ {
+  "doc_id": "doc_H09",
+  "file": "doc_H09.txt",
+  "doc_type": "住宿地點變更",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-04-24"
+   },
+   {
+    "name": "INDAH HANDAYANI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-04-24"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-05-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": "末日2026-05-01為勞動節，依行政程序法第48條第4項順延至2026-05-04"
+   },
+   {
+    "key": "dorm_change",
+    "worker": "INDAH HANDAYANI",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-05-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": "末日2026-05-01為勞動節，依行政程序法第48條第4項順延至2026-05-04"
+   }
+  ],
+  "holiday_case": "第7日為勞動節"
+ },
+ {
+  "doc_id": "doc_H10",
+  "file": "doc_H10.txt",
+  "doc_type": "住宿地點變更",
+  "date_style": "iso",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "ANAN KAEWDEE",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-10-04"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "ANAN KAEWDEE",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-10-12",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": "末日2027-10-11為補假，依行政程序法第48條第4項順延至2027-10-12"
+   }
+  ],
+  "holiday_case": "第7日為國慶補假"
+ },
+ {
+  "doc_id": "doc_H11",
+  "file": "doc_H11.txt",
+  "doc_type": "聘僱關係終止",
+  "date_style": "roc_fw",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "LE THI MAI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-06-16"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "LE THI MAI",
+    "title": "書面通知當地主管機關、移民署及警察機關",
+    "start": null,
+    "due": "2026-06-22",
+    "basis": "就業服務法第56條第1項",
+    "note": "末日2026-06-19為端午節，依行政程序法第48條第4項順延至2026-06-22"
+   }
+  ],
+  "holiday_case": "第3日為端午節"
+ },
+ {
+  "doc_id": "doc_H12",
+  "file": "doc_H12.txt",
+  "doc_type": "聘僱關係終止",
+  "date_style": "iso",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "RINA PURNAMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-12-28"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "RINA PURNAMA",
+    "title": "書面通知當地主管機關、移民署及警察機關",
+    "start": null,
+    "due": "2028-01-03",
+    "basis": "就業服務法第56條第1項",
+    "note": "末日2027-12-31為補假，依行政程序法第48條第4項順延至2028-01-03"
+   }
+  ],
+  "holiday_case": "第3日為元旦補假，順延跨年"
+ }
+]

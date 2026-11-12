@@ -1,0 +1,12 @@
+doc_H01 ok 84.9s
+doc_H02 ok 58.4s
+doc_H03 ok 73.1s
+doc_H04 ok 64.3s
+doc_H05 ok 65.0s
+doc_H06 ok 21.9s
+doc_H07 ok 31.4s
+doc_H08 ok 45.5s
+doc_H09 ok 25.3s
+doc_H10 ok 36.2s
+doc_H11 ok 22.9s
+doc_H12 ok 19.5s

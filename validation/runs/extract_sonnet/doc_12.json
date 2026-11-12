@@ -1,0 +1,33 @@
+{
+ "doc_id": "doc_12",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 20.1,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "住宿地點變更",
+  "workers": [
+   {
+    "name": "FITRI PURNAMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-04"
+   },
+   {
+    "name": "FITRI HANDAYANI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-04"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"住宿地點變更\",\n \"workers\": [{\"name\": \"FITRI PURNAMA\", \"entry_date\": null, \"permit_start\": null, \"permit_end\": null, \"event_date\": \"2027-11-04\"}, {\"name\": \"FITRI HANDAYANI\", \"entry_date\": null, \"permit_start\": null, \"permit_end\": null, \"event_date\": \"2027-11-04\"}]}",
+ "usage": {
+  "total_cost_usd": 0.027347700000000003,
+  "num_turns": 2,
+  "duration_ms": 17290
+ }
+}

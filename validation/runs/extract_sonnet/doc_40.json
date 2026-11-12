@@ -1,0 +1,40 @@
+{
+ "doc_id": "doc_40",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 17.0,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "住宿地點變更",
+  "workers": [
+   {
+    "name": "WULAN HANDAYANI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-27"
+   },
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-27"
+   },
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-27"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"住宿地點變更\", \"workers\": [{\"name\": \"WULAN HANDAYANI\", \"entry_date\": null, \"permit_start\": null, \"permit_end\": null, \"event_date\": \"2027-11-27\"}, {\"name\": \"MARK ANTHONY SORIANO\", \"entry_date\": null, \"permit_start\": null, \"permit_end\": null, \"event_date\": \"2027-11-27\"}, {\"name\": \"JOY ANN BAUTISTA\", \"entry_date\": null, \"permit_start\": null, \"permit_end\": null, \"event_date\": \"2027-11-27\"}]}",
+ "usage": {
+  "total_cost_usd": 0.02103165,
+  "num_turns": 2,
+  "duration_ms": 14929
+ }
+}

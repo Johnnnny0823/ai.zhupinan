@@ -1,0 +1,2960 @@
+[
+ {
+  "doc_id": "doc_01",
+  "file": "doc_01.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_dot",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "NGUYEN THI LAN",
+    "entry_date": "2026-11-28",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "NGUYEN THI LAN",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2026-12-14",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": "末日為星期日，依行政程序法第48條第4項順延至次日"
+   },
+   {
+    "key": "health_entry",
+    "worker": "NGUYEN THI LAN",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2026-12-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "NGUYEN THI LAN",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-04-28",
+    "due": "2027-06-27",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-05-28）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "NGUYEN THI LAN",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-04-28",
+    "due": "2028-06-27",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-05-28）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "NGUYEN THI LAN",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-04-28",
+    "due": "2029-06-27",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-05-28）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_02",
+  "file": "doc_02.txt",
+  "doc_type": "聘僱關係終止",
+  "date_style": "roc_dot",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SRI SUSANTI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-08-03"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "SRI SUSANTI",
+    "title": "書面通知當地主管機關、移民署及警察機關",
+    "start": null,
+    "due": "2027-08-06",
+    "basis": "就業服務法第56條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_03",
+  "file": "doc_03.txt",
+  "doc_type": "期滿續聘許可函",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "ROSALIE DELA CRUZ",
+    "entry_date": null,
+    "permit_start": "2026-10-06",
+    "permit_end": "2029-10-05",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-03-07",
+    "due": "2027-05-06",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2027-04-06）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-03-07",
+    "due": "2028-05-06",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2028-04-06）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-03-07",
+    "due": "2029-05-06",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2029-04-06）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-06-05",
+    "due": "2029-08-05",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-10-05",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_04",
+  "file": "doc_04.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "RINA LESTARI",
+    "entry_date": "2027-07-05",
+    "permit_start": "2027-07-05",
+    "permit_end": "2030-07-04",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "RINA LESTARI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-12-06",
+    "due": "2028-02-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2028-01-05）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "RINA LESTARI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-12-06",
+    "due": "2029-02-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2029-01-05）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "RINA LESTARI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-12-06",
+    "due": "2030-02-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2030-01-05）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "RINA LESTARI",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2030-03-04",
+    "due": "2030-05-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "RINA LESTARI",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2030-07-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_05",
+  "file": "doc_05.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": "2026-07-03",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2026-07-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": "末日為星期六，依行政程序法第48條第4項順延至次星期一上午"
+   },
+   {
+    "key": "health_entry",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2026-07-08",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-12-04",
+    "due": "2027-02-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-01-03）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-12-04",
+    "due": "2028-02-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-01-03）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-12-04",
+    "due": "2029-02-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-01-03）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_06",
+  "file": "doc_06.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "INDAH HANDAYANI",
+    "entry_date": "2027-07-03",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "INDAH HANDAYANI",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2027-07-19",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": "末日為星期日，依行政程序法第48條第4項順延至次日"
+   },
+   {
+    "key": "health_entry",
+    "worker": "INDAH HANDAYANI",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2027-07-07",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "INDAH HANDAYANI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-12-04",
+    "due": "2028-02-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2028-01-03）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "INDAH HANDAYANI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-12-04",
+    "due": "2029-02-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2029-01-03）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "INDAH HANDAYANI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-12-04",
+    "due": "2030-02-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2030-01-03）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_07",
+  "file": "doc_07.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc_fw",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "WULAN RAHAYU",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-22"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "WULAN RAHAYU",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2027-12-07",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_08",
+  "file": "doc_08.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2026-12-21",
+    "permit_start": "2026-12-21",
+    "permit_end": "2029-12-20",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-05-22",
+    "due": "2027-07-21",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-06-21）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-05-22",
+    "due": "2028-07-21",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-06-21）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-05-22",
+    "due": "2029-07-21",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-06-21）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-08-20",
+    "due": "2029-10-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-12-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_09",
+  "file": "doc_09.png",
+  "doc_type": "期滿續聘許可函",
+  "date_style": "roc",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "MARIA CLARA REYES",
+    "entry_date": null,
+    "permit_start": "2026-08-27",
+    "permit_end": "2029-08-26",
+    "event_date": null
+   },
+   {
+    "name": "ROSALIE DELA CRUZ",
+    "entry_date": null,
+    "permit_start": "2026-07-26",
+    "permit_end": "2029-07-25",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "MARIA CLARA REYES",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-01-28",
+    "due": "2027-03-29",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2027-02-27）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "MARIA CLARA REYES",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-01-28",
+    "due": "2028-03-28",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2028-02-27）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "MARIA CLARA REYES",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-01-28",
+    "due": "2029-03-29",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2029-02-27）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "MARIA CLARA REYES",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-04-26",
+    "due": "2029-06-26",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "MARIA CLARA REYES",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-08-26",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   },
+   {
+    "key": "health_6m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-12-27",
+    "due": "2027-02-25",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2027-01-26）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-12-27",
+    "due": "2028-02-25",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2028-01-26）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-12-27",
+    "due": "2029-02-25",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2029-01-26）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-03-25",
+    "due": "2029-05-25",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-07-25",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_10",
+  "file": "doc_10.txt",
+  "doc_type": "期滿續聘許可函",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": null,
+    "permit_start": "2026-06-03",
+    "permit_end": "2029-06-02",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-11-03",
+    "due": "2027-01-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2026-12-03）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-11-03",
+    "due": "2028-01-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2027-12-03）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-11-03",
+    "due": "2029-01-02",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2028-12-03）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-02-02",
+    "due": "2029-04-02",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-06-02",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_11",
+  "file": "doc_11.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "NGUYEN THI LAN",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-03-09"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "NGUYEN THI LAN",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2026-03-24",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_12",
+  "file": "doc_12.png",
+  "doc_type": "住宿地點變更",
+  "date_style": "roc",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "FITRI PURNAMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-04"
+   },
+   {
+    "name": "FITRI HANDAYANI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-04"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "FITRI PURNAMA",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-11-11",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   },
+   {
+    "key": "dorm_change",
+    "worker": "FITRI HANDAYANI",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-11-11",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_13",
+  "file": "doc_13.png",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc_cn",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2026-09-06",
+    "permit_start": "2026-09-06",
+    "permit_end": "2029-09-05",
+    "event_date": null
+   },
+   {
+    "name": "LE THI MAI",
+    "entry_date": "2026-10-04",
+    "permit_start": "2026-10-04",
+    "permit_end": "2029-10-03",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-02-04",
+    "due": "2027-04-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-03-06）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-02-05",
+    "due": "2028-04-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-03-06）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-02-04",
+    "due": "2029-04-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-03-06）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-05-05",
+    "due": "2029-07-05",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-09-05",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   },
+   {
+    "key": "health_6m",
+    "worker": "LE THI MAI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-03-05",
+    "due": "2027-05-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-04-04）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "LE THI MAI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-03-05",
+    "due": "2028-05-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-04-04）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "LE THI MAI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-03-05",
+    "due": "2029-05-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-04-04）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "LE THI MAI",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-06-03",
+    "due": "2029-08-03",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "LE THI MAI",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-10-03",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_14",
+  "file": "doc_14.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "iso",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "INDAH LESTARI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-05-06"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "INDAH LESTARI",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2026-05-21",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_15",
+  "file": "doc_15.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc_fw",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "PHAM VAN DUC",
+    "entry_date": "2027-04-24",
+    "permit_start": "2027-04-24",
+    "permit_end": "2030-04-23",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "PHAM VAN DUC",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-09-24",
+    "due": "2027-11-23",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-10-24）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "PHAM VAN DUC",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-09-24",
+    "due": "2028-11-23",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-10-24）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "PHAM VAN DUC",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-09-24",
+    "due": "2029-11-23",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-10-24）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "PHAM VAN DUC",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-12-23",
+    "due": "2030-02-23",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "PHAM VAN DUC",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2030-04-23",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_16",
+  "file": "doc_16.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc_dot",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2026-07-21",
+    "permit_start": "2026-07-21",
+    "permit_end": "2029-07-20",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-12-22",
+    "due": "2027-02-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-01-21）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-12-22",
+    "due": "2028-02-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-01-21）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-12-22",
+    "due": "2029-02-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-01-21）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-03-20",
+    "due": "2029-05-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-07-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_17",
+  "file": "doc_17.png",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2027-01-20",
+    "permit_start": "2027-01-20",
+    "permit_end": "2030-01-19",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-06-20",
+    "due": "2027-08-19",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-07-20）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-06-20",
+    "due": "2028-08-19",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-07-20）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-06-20",
+    "due": "2029-08-19",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-07-20）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-09-19",
+    "due": "2029-11-19",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2030-01-19",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_18",
+  "file": "doc_18.txt",
+  "doc_type": "期滿續聘許可函",
+  "date_style": "roc_fw",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "ROSALIE DELA CRUZ",
+    "entry_date": null,
+    "permit_start": "2027-06-27",
+    "permit_end": "2030-06-26",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-11-27",
+    "due": "2028-01-26",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2027-12-27）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-11-27",
+    "due": "2029-01-26",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2028-12-27）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-11-27",
+    "due": "2030-01-26",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2029-12-27）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2030-02-26",
+    "due": "2030-04-26",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2030-06-26",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_19",
+  "file": "doc_19.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc_fw",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2026-11-26",
+    "permit_start": "2026-11-26",
+    "permit_end": "2029-11-25",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-04-26",
+    "due": "2027-06-25",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-05-26）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-04-26",
+    "due": "2028-06-25",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-05-26）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-04-26",
+    "due": "2029-06-25",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-05-26）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-07-25",
+    "due": "2029-09-25",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-11-25",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_20",
+  "file": "doc_20.png",
+  "doc_type": "期滿續聘許可函",
+  "date_style": "roc_dot",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "ROSALIE DELA CRUZ",
+    "entry_date": null,
+    "permit_start": "2027-05-03",
+    "permit_end": "2030-05-02",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-10-04",
+    "due": "2027-12-03",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2027-11-03）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-10-04",
+    "due": "2028-12-03",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2028-11-03）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-10-04",
+    "due": "2029-12-03",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2029-11-03）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2030-01-02",
+    "due": "2030-03-02",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2030-05-02",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_21",
+  "file": "doc_21.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc_dot",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": "2026-07-23",
+    "permit_start": "2026-07-23",
+    "permit_end": "2029-07-22",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-12-24",
+    "due": "2027-02-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-01-23）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-12-24",
+    "due": "2028-02-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-01-23）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-12-24",
+    "due": "2029-02-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-01-23）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-03-22",
+    "due": "2029-05-22",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-07-22",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_22",
+  "file": "doc_22.png",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_fw",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "FITRI RAHAYU",
+    "entry_date": "2027-07-06",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "FITRI RAHAYU",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2027-07-21",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": ""
+   },
+   {
+    "key": "health_entry",
+    "worker": "FITRI RAHAYU",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2027-07-09",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "FITRI RAHAYU",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-12-07",
+    "due": "2028-02-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2028-01-06）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "FITRI RAHAYU",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-12-07",
+    "due": "2029-02-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2029-01-06）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "FITRI RAHAYU",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-12-07",
+    "due": "2030-02-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2030-01-06）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_23",
+  "file": "doc_23.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "YUNI LESTARI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-08-05"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "YUNI LESTARI",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2026-08-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_24",
+  "file": "doc_24.txt",
+  "doc_type": "聘僱關係終止",
+  "date_style": "roc_dot",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-11-17"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "書面通知當地主管機關、移民署及警察機關",
+    "start": null,
+    "due": "2026-11-20",
+    "basis": "就業服務法第56條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_25",
+  "file": "doc_25.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "iso",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": "2026-07-28",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2026-08-12",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": ""
+   },
+   {
+    "key": "health_entry",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2026-07-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-12-29",
+    "due": "2027-02-27",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-01-28）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-12-29",
+    "due": "2028-02-27",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-01-28）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-12-29",
+    "due": "2029-02-27",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-01-28）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_26",
+  "file": "doc_26.png",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_fw",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": "2026-08-14",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2026-08-31",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": "末日為星期六，依行政程序法第48條第4項順延至次星期一上午"
+   },
+   {
+    "key": "health_entry",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2026-08-19",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-01-15",
+    "due": "2027-03-16",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-02-14）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-01-15",
+    "due": "2028-03-15",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-02-14）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-01-15",
+    "due": "2029-03-16",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-02-14）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_27",
+  "file": "doc_27.txt",
+  "doc_type": "期滿續聘許可函",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "FITRI PURNAMA",
+    "entry_date": null,
+    "permit_start": "2026-09-23",
+    "permit_end": "2029-09-22",
+    "event_date": null
+   },
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": null,
+    "permit_start": "2026-11-05",
+    "permit_end": "2029-11-04",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "FITRI PURNAMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-02-21",
+    "due": "2027-04-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2027-03-23）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "FITRI PURNAMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-02-22",
+    "due": "2028-04-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2028-03-23）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "FITRI PURNAMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-02-21",
+    "due": "2029-04-22",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2029-03-23）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "FITRI PURNAMA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-05-22",
+    "due": "2029-07-22",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "FITRI PURNAMA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-09-22",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   },
+   {
+    "key": "health_6m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-04-05",
+    "due": "2027-06-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2027-05-05）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-04-05",
+    "due": "2028-06-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2028-05-05）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-04-05",
+    "due": "2029-06-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2029-05-05）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-07-04",
+    "due": "2029-09-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-11-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_28",
+  "file": "doc_28.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc_dot",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "AYU HANDAYANI",
+    "entry_date": "2026-04-04",
+    "permit_start": "2026-04-04",
+    "permit_end": "2029-04-03",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "AYU HANDAYANI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-09-04",
+    "due": "2026-11-03",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2026-10-04）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "AYU HANDAYANI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-09-04",
+    "due": "2027-11-03",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2027-10-04）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "AYU HANDAYANI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-09-04",
+    "due": "2028-11-03",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2028-10-04）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "AYU HANDAYANI",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2028-12-03",
+    "due": "2029-02-03",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "AYU HANDAYANI",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-04-03",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_29",
+  "file": "doc_29.png",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "HOANG THI HOA",
+    "entry_date": "2026-11-30",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "HOANG THI HOA",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2026-12-15",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": ""
+   },
+   {
+    "key": "health_entry",
+    "worker": "HOANG THI HOA",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2026-12-03",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "HOANG THI HOA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-04-30",
+    "due": "2027-06-29",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-05-30）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "HOANG THI HOA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-04-30",
+    "due": "2028-06-29",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-05-30）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "HOANG THI HOA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-04-30",
+    "due": "2029-06-29",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-05-30）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_30",
+  "file": "doc_30.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "YUNI RAHAYU",
+    "entry_date": "2027-08-12",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "YUNI RAHAYU",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2027-08-27",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": ""
+   },
+   {
+    "key": "health_entry",
+    "worker": "YUNI RAHAYU",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2027-08-17",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "YUNI RAHAYU",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2028-01-13",
+    "due": "2028-03-13",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2028-02-12）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "YUNI RAHAYU",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2029-01-13",
+    "due": "2029-03-14",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2029-02-12）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "YUNI RAHAYU",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2030-01-13",
+    "due": "2030-03-14",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2030-02-12）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_31",
+  "file": "doc_31.txt",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "YUNI HANDAYANI",
+    "entry_date": "2026-11-05",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "YUNI HANDAYANI",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2026-11-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": ""
+   },
+   {
+    "key": "health_entry",
+    "worker": "YUNI HANDAYANI",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2026-11-10",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "YUNI HANDAYANI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-04-05",
+    "due": "2027-06-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-05-05）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "YUNI HANDAYANI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-04-05",
+    "due": "2028-06-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-05-05）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "YUNI HANDAYANI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-04-05",
+    "due": "2029-06-04",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-05-05）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_32",
+  "file": "doc_32.txt",
+  "doc_type": "住宿地點變更",
+  "date_style": "roc_dot",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-11-27"
+   },
+   {
+    "name": "ANAN KAEWDEE",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-11-27"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-12-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   },
+   {
+    "key": "dorm_change",
+    "worker": "ANAN KAEWDEE",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-12-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_33",
+  "file": "doc_33.png",
+  "doc_type": "聘僱許可函",
+  "date_style": "iso",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": "2026-08-14",
+    "permit_start": "2026-08-14",
+    "permit_end": "2029-08-13",
+    "event_date": null
+   },
+   {
+    "name": "ANAN KAEWDEE",
+    "entry_date": "2026-08-29",
+    "permit_start": "2026-08-29",
+    "permit_end": "2029-08-28",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-01-15",
+    "due": "2027-03-16",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-02-14）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-01-15",
+    "due": "2028-03-15",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-02-14）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-01-15",
+    "due": "2029-03-16",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-02-14）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-04-13",
+    "due": "2029-06-13",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-08-13",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   },
+   {
+    "key": "health_6m",
+    "worker": "ANAN KAEWDEE",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-01-29",
+    "due": "2027-03-30",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-02-28）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "ANAN KAEWDEE",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-01-30",
+    "due": "2028-03-30",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-02-29）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "ANAN KAEWDEE",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-01-29",
+    "due": "2029-03-30",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-02-28）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "ANAN KAEWDEE",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-04-28",
+    "due": "2029-06-28",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "ANAN KAEWDEE",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-08-28",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_34",
+  "file": "doc_34.png",
+  "doc_type": "聘僱關係終止",
+  "date_style": "iso",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-10-26"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "書面通知當地主管機關、移民署及警察機關",
+    "start": null,
+    "due": "2027-10-29",
+    "basis": "就業服務法第56條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_35",
+  "file": "doc_35.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "INDAH PURNAMA",
+    "entry_date": "2026-09-01",
+    "permit_start": "2026-09-01",
+    "permit_end": "2029-08-31",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "INDAH PURNAMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-01-30",
+    "due": "2027-03-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-03-01）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "INDAH PURNAMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-01-31",
+    "due": "2028-03-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-03-01）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "INDAH PURNAMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-01-30",
+    "due": "2029-03-31",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-03-01）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "INDAH PURNAMA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-04-30",
+    "due": "2029-06-30",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "INDAH PURNAMA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-08-31",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_36",
+  "file": "doc_36.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "TRAN VAN HUNG",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-08-17"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "TRAN VAN HUNG",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2026-09-01",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_37",
+  "file": "doc_37.png",
+  "doc_type": "住宿地點變更",
+  "date_style": "roc",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "HOANG THI HOA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-03-20"
+   },
+   {
+    "name": "DEWI PURNAMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-03-20"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "HOANG THI HOA",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-03-27",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   },
+   {
+    "key": "dorm_change",
+    "worker": "DEWI PURNAMA",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-03-27",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_38",
+  "file": "doc_38.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": "2027-08-30",
+    "permit_start": "2027-08-30",
+    "permit_end": "2030-08-29",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2028-01-30",
+    "due": "2028-03-30",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2028-02-29）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2029-01-29",
+    "due": "2029-03-30",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2029-02-28）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2030-01-29",
+    "due": "2030-03-30",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2030-02-28）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2030-04-29",
+    "due": "2030-06-29",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2030-08-29",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_39",
+  "file": "doc_39.png",
+  "doc_type": "入國通報受理證明書",
+  "date_style": "iso",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": "2027-08-06",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "申請聘僱許可",
+    "start": null,
+    "due": "2027-08-23",
+    "basis": "雇主聘僱外國人許可及管理辦法第36條",
+    "note": "末日為星期六，依行政程序法第48條第4項順延至次星期一上午"
+   },
+   {
+    "key": "health_entry",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排入國三日內健康檢查",
+    "start": null,
+    "due": "2027-08-11",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+    "note": "入國後三個工作日內（未計國定假日）"
+   },
+   {
+    "key": "health_6m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2028-01-07",
+    "due": "2028-03-07",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2028-02-06）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2029-01-07",
+    "due": "2029-03-08",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2029-02-06）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2030-01-07",
+    "due": "2030-03-08",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2030-02-06）前後30日"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_40",
+  "file": "doc_40.png",
+  "doc_type": "住宿地點變更",
+  "date_style": "roc_fw",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "WULAN HANDAYANI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-27"
+   },
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-27"
+   },
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-11-27"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "WULAN HANDAYANI",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-12-06",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": "末日為星期六，依行政程序法第48條第4項順延至次星期一上午"
+   },
+   {
+    "key": "dorm_change",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-12-06",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": "末日為星期六，依行政程序法第48條第4項順延至次星期一上午"
+   },
+   {
+    "key": "dorm_change",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-12-06",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": "末日為星期六，依行政程序法第48條第4項順延至次星期一上午"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_41",
+  "file": "doc_41.txt",
+  "doc_type": "住宿地點變更",
+  "date_style": "roc_dot",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "HOANG THI HOA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-07-23"
+   },
+   {
+    "name": "ANAN KAEWDEE",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-07-23"
+   },
+   {
+    "name": "WULAN SUSANTI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2027-07-23"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "HOANG THI HOA",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-07-30",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   },
+   {
+    "key": "dorm_change",
+    "worker": "ANAN KAEWDEE",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-07-30",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   },
+   {
+    "key": "dorm_change",
+    "worker": "WULAN SUSANTI",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2027-07-30",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_42",
+  "file": "doc_42.txt",
+  "doc_type": "住宿地點變更",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-07-07"
+   },
+   {
+    "name": "ROSALIE DELA CRUZ",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-07-07"
+   },
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-07-07"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "JOY ANN BAUTISTA",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-07-14",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   },
+   {
+    "key": "dorm_change",
+    "worker": "ROSALIE DELA CRUZ",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-07-14",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   },
+   {
+    "key": "dorm_change",
+    "worker": "SOMCHAI PHROMMA",
+    "title": "通知當地主管機關住宿地點變更",
+    "start": null,
+    "due": "2026-07-14",
+    "basis": "雇主聘僱外國人許可及管理辦法第33條第5項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_43",
+  "file": "doc_43.txt",
+  "doc_type": "聘僱關係終止",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "DEWI SUSANTI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-11-23"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "DEWI SUSANTI",
+    "title": "書面通知當地主管機關、移民署及警察機關",
+    "start": null,
+    "due": "2026-11-26",
+    "basis": "就業服務法第56條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_44",
+  "file": "doc_44.png",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "LE THI MAI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-07-12"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "LE THI MAI",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2026-07-27",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_45",
+  "file": "doc_45.txt",
+  "doc_type": "期滿續聘許可函",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "ANAN KAEWDEE",
+    "entry_date": null,
+    "permit_start": "2027-07-21",
+    "permit_end": "2030-07-20",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "ANAN KAEWDEE",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-12-22",
+    "due": "2028-02-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2028-01-21）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "ANAN KAEWDEE",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-12-22",
+    "due": "2029-02-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2029-01-21）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "ANAN KAEWDEE",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-12-22",
+    "due": "2030-02-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2030-01-21）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "ANAN KAEWDEE",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2030-03-20",
+    "due": "2030-05-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "ANAN KAEWDEE",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2030-07-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_46",
+  "file": "doc_46.txt",
+  "doc_type": "聘僱關係終止",
+  "date_style": "roc",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "TRAN VAN HUNG",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-06-27"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "TRAN VAN HUNG",
+    "title": "書面通知當地主管機關、移民署及警察機關",
+    "start": null,
+    "due": "2026-06-30",
+    "basis": "就業服務法第56條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_47",
+  "file": "doc_47.txt",
+  "doc_type": "再檢查診斷證明書",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "LE THI MAI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-05-11"
+   }
+  ],
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "LE THI MAI",
+    "title": "再檢查證明送衛生主管機關備查",
+    "start": null,
+    "due": "2026-05-26",
+    "basis": "受聘僱外國人健康檢查管理辦法第9條第2項",
+    "note": "收受次日起15日內"
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_48",
+  "file": "doc_48.txt",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc_cn",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "FITRI SUSANTI",
+    "entry_date": "2026-03-05",
+    "permit_start": "2026-03-05",
+    "permit_end": "2029-03-04",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "FITRI SUSANTI",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-08-06",
+    "due": "2026-10-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2026-09-05）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "FITRI SUSANTI",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-08-06",
+    "due": "2027-10-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2027-09-05）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "FITRI SUSANTI",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-08-06",
+    "due": "2028-10-05",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2028-09-05）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "FITRI SUSANTI",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2028-11-04",
+    "due": "2029-01-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "FITRI SUSANTI",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-03-04",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_49",
+  "file": "doc_49.png",
+  "doc_type": "聘僱許可函",
+  "date_style": "roc_cn",
+  "is_image": true,
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2026-07-09",
+    "permit_start": "2026-07-09",
+    "permit_end": "2029-07-08",
+    "event_date": null
+   },
+   {
+    "name": "INDAH PURNAMA",
+    "entry_date": "2026-07-15",
+    "permit_start": "2026-07-15",
+    "permit_end": "2029-07-14",
+    "event_date": null
+   },
+   {
+    "name": "DO THI THU",
+    "entry_date": "2026-07-20",
+    "permit_start": "2026-07-20",
+    "permit_end": "2029-07-19",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-12-10",
+    "due": "2027-02-08",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-01-09）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-12-10",
+    "due": "2028-02-08",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-01-09）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-12-10",
+    "due": "2029-02-08",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-01-09）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-03-08",
+    "due": "2029-05-08",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "MARK ANTHONY SORIANO",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-07-08",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   },
+   {
+    "key": "health_6m",
+    "worker": "INDAH PURNAMA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-12-16",
+    "due": "2027-02-14",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-01-15）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "INDAH PURNAMA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-12-16",
+    "due": "2028-02-14",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-01-15）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "INDAH PURNAMA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-12-16",
+    "due": "2029-02-14",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-01-15）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "INDAH PURNAMA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-03-14",
+    "due": "2029-05-14",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "INDAH PURNAMA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-07-14",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   },
+   {
+    "key": "health_6m",
+    "worker": "DO THI THU",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2026-12-21",
+    "due": "2027-02-19",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿6個月之日（2027-01-20）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "DO THI THU",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2027-12-21",
+    "due": "2028-02-19",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿18個月之日（2028-01-20）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "DO THI THU",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2028-12-21",
+    "due": "2029-02-19",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以入國日起算滿30個月之日（2029-01-20）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "DO THI THU",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2029-03-19",
+    "due": "2029-05-19",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "DO THI THU",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2029-07-19",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "doc_id": "doc_50",
+  "file": "doc_50.txt",
+  "doc_type": "期滿續聘許可函",
+  "date_style": "iso",
+  "is_image": false,
+  "workers": [
+   {
+    "name": "HOANG THI HOA",
+    "entry_date": null,
+    "permit_start": "2027-06-21",
+    "permit_end": "2030-06-20",
+    "event_date": null
+   }
+  ],
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "HOANG THI HOA",
+    "title": "安排第6個月定期健康檢查",
+    "start": "2027-11-21",
+    "due": "2028-01-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿6個月之日（2027-12-21）前後30日"
+   },
+   {
+    "key": "health_18m",
+    "worker": "HOANG THI HOA",
+    "title": "安排第18個月定期健康檢查",
+    "start": "2028-11-21",
+    "due": "2029-01-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿18個月之日（2028-12-21）前後30日"
+   },
+   {
+    "key": "health_30m",
+    "worker": "HOANG THI HOA",
+    "title": "安排第30個月定期健康檢查",
+    "start": "2029-11-21",
+    "due": "2030-01-20",
+    "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+    "note": "以聘僱許可生效日起算滿30個月之日（2029-12-21）前後30日"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "HOANG THI HOA",
+    "title": "申請期滿續聘或期滿轉換",
+    "start": "2030-02-20",
+    "due": "2030-04-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第39條、第40條",
+    "note": "聘僱許可有效期間屆滿日前二個月至四個月內"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "HOANG THI HOA",
+    "title": "聘僱許可屆滿（未續聘須於屆滿前辦理出國）",
+    "start": null,
+    "due": "2030-06-20",
+    "basis": "雇主聘僱外國人許可及管理辦法第69條第1項",
+    "note": ""
+   }
+  ]
+ }
+]

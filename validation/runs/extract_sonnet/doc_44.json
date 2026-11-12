@@ -1,0 +1,26 @@
+{
+ "doc_id": "doc_44",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 15.6,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "再檢查診斷證明書",
+  "workers": [
+   {
+    "name": "LE THI MAI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-07-12"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"再檢查診斷證明書\", \"workers\": [{\"name\": \"LE THI MAI\", \"entry_date\": null, \"permit_start\": null, \"permit_end\": null, \"event_date\": \"2026-07-12\"}]}",
+ "usage": {
+  "total_cost_usd": 0.019647900000000003,
+  "num_turns": 2,
+  "duration_ms": 13303
+ }
+}

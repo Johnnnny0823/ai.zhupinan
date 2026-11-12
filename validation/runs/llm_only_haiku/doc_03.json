@@ -1,0 +1,48 @@
+{
+ "doc_id": "doc_03",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 43.3,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "health_6m",
+    "worker": "ROSALIE DELA CRUZ",
+    "start": "2026-10-06",
+    "due": "2027-04-06"
+   },
+   {
+    "key": "health_18m",
+    "worker": "ROSALIE DELA CRUZ",
+    "start": "2026-10-06",
+    "due": "2028-04-06"
+   },
+   {
+    "key": "health_30m",
+    "worker": "ROSALIE DELA CRUZ",
+    "start": "2026-10-06",
+    "due": "2029-04-06"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "ROSALIE DELA CRUZ",
+    "start": "2029-07-05",
+    "due": "2029-10-05"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "ROSALIE DELA CRUZ",
+    "start": null,
+    "due": "2029-10-05"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"health_6m\", \"worker\": \"ROSALIE DELA CRUZ\", \"start\": \"2026-10-06\", \"due\": \"2027-04-06\"}, {\"key\": \"health_18m\", \"worker\": \"ROSALIE DELA CRUZ\", \"start\": \"2026-10-06\", \"due\": \"2028-04-06\"}, {\"key\": \"health_30m\", \"worker\": \"ROSALIE DELA CRUZ\", \"start\": \"2026-10-06\", \"due\": \"2029-04-06\"}, {\"key\": \"renewal_window\", \"worker\": \"ROSALIE DELA CRUZ\", \"start\": \"2029-07-05\", \"due\": \"2029-10-05\"}, {\"key\": \"permit_expiry\", \"worker\": \"ROSALIE DELA CRUZ\", \"start\": null, \"due\": \"2029-10-05\"}]}\n```",
+ "usage": {
+  "total_cost_usd": 0.032386000000000005,
+  "num_turns": 1,
+  "duration_ms": 40766
+ }
+}

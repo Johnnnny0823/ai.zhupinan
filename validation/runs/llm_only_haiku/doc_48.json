@@ -1,0 +1,72 @@
+{
+ "doc_id": "doc_48",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 93.9,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "health_entry",
+    "worker": "FITRI SUSANTI",
+    "start": null,
+    "due": "2026-03-08"
+   },
+   {
+    "key": "health_6m",
+    "worker": "FITRI SUSANTI",
+    "start": "2026-03-05",
+    "due": "2026-09-04"
+   },
+   {
+    "key": "health_6m",
+    "worker": "FITRI SUSANTI",
+    "start": "2026-09-05",
+    "due": "2027-03-04"
+   },
+   {
+    "key": "health_6m",
+    "worker": "FITRI SUSANTI",
+    "start": "2027-03-05",
+    "due": "2027-09-04"
+   },
+   {
+    "key": "health_6m",
+    "worker": "FITRI SUSANTI",
+    "start": "2027-09-05",
+    "due": "2028-03-04"
+   },
+   {
+    "key": "health_6m",
+    "worker": "FITRI SUSANTI",
+    "start": "2028-03-05",
+    "due": "2028-09-04"
+   },
+   {
+    "key": "health_6m",
+    "worker": "FITRI SUSANTI",
+    "start": "2028-09-05",
+    "due": "2029-03-04"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "FITRI SUSANTI",
+    "start": "2028-09-05",
+    "due": "2029-03-03"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "FITRI SUSANTI",
+    "start": null,
+    "due": "2029-03-04"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"health_entry\", \"worker\": \"FITRI SUSANTI\", \"start\": null, \"due\": \"2026-03-08\"}, {\"key\": \"health_6m\", \"worker\": \"FITRI SUSANTI\", \"start\": \"2026-03-05\", \"due\": \"2026-09-04\"}, {\"key\": \"health_6m\", \"worker\": \"FITRI SUSANTI\", \"start\": \"2026-09-05\", \"due\": \"2027-03-04\"}, {\"key\": \"health_6m\", \"worker\": \"FITRI SUSANTI\", \"start\": \"2027-03-05\", \"due\": \"2027-09-04\"}, {\"key\": \"health_6m\", \"worker\": \"FITRI SUSANTI\", \"start\": \"2027-09-05\", \"due\": \"2028-03-04\"}, {\"key\": \"health_6m\", \"worker\": \"FITRI SUSANTI\", \"start\": \"2028-03-05\", \"due\": \"2028-09-04\"}, {\"key\": \"health_6m\", \"worker\": \"FITRI SUSANTI\", \"start\": \"2028-09-05\", \"due\": \"2029-03-04\"}, {\"key\": \"renewal_window\", \"worker\": \"FITRI SUSANTI\", \"start\": \"2028-09-05\", \"due\": \"2029-03-03\"}, {\"key\": \"permit_expiry\", \"worker\": \"FITRI SUSANTI\", \"start\": null, \"due\": \"2029-03-04\"}]}\n```",
+ "usage": {
+  "total_cost_usd": 0.071943,
+  "num_turns": 1,
+  "duration_ms": 91768
+ }
+}

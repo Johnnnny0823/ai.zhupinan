@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_46",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 42.2,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "TRAN VAN HUNG",
+    "start": null,
+    "due": "2026-06-27"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"termination_notice\", \"worker\": \"TRAN VAN HUNG\", \"start\": null, \"due\": \"2026-06-27\"}]}\n```\n\n**說明：**\n\n根據此份終止協議書，雇主東門食品股份有限公司觸發的主要法定義務為：\n\n- **termination_notice（聘僱關係終止之書面通知）**  \n  依據《雇主聘僱外國人許可及管理辦法》第36條，雇主應以書面通知外國人。協議書簽署於民國115年6月20日，終止生效日為民國115年6月27日，故書面通知應於終止日期前完成。\n\n**註：** 根據法規，雇主另應於30日內向中央主管機關通知終止事實（應通知期限為2026-07-27前），惟此項義務之對應key不在允許列表內，故未列出。",
+ "usage": {
+  "total_cost_usd": 0.029413,
+  "num_turns": 1,
+  "duration_ms": 40082
+ }
+}

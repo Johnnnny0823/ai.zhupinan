@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_H12",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 19.5,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "RINA PURNAMA",
+    "start": null,
+    "due": "2027-12-31"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"termination_notice\", \"worker\": \"RINA PURNAMA\", \"start\": null, \"due\": \"2027-12-31\"}]}\n```\n\n**說明：**\n\n根據《就業服務法》第 47 條及《雇主聘僱外國人許可及管理辦法》第 51 條，雇主終止外國人聘僱關係，**應自終止日起三日內**向下列機關提交書面通知：\n- 中央主管機關（勞動部或勞動力發展署）\n- 外國人工作所在地之警察局\n\n**期限計算（按《行政程序法》）：**\n- 起算日（不計入）：2027-12-28（聘僱關係終止日）\n- 第一日：2027-12-29\n- 第二日：2027-12-30\n- 第三日：2027-12-31 ← **最後期限**",
+ "usage": {
+  "total_cost_usd": 0.012495,
+  "num_turns": 1,
+  "duration_ms": 17011
+ }
+}

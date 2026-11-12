@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_07",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 19.4,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "WULAN RAHAYU",
+    "start": null,
+    "due": "2027-12-06"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"recheck_report\", \"worker\": \"WULAN RAHAYU\", \"start\": null, \"due\": \"2027-12-06\"}]}\n```\n\n**說明：**\n\n根據《受聘僱外國人健康檢查管理辦法》第15條，再檢查合格後，雇主應自獲得合格證明之日起**14日內**，將證明文件送衛生主管機關備查。\n\n- **收文日期**：民國116年11月22日（視為雇主獲得證明日）\n- **期限計算**：依行政程序法第11條，期間以日計自起日次日起算\n  - 起日11月22日 → 次日11月23日為第1日\n  - 第14日為12月6日\n- **截止日期**：民國116年12月6日（西元2027年12月6日）",
+ "usage": {
+  "total_cost_usd": 0.013616,
+  "num_turns": 1,
+  "duration_ms": 17232
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "doc_id": "doc_33",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 15.7,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "聘僱許可函",
+  "workers": [
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": "2026-08-14",
+    "permit_start": "2026-08-14",
+    "permit_end": "2029-08-13",
+    "event_date": null
+   },
+   {
+    "name": "ANAN KAEWDEE",
+    "entry_date": "2026-08-29",
+    "permit_start": "2026-08-29",
+    "permit_end": "2029-08-28",
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"聘僱許可函\", \"workers\": [{\"name\": \"JOY ANN BAUTISTA\", \"entry_date\": \"2026-08-14\", \"permit_start\": \"2026-08-14\", \"permit_end\": \"2029-08-13\", \"event_date\": null}, {\"name\": \"ANAN KAEWDEE\", \"entry_date\": \"2026-08-29\", \"permit_start\": \"2026-08-29\", \"permit_end\": \"2029-08-28\", \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.0214554,
+  "num_turns": 2,
+  "duration_ms": 13542
+ }
+}

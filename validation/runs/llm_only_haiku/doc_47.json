@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_47",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 22.6,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "LE THI MAI",
+    "start": null,
+    "due": "2026-05-18"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\n  \"obligations\": [\n    {\n      \"key\": \"recheck_report\",\n      \"worker\": \"LE THI MAI\",\n      \"start\": null,\n      \"due\": \"2026-05-18\"\n    }\n  ]\n}\n```\n\n**分析說明：**\n\n文件屬性：這是**再檢查診斷證明書**（原定期健檢於115年4月10日，再檢查於4月20日，結果合格）。\n\n觸發義務：根據《受聘僱外國人健康檢查管理辦法》第9條，再檢查判定合格後，雇主應於**7日內**將診斷證明送所在地衛生主管機關備查。\n\n期限計算：\n- 收文日期：115年5月11日\n- 期間起算：5月12日（行政程序法期間開始之次日起算）\n- 7日後：5月18日\n- 西元轉換：2026-05-18",
+ "usage": {
+  "total_cost_usd": 0.014868,
+  "num_turns": 1,
+  "duration_ms": 20056
+ }
+}

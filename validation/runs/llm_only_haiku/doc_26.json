@@ -1,0 +1,42 @@
+{
+ "doc_id": "doc_26",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 59.7,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "health_entry",
+    "worker": "PIWOMMA",
+    "start": null,
+    "due": "2026-08-17"
+   },
+   {
+    "key": "health_6m",
+    "worker": "PIWOMMA",
+    "start": "2026-08-14",
+    "due": "2027-02-14"
+   },
+   {
+    "key": "health_18m",
+    "worker": "PIWOMMA",
+    "start": "2026-08-14",
+    "due": "2028-02-14"
+   },
+   {
+    "key": "health_30m",
+    "worker": "PIWOMMA",
+    "start": "2026-08-14",
+    "due": "2029-02-14"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"obligations\": [{\"key\": \"health_entry\", \"worker\": \"PIWOMMA\", \"start\": null, \"due\": \"2026-08-17\"}, {\"key\": \"health_6m\", \"worker\": \"PIWOMMA\", \"start\": \"2026-08-14\", \"due\": \"2027-02-14\"}, {\"key\": \"health_18m\", \"worker\": \"PIWOMMA\", \"start\": \"2026-08-14\", \"due\": \"2028-02-14\"}, {\"key\": \"health_30m\", \"worker\": \"PIWOMMA\", \"start\": \"2026-08-14\", \"due\": \"2029-02-14\"}]}",
+ "usage": {
+  "total_cost_usd": 0.0461385,
+  "num_turns": 2,
+  "duration_ms": 57530
+ }
+}

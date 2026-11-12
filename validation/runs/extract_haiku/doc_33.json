@@ -1,0 +1,26 @@
+{
+ "doc_id": "doc_33",
+ "model": "haiku",
+ "mode": "extract",
+ "seconds": 16.7,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "入國通報受理證明書",
+  "workers": [
+   {
+    "name": "RIKY ANN BAUTISTA",
+    "entry_date": "2020-09-21",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"doc_type\": \"入國通報受理證明書\", \"workers\": [{\"name\": \"RIKY ANN BAUTISTA\", \"entry_date\": \"2020-09-21\", \"permit_start\": null, \"permit_end\": null, \"event_date\": null}]}\n```",
+ "usage": {
+  "total_cost_usd": 0.0115473,
+  "num_turns": 2,
+  "duration_ms": 14373
+ }
+}

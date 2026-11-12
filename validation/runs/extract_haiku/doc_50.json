@@ -1,0 +1,26 @@
+{
+ "doc_id": "doc_50",
+ "model": "haiku",
+ "mode": "extract",
+ "seconds": 12.5,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "期滿續聘許可函",
+  "workers": [
+   {
+    "name": "HOANG THI HOA",
+    "entry_date": null,
+    "permit_start": "2027-06-21",
+    "permit_end": "2030-06-20",
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"期滿續聘許可函\",\n \"workers\": [{\"name\": \"HOANG THI HOA\",\n              \"entry_date\": null,\n              \"permit_start\": \"2027-06-21\",\n              \"permit_end\": \"2030-06-20\",\n              \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.007951,
+  "num_turns": 1,
+  "duration_ms": 10129
+ }
+}

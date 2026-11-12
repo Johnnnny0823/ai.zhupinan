@@ -1,0 +1,174 @@
+[
+ {
+  "id": "p01",
+  "defects": [
+   "C7"
+  ]
+ },
+ {
+  "id": "p02",
+  "defects": [
+   "C7"
+  ]
+ },
+ {
+  "id": "p03",
+  "defects": []
+ },
+ {
+  "id": "p04",
+  "defects": [
+   "C2"
+  ]
+ },
+ {
+  "id": "p05",
+  "defects": [
+   "C5",
+   "C6"
+  ]
+ },
+ {
+  "id": "p06",
+  "defects": [
+   "C6"
+  ]
+ },
+ {
+  "id": "p07",
+  "defects": [
+   "C1"
+  ]
+ },
+ {
+  "id": "p08",
+  "defects": [
+   "C5"
+  ]
+ },
+ {
+  "id": "p09",
+  "defects": [
+   "C3"
+  ]
+ },
+ {
+  "id": "p10",
+  "defects": []
+ },
+ {
+  "id": "p11",
+  "defects": [
+   "C4",
+   "C7"
+  ]
+ },
+ {
+  "id": "p12",
+  "defects": [
+   "C5",
+   "C7"
+  ]
+ },
+ {
+  "id": "p13",
+  "defects": [
+   "C3",
+   "C6"
+  ]
+ },
+ {
+  "id": "p14",
+  "defects": [
+   "C2"
+  ]
+ },
+ {
+  "id": "p15",
+  "defects": [
+   "C6"
+  ]
+ },
+ {
+  "id": "p16",
+  "defects": [
+   "C2",
+   "C6"
+  ]
+ },
+ {
+  "id": "p17",
+  "defects": []
+ },
+ {
+  "id": "p18",
+  "defects": [
+   "C1"
+  ]
+ },
+ {
+  "id": "p19",
+  "defects": [
+   "C2",
+   "C4"
+  ]
+ },
+ {
+  "id": "p20",
+  "defects": [
+   "C4"
+  ]
+ },
+ {
+  "id": "p21",
+  "defects": [
+   "C4"
+  ]
+ },
+ {
+  "id": "p22",
+  "defects": []
+ },
+ {
+  "id": "p23",
+  "defects": [
+   "C3",
+   "C5"
+  ]
+ },
+ {
+  "id": "p24",
+  "defects": [
+   "C1",
+   "C7"
+  ]
+ },
+ {
+  "id": "p25",
+  "defects": []
+ },
+ {
+  "id": "p26",
+  "defects": []
+ },
+ {
+  "id": "p27",
+  "defects": []
+ },
+ {
+  "id": "p28",
+  "defects": [
+   "C5"
+  ]
+ },
+ {
+  "id": "p29",
+  "defects": [
+   "C3"
+  ]
+ },
+ {
+  "id": "p30",
+  "defects": []
+ }
+]

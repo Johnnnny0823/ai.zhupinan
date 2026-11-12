@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_H06",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 21.9,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "SOMCHAI PHROMMA",
+    "start": null,
+    "due": "2026-12-15"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\n  \"obligations\": [\n    {\n      \"key\": \"recheck_report\",\n      \"worker\": \"SOMCHAI PHROMMA\",\n      \"start\": null,\n      \"due\": \"2026-12-15\"\n    }\n  ]\n}\n```\n\n**法律依據：**\n《受聘僱外國人健康檢查管理辦法》第 11 條規定，再檢查合格者，雇主應於**5 日內**將再檢查合格之診斷證明書報請原指定之衛生主管機關備查。\n\n**期限計算：**\n- 收文日期：民國 115 年 12 月 10 日\n- 起算日次日（第 1 日）：民國 115 年 12 月 11 日\n- 期限日期：民國 115 年 12 月 15 日",
+ "usage": {
+  "total_cost_usd": 0.015460999999999999,
+  "num_turns": 1,
+  "duration_ms": 19682
+ }
+}

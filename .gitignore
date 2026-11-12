@@ -1,0 +1,27 @@
+# --- secrets & personal data (never commit) ---
+demo/server/line.env
+*.env
+demo/server/data/
+demo/server/uploads/
+demo/server/cache/
+demo/server/tmp/
+
+# --- team-internal documents (kept local) ---
+提案簡報*.pdf
+決賽評選標準_提案評判.md
+
+# --- raw downloads not redistributed ---
+validation/appeals_raw/
+validation/laws_raw/
+validation/calendar_raw/
+
+# --- local tooling / scratch ---
+.claude/
+__pycache__/
+*.pyc
+validation/_*.txt
+demo/_*.txt
+_*.txt
+validation/scripts/rules_v1_weekend_only.py
+demo/mockup/codex_log*.txt
+demo/mockup/codex_answer.md

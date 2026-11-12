@@ -1,0 +1,15 @@
+doc_09 ok 16.0s
+doc_12 ok 20.1s
+doc_13 ok 38.0s
+doc_17 ok 17.3s
+doc_20 ok 27.8s
+doc_22 ok 22.4s
+doc_26 ok 13.9s
+doc_29 ok 18.9s
+doc_33 ok 15.7s
+doc_34 ok 23.0s
+doc_37 ok 14.9s
+doc_39 ok 18.5s
+doc_40 ok 17.0s
+doc_44 ok 15.6s
+doc_49 ok 149.6s

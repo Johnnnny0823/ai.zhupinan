@@ -1,0 +1,26 @@
+{
+ "doc_id": "doc_26",
+ "model": "haiku",
+ "mode": "extract",
+ "seconds": 21.1,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "入國通報受理證明書",
+  "workers": [
+   {
+    "name": "SOMCAA PRWGMMMA",
+    "entry_date": "2026-01-05",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"doc_type\": \"入國通報受理證明書\",\n \"workers\": [{\"name\": \"SOMCAA PRWGMMMA\",\n              \"entry_date\": \"2026-01-05\",\n              \"permit_start\": null,\n              \"permit_end\": null,\n              \"event_date\": null}]}\n```",
+ "usage": {
+  "total_cost_usd": 0.0142223,
+  "num_turns": 2,
+  "duration_ms": 18753
+ }
+}

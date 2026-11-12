@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_11",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 16.4,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "NGUYEN THI LAN",
+    "start": null,
+    "due": "2026-04-06"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"recheck_report\", \"worker\": \"NGUYEN THI LAN\", \"start\": null, \"due\": \"2026-04-06\"}]}\n```\n\n**說明：**\n\n此份再檢查診斷證明書顯示檢查結果合格，根據《受聘僱外國人健康檢查管理辦法》第 12 條，雇主應於診斷證明書開立之日起 **30 日內**，將再檢查證明送主管衛生機關備查。\n\n- 開立日期：115年3月7日（2026-03-07）\n- 期限：開立後30天 = 2026-04-06",
+ "usage": {
+  "total_cost_usd": 0.010165,
+  "num_turns": 1,
+  "duration_ms": 13992
+ }
+}

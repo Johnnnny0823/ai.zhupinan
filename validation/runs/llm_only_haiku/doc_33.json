@@ -1,0 +1,42 @@
+{
+ "doc_id": "doc_33",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 49.6,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "health_entry",
+    "worker": "宏全",
+    "start": null,
+    "due": "2025-03-18"
+   },
+   {
+    "key": "renewal_window",
+    "worker": "宏全",
+    "start": "2025-08-15",
+    "due": "2025-09-14"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "宏全",
+    "start": null,
+    "due": "2025-09-14"
+   },
+   {
+    "key": "permit_expiry",
+    "worker": "HENRY ANN BAUTISTA",
+    "start": null,
+    "due": "2020-09-28"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"health_entry\", \"worker\": \"宏全\", \"start\": null, \"due\": \"2025-03-18\"}, {\"key\": \"renewal_window\", \"worker\": \"宏全\", \"start\": \"2025-08-15\", \"due\": \"2025-09-14\"}, {\"key\": \"permit_expiry\", \"worker\": \"宏全\", \"start\": null, \"due\": \"2025-09-14\"}, {\"key\": \"permit_expiry\", \"worker\": \"HENRY ANN BAUTISTA\", \"start\": null, \"due\": \"2020-09-28\"}]}\n```",
+ "usage": {
+  "total_cost_usd": 0.03769475,
+  "num_turns": 2,
+  "duration_ms": 47448
+ }
+}

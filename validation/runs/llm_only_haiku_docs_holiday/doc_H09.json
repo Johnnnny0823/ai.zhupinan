@@ -1,0 +1,30 @@
+{
+ "doc_id": "doc_H09",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 25.3,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "dorm_change",
+    "worker": "JOY ANN BAUTISTA",
+    "start": null,
+    "due": "2026-05-25"
+   },
+   {
+    "key": "dorm_change",
+    "worker": "INDAH HANDAYANI",
+    "start": null,
+    "due": "2026-05-25"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\n  \"obligations\": [\n    {\n      \"key\": \"dorm_change\",\n      \"worker\": \"JOY ANN BAUTISTA\",\n      \"start\": null,\n      \"due\": \"2026-05-25\"\n    },\n    {\n      \"key\": \"dorm_change\",\n      \"worker\": \"INDAH HANDAYANI\",\n      \"start\": null,\n      \"due\": \"2026-05-25\"\n    }\n  ]\n}\n```\n\n---\n\n### 說明\n\n**觸發義務：住宿地點變更通知（dorm_change）**\n\n根據《雇主聘僱外國人許可及管理辦法》第20條：\n> 雇主僱用外國人，其住宿地點如有變更，應於變更後三十日內報請勞動部備查。\n\n**期限計算**（依《行政程序法》第49條）：\n- 變更日期：115年4月24日（起算日不計入）\n- 起算日（第1日）：115年4月25日  \n- 30日期滿：**115年5月25日**（即西元2026年5月25日）\n\n**涉及外國人**：兩位異動外國人皆須完成此項通知。",
+ "usage": {
+  "total_cost_usd": 0.017852,
+  "num_turns": 1,
+  "duration_ms": 22936
+ }
+}

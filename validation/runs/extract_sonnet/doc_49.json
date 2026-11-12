@@ -1,0 +1,40 @@
+{
+ "doc_id": "doc_49",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 149.6,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "聘僱許可函",
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2026-07-15",
+    "permit_start": "2026-07-09",
+    "permit_end": "2029-07-08",
+    "event_date": null
+   },
+   {
+    "name": "INDAH PURNAMA",
+    "entry_date": "2026-07-15",
+    "permit_start": "2026-08-22",
+    "permit_end": "2029-08-21",
+    "event_date": null
+   },
+   {
+    "name": "DO THI THU",
+    "entry_date": "2026-07-12",
+    "permit_start": "2026-07-22",
+    "permit_end": "2029-07-21",
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"聘僱許可函\", \"workers\": [{\"name\": \"MARK ANTHONY SORIANO\", \"entry_date\": \"2026-07-15\", \"permit_start\": \"2026-07-09\", \"permit_end\": \"2029-07-08\", \"event_date\": null}, {\"name\": \"INDAH PURNAMA\", \"entry_date\": \"2026-07-15\", \"permit_start\": \"2026-08-22\", \"permit_end\": \"2029-08-21\", \"event_date\": null}, {\"name\": \"DO THI THU\", \"entry_date\": \"2026-07-12\", \"permit_start\": \"2026-07-22\", \"permit_end\": \"2029-07-21\", \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.20978205,
+  "num_turns": 3,
+  "duration_ms": 147487
+ }
+}

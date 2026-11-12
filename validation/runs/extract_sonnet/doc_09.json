@@ -1,0 +1,33 @@
+{
+ "doc_id": "doc_09",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 16.0,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "聘僱許可函",
+  "workers": [
+   {
+    "name": "MARIA CLARA REYES",
+    "entry_date": null,
+    "permit_start": "2026-08-27",
+    "permit_end": "2029-08-26",
+    "event_date": null
+   },
+   {
+    "name": "ROSALIE DELA CRUZ",
+    "entry_date": null,
+    "permit_start": "2026-07-26",
+    "permit_end": "2029-07-25",
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"聘僱許可函\", \"workers\": [{\"name\": \"MARIA CLARA REYES\", \"entry_date\": null, \"permit_start\": \"2026-08-27\", \"permit_end\": \"2029-08-26\", \"event_date\": null}, {\"name\": \"ROSALIE DELA CRUZ\", \"entry_date\": null, \"permit_start\": \"2026-07-26\", \"permit_end\": \"2029-07-25\", \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.025787700000000004,
+  "num_turns": 2,
+  "duration_ms": 13102
+ }
+}

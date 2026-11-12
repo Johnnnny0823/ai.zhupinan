@@ -1,0 +1,40 @@
+{
+ "doc_id": "doc_40",
+ "model": "haiku",
+ "mode": "extract",
+ "seconds": 92.8,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "聘僱許可函",
+  "workers": [
+   {
+    "name": null,
+    "entry_date": null,
+    "permit_start": "2021-11-07",
+    "permit_end": "2022-01-27",
+    "event_date": null
+   },
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": null,
+    "permit_start": "2021-11-07",
+    "permit_end": "2022-01-27",
+    "event_date": null
+   },
+   {
+    "name": "JOY ANN BAUTISTA",
+    "entry_date": null,
+    "permit_start": "2021-11-07",
+    "permit_end": "2022-01-27",
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"聘僱許可函\", \"workers\": [{\"name\": null, \"entry_date\": null, \"permit_start\": \"2021-11-07\", \"permit_end\": \"2022-01-27\", \"event_date\": null}, {\"name\": \"MARK ANTHONY SORIANO\", \"entry_date\": null, \"permit_start\": \"2021-11-07\", \"permit_end\": \"2022-01-27\", \"event_date\": null}, {\"name\": \"JOY ANN BAUTISTA\", \"entry_date\": null, \"permit_start\": \"2021-11-07\", \"permit_end\": \"2022-01-27\", \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.05622605,
+  "num_turns": 2,
+  "duration_ms": 90479
+ }
+}

@@ -1,0 +1,26 @@
+{
+ "doc_id": "doc_39",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 18.5,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "入國通報受理證明書",
+  "workers": [
+   {
+    "name": "SOMCHAI PHROMMA",
+    "entry_date": "2027-08-06",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"入國通報受理證明書\", \"workers\": [{\"name\": \"SOMCHAI PHROMMA\", \"entry_date\": \"2027-08-06\", \"permit_start\": null, \"permit_end\": null, \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.022085399999999998,
+  "num_turns": 2,
+  "duration_ms": 15868
+ }
+}

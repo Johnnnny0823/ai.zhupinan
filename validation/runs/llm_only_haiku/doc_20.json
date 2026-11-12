@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_20",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 104.6,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "renewal_window",
+    "worker": "ROSALIE DELA CRUZ",
+    "start": null,
+    "due": "2032-01-13"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\n  \"obligations\": [\n    {\n      \"key\": \"renewal_window\",\n      \"worker\": \"ROSALIE DELA CRUZ\",\n      \"start\": null,\n      \"due\": \"2032-01-13\"\n    }\n  ]\n}\n```",
+ "usage": {
+  "total_cost_usd": 0.0756635,
+  "num_turns": 2,
+  "duration_ms": 102542
+ }
+}

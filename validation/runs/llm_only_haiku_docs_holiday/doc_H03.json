@@ -1,0 +1,48 @@
+{
+ "doc_id": "doc_H03",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 73.1,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "apply_permit",
+    "worker": "JOY ANN BAUTISTA",
+    "start": null,
+    "due": "2026-10-22"
+   },
+   {
+    "key": "health_entry",
+    "worker": "JOY ANN BAUTISTA",
+    "start": null,
+    "due": "2026-09-25"
+   },
+   {
+    "key": "health_6m",
+    "worker": "JOY ANN BAUTISTA",
+    "start": "2027-03-01",
+    "due": "2027-03-31"
+   },
+   {
+    "key": "health_18m",
+    "worker": "JOY ANN BAUTISTA",
+    "start": "2028-03-01",
+    "due": "2028-03-31"
+   },
+   {
+    "key": "health_30m",
+    "worker": "JOY ANN BAUTISTA",
+    "start": "2029-03-01",
+    "due": "2029-03-31"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [\n  {\"key\": \"apply_permit\", \"worker\": \"JOY ANN BAUTISTA\", \"start\": null, \"due\": \"2026-10-22\"},\n  {\"key\": \"health_entry\", \"worker\": \"JOY ANN BAUTISTA\", \"start\": null, \"due\": \"2026-09-25\"},\n  {\"key\": \"health_6m\", \"worker\": \"JOY ANN BAUTISTA\", \"start\": \"2027-03-01\", \"due\": \"2027-03-31\"},\n  {\"key\": \"health_18m\", \"worker\": \"JOY ANN BAUTISTA\", \"start\": \"2028-03-01\", \"due\": \"2028-03-31\"},\n  {\"key\": \"health_30m\", \"worker\": \"JOY ANN BAUTISTA\", \"start\": \"2029-03-01\", \"due\": \"2029-03-31\"}\n]}\n```\n\n**重要提醒：**\n- `apply_permit` 與 `health_entry` 已逾期（截至2026-11-12）\n- `apply_permit` 應在入國後30日內申請（雇主聘僱外國人許可及管理辦法第36條）\n- `health_entry` 應在入國後3日內進行（受聘僱外國人健康檢查管理辦法第3條）\n- 定期健檢以該月份整月作為期限（行政程序法期間計算）",
+ "usage": {
+  "total_cost_usd": 0.054463000000000004,
+  "num_turns": 1,
+  "duration_ms": 70265
+ }
+}

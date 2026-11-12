@@ -1,0 +1,26 @@
+{
+ "doc_id": "doc_H04",
+ "model": "haiku",
+ "mode": "extract",
+ "seconds": 13.3,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "入國通報受理證明書",
+  "workers": [
+   {
+    "name": "WULAN WAHYUNI",
+    "entry_date": "2027-10-22",
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"doc_type\": \"入國通報受理證明書\",\n \"workers\": [{\"name\": \"WULAN WAHYUNI\",\n              \"entry_date\": \"2027-10-22\",\n              \"permit_start\": null,\n              \"permit_end\": null,\n              \"event_date\": null}]}\n```",
+ "usage": {
+  "total_cost_usd": 0.007852999999999999,
+  "num_turns": 1,
+  "duration_ms": 10965
+ }
+}

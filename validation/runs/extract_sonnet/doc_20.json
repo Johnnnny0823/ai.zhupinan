@@ -1,0 +1,26 @@
+{
+ "doc_id": "doc_20",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 27.8,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "期滿續聘許可函",
+  "workers": [
+   {
+    "name": "ROSALIE DELA CRUZ",
+    "entry_date": null,
+    "permit_start": "2027-05-03",
+    "permit_end": "2030-05-02",
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"期滿續聘許可函\", \"workers\": [{\"name\": \"ROSALIE DELA CRUZ\", \"entry_date\": null, \"permit_start\": \"2027-05-03\", \"permit_end\": \"2030-05-02\", \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.0314829,
+  "num_turns": 2,
+  "duration_ms": 25353
+ }
+}

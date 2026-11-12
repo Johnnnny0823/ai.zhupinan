@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_02",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 41.5,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "SRI SUSANTI",
+    "start": null,
+    "due": "2027-09-02"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\n  \"obligations\": [\n    {\n      \"key\": \"termination_notice\",\n      \"worker\": \"SRI SUSANTI\",\n      \"start\": null,\n      \"due\": \"2027-09-02\"\n    }\n  ]\n}\n```\n\n**說明：**\n\n根據《雇主聘僱外國人許可及管理辦法》第18條，聘僱關係終止時，雇主應於**三十日內報請中央主管機關備查**。\n\n- **觸發事項**：聘僱終止日為民國116年8月3日（西元2027年8月3日）\n- **期限計算**：自2027年8月3日起30日內 = 2027年9月2日\n- **應通知機關**：勞動部及移民署\n\n雇主應將該終止協議書副本報備至勞動部及相關移民主管機關，以完成聘僱關係終止的法定程序。",
+ "usage": {
+  "total_cost_usd": 0.027232000000000003,
+  "num_turns": 1,
+  "duration_ms": 38843
+ }
+}

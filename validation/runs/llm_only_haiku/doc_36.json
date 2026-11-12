@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_36",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 13.7,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "TRAN VAN HUNG",
+    "start": null,
+    "due": "2026-09-01"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\n  \"obligations\": [\n    {\n      \"key\": \"recheck_report\",\n      \"worker\": \"TRAN VAN HUNG\",\n      \"start\": null,\n      \"due\": \"2026-09-01\"\n    }\n  ]\n}\n```\n\n**說明：**\n\n此文件為再檢查診斷證明書（結果正常、判定合格）。依《受聘僱外國人健康檢查管理辦法》第10條，雇主應於**接獲檢查結果後15日內**，將再檢查診斷證明書送當地衛生機關備查。\n\n- **起算點**：收文日期 115年8月17日（西元2026年8月17日）\n- **計算方式**：按《行政程序法》第74條，期間自翌日起算 → 8月18日起加計15日\n- **最後期限**：**115年9月1日**（西元2026年9月1日）",
+ "usage": {
+  "total_cost_usd": 0.008851000000000001,
+  "num_turns": 1,
+  "duration_ms": 11576
+ }
+}

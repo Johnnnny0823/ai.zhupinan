@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_H07",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 31.4,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "SOMCHAI PHROMMA",
+    "start": null,
+    "due": "2027-06-09"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"recheck_report\", \"worker\": \"SOMCHAI PHROMMA\", \"start\": null, \"due\": \"2027-06-09\"}]}\n```\n\n**說明：**\n\n此份再檢查診斷證明書觸發的義務為：\n\n1. **recheck_report（再檢查證明送衛生主管機關備查）**\n   - 法律依據：《受聘僱外國人健康檢查管理辦法》第 8 條\n   - 雇主於 116 年 5 月 25 日收到該證明書後，應於**15 日內**送衛生主管機關備查\n   - 期限計算：自收文日之翌日（5 月 26 日）起算 15 日 = **116 年 6 月 9 日**（西元 2027 年 6 月 9 日）",
+ "usage": {
+  "total_cost_usd": 0.020579999999999998,
+  "num_turns": 1,
+  "duration_ms": 29416
+ }
+}

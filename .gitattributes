@@ -1,0 +1,2 @@
+# Windows batch files are Big5 (cp950) + CRLF so 中文 prints correctly in cmd — keep bytes as-is
+*.bat -text

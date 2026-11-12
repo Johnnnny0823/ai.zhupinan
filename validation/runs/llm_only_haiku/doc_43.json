@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_43",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 24.0,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "termination_notice",
+    "worker": "DEWI SUSANTI",
+    "start": null,
+    "due": "2026-11-26"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"termination_notice\", \"worker\": \"DEWI SUSANTI\", \"start\": null, \"due\": \"2026-11-26\"}]}\n```\n\n**說明：**\n\n根據就業服務法第33條，雇主終止聘僱關係應於**終止日起3日內**以書面通知主管機關及外國人。\n\n- **終止日**：民國115年11月23日（西元2026-11-23）\n- **期限計算**：依行政程序法第116條，期間以日為之者不計起日\n  - 起日（2026-11-23）不計\n  - 第1日：2026-11-24\n  - 第2日：2026-11-25  \n  - 第3日：2026-11-26（期限最後一日）",
+ "usage": {
+  "total_cost_usd": 0.016851,
+  "num_turns": 1,
+  "duration_ms": 21849
+ }
+}

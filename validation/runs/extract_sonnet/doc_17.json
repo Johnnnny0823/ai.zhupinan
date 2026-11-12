@@ -1,0 +1,26 @@
+{
+ "doc_id": "doc_17",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 17.3,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "聘僱許可函",
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2027-01-20",
+    "permit_start": "2027-01-20",
+    "permit_end": "2030-01-19",
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"聘僱許可函\", \"workers\": [{\"name\": \"MARK ANTHONY SORIANO\", \"entry_date\": \"2027-01-20\", \"permit_start\": \"2027-01-20\", \"permit_end\": \"2030-01-19\", \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.021147899999999997,
+  "num_turns": 2,
+  "duration_ms": 15103
+ }
+}

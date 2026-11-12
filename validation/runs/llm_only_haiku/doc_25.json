@@ -1,0 +1,42 @@
+{
+ "doc_id": "doc_25",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 103.9,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "health_entry",
+    "worker": "JOY ANN BAUTISTA",
+    "start": null,
+    "due": "2026-07-31"
+   },
+   {
+    "key": "health_6m",
+    "worker": "JOY ANN BAUTISTA",
+    "start": "2026-07-28",
+    "due": "2027-01-28"
+   },
+   {
+    "key": "health_18m",
+    "worker": "JOY ANN BAUTISTA",
+    "start": "2026-07-28",
+    "due": "2028-01-28"
+   },
+   {
+    "key": "health_30m",
+    "worker": "JOY ANN BAUTISTA",
+    "start": "2026-07-28",
+    "due": "2029-01-28"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\n  \"obligations\": [\n    {\n      \"key\": \"health_entry\",\n      \"worker\": \"JOY ANN BAUTISTA\",\n      \"start\": null,\n      \"due\": \"2026-07-31\"\n    },\n    {\n      \"key\": \"health_6m\",\n      \"worker\": \"JOY ANN BAUTISTA\",\n      \"start\": \"2026-07-28\",\n      \"due\": \"2027-01-28\"\n    },\n    {\n      \"key\": \"health_18m\",\n      \"worker\": \"JOY ANN BAUTISTA\",\n      \"start\": \"2026-07-28\",\n      \"due\": \"2028-01-28\"\n    },\n    {\n      \"key\": \"health_30m\",\n      \"worker\": \"JOY ANN BAUTISTA\",\n      \"start\": \"2026-07-28\",\n      \"due\": \"2029-01-28\"\n    }\n  ]\n}\n```",
+ "usage": {
+  "total_cost_usd": 0.076994,
+  "num_turns": 1,
+  "duration_ms": 101636
+ }
+}

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>竹聘安 AI｜移工聘僱合規助手</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v6h16v-6"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 11h18m-13 4h2m4 0h2"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11a8 8 0 0 1-8 8H8l-5 3V11a9 9 0 0 1 18 0Z"/><path d="M7 10h10M7 14h6"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M5 17h14l-2-3V9a5 5 0 0 0-10 0v5l-2 3Zm5 4h4M12 2v2"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5Zm0 0v6h5M8 13h8m-8 4h6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="竹聘安 AI 首頁">
+      <span class="brand-mark"><svg><use href="#i-shield"/></svg></span>
+      <span><strong>竹聘安 <span class="brand-ai">AI</span></strong><small>移工聘僱合規助手｜新竹市</small></span>
+    </a>
+    <div class="role-switch" role="group" aria-label="切換使用角色">
+      <button class="active" data-role="employer" aria-pressed="true">雇主</button>
+      <button data-role="officer" aria-pressed="false">市府承辦人</button>
+    </div>
+    <span class="demo-badge"><span></span>原型展示・資料為合成測試資料</span>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="workspace-label">工作空間 <span id="role-label">雇主專區</span></div>
+      <nav aria-label="主要導覽">
+        <button class="nav-item active" data-view="upload" data-access="employer" aria-current="page"><svg><use href="#i-upload"/></svg>上傳公文</button>
+        <button class="nav-item" data-view="tasks" data-access="employer"><svg><use href="#i-calendar"/></svg>我的待辦<span class="nav-count">3</span></button>
+        <button class="nav-item" data-view="review" data-access="officer" hidden><svg><use href="#i-file"/></svg>處分書檢核</button>
+        <button class="nav-item" data-view="chat" data-access="both"><svg><use href="#i-chat"/></svg>法規問答</button>
+        <button class="nav-item" data-view="line" data-access="employer"><svg><use href="#i-bell"/></svg>LINE 提醒</button>
+      </nav>
+      <div class="sidebar-note">
+        <svg><use href="#i-shield"/></svg>
+        <strong>每個期限，都有依據</strong>
+        <p>AI 只讀日期，期限由規則依法條計算，每一項都附條號。</p>
+      </div>
+      <div class="sidebar-bottom"><span class="online-dot"></span>決賽展示版本 <span>v1.0</span></div>
+    </aside>
+
+    <main id="main">
+      <section class="view" id="view-upload" aria-labelledby="upload-title">
+        <div class="breadcrumb">雇主專區 <span>/</span> 上傳公文</div>
+        <div class="page-heading">
+          <div><p class="eyebrow">從一份公文，開始安心聘僱</p><h1 id="upload-title">讓期限清楚，讓照顧安心。</h1><p>上傳聘僱文件，確認 AI 辨識結果，即可整理每位移工的法定待辦。</p></div>
+          <span class="outline-tag"><svg><use href="#i-shield"/></svg>依法條計算期限</span>
+        </div>
+
+        <ol class="stepper" aria-label="公文處理步驟">
+          <li><span class="step-number">1</span><div><strong>上傳公文</strong><small>提供聘僱許可文件</small></div><svg><use href="#i-arrow"/></svg></li>
+          <li class="current"><span class="step-number">2</span><div><strong>確認辨識資訊</strong><small>保留原文，逐項核對</small></div><svg><use href="#i-arrow"/></svg></li>
+          <li><span class="step-number">3</span><div><strong>產生法定待辦</strong><small>期限與法源一目了然</small></div></li>
+        </ol>
+
+        <div class="upload-grid">
+          <article class="card upload-card">
+            <div class="card-title"><span class="section-number">01</span><h2>文件上傳</h2></div>
+            <label class="dropzone" id="dropzone" for="document-input">
+              <svg><use href="#i-upload"/></svg><strong>拖曳公文到這裡</strong><span>或點擊選擇檔案</span><small>JPG、PNG、PDF</small>
+            </label>
+            <input id="document-input" class="visually-hidden" type="file" accept=".jpg,.jpeg,.png,.pdf">
+            <div class="uploaded-file">
+              <div class="document-thumb" aria-label="合成聘僱許可函縮圖"><span>新竹市政府</span><i></i><i></i><i></i><b>聘僱許可</b></div>
+              <div><strong id="uploaded-name">聘僱許可函.jpg</strong><small id="upload-description">合成測試文件・已載入</small><span class="status ok">已完成辨識</span></div>
+            </div>
+            <p class="micro-note">本原型使用預設合成辨識資料。選取文件僅展示檔名，不會上傳或進行實際辨識。</p>
+          </article>
+
+          <article class="card information-card">
+            <div class="card-title spread"><div><span class="section-number">02</span><h2>AI 讀到的資訊 <span class="muted">— 請確認</span></h2></div><span class="status warning">1 項待確認</span></div>
+            <p class="card-intro">可直接修改欄位；日期下方附上原始文字與辨識信心度。</p>
+            <form id="worker-form">
+              <div class="table-scroll">
+                <table class="worker-table">
+                  <thead><tr><th>移工姓名</th><th>入國日</th><th>聘僱許可期間</th></tr></thead>
+                  <tbody>
+                    <tr>
+                      <td><label class="visually-hidden" for="worker-one">第一位移工姓名</label><input id="worker-one" value="NGUYEN THI LAN" required><span class="worker-meta">移工 01 · 越南</span></td>
+                      <td><label class="visually-hidden" for="entry-one">第一位移工入國日</label><input id="entry-one" type="date" value="2026-03-10" required><small>原文：「一一五年三月十日」</small><span class="confidence">信心度 99%</span></td>
+                      <td>
+                        <div class="date-pair">
+                          <div><label class="field-label" for="start-one">起日</label><input id="start-one" type="date" value="2026-03-10" required><small>原文：「115年3月10日」</small><span class="confidence">信心度 99%</span></div>
+                          <div><label class="field-label" for="end-one">迄日</label><input id="end-one" type="date" value="2029-03-09" required><small>原文：「118年3月9日」</small><span class="confidence">信心度 98%</span></div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label class="visually-hidden" for="worker-two">第二位移工姓名</label><input id="worker-two" value="DEWI LESTARI" required><span class="worker-meta">移工 02 · 印尼</span></td>
+                      <td class="flagged"><label class="visually-hidden" for="entry-two">第二位移工入國日</label><input id="entry-two" type="date" value="2026-03-18" required><small>原文：「一一五年三月十八日」</small><span class="confidence amber">信心度 86%</span><span class="field-warning">國字日期，請再確認</span></td>
+                      <td>
+                        <div class="date-pair">
+                          <div><label class="field-label" for="start-two">起日</label><input id="start-two" type="date" value="2026-03-18" required><small>原文：「115年3月18日」</small><span class="confidence">信心度 99%</span></div>
+                          <div><label class="field-label" for="end-two">迄日</label><input id="end-two" type="date" value="2029-03-17" required><small>原文：「118年3月17日」</small><span class="confidence">信心度 98%</span></div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="form-actions"><span>請以公文原件核對姓名及日期</span><button class="button primary" type="submit">確認無誤，產生待辦<svg><use href="#i-arrow"/></svg></button></div>
+            </form>
+          </article>
+        </div>
+
+        <article class="card result-card">
+          <div class="card-title spread"><div><span class="section-number">03</span><h2>法定待辦預覽</h2></div><span class="muted small">NGUYEN THI LAN · 預設資料示例</span></div>
+          <div class="result-note" id="result-note">以下為預設合成資料的期限預覽；編輯欄位不會啟動正式法規計算。</div>
+          <div class="obligation-list">
+            <div class="obligation"><div class="task-icon"><svg><use href="#i-file"/></svg></div><div class="obligation-name"><strong>申請聘僱許可</strong><small>雇主聘僱外國人許可及管理辦法第36條</small></div><div class="deadline"><strong>入國後 15 日內</strong><small>依入國日計算</small></div><span class="status neutral">15 日內</span></div>
+            <div class="obligation"><div class="task-icon"><svg><use href="#i-shield"/></svg></div><div class="obligation-name"><strong>入國三日內健康檢查</strong><small>受聘僱外國人健康檢查管理辦法第3條</small></div><div class="deadline"><strong>入國後 3 個工作日內</strong><small>工作日計算</small></div><span class="status warning">3 工作日內</span></div>
+            <div class="obligation"><div class="task-icon"><svg><use href="#i-calendar"/></svg></div><div class="obligation-name"><strong>第6個月定期健康檢查</strong><small>健檢辦法第3條、就業服務法第57條第5款</small></div><div class="deadline"><strong>2026-08-11 ～ 2026-10-10</strong><small>定期健檢辦理期間</small></div><span class="status ok">期間待辦</span></div>
+            <div class="obligation"><div class="task-icon"><svg><use href="#i-file"/></svg></div><div class="obligation-name"><strong>申請期滿續聘或期滿轉換</strong><small>管理辦法第39、40條</small></div><div class="deadline"><strong>2028-11-09 ～ 2029-01-09</strong><small>屆滿前 2～4 個月</small></div><span class="status neutral">提前規劃</span></div>
+          </div>
+          <p class="legal-note">期限依行政程序法第48條計算，遇假日順延；國定假日依人事行政總處辦公日曆。</p>
+        </article>
+        <div class="validation-strip"><strong>驗證數據</strong><span>期限判讀正確率 <b>91.7%</b>（合成公文 217 項）</span><span>法規問答 <b>73%</b></span><span>處分書缺漏偵測 <b>97%</b></span><small>合成測試結果</small></div>
+      </section>
+
+      <section class="view" id="view-tasks" aria-labelledby="tasks-title" hidden>
+        <div class="breadcrumb">雇主專區 <span>/</span> 我的待辦</div>
+        <div class="page-heading"><div><p class="eyebrow">把每個重要日子，提前照顧好</p><h1 id="tasks-title">我的待辦</h1><p>集中查看兩位移工的健檢與聘僱期限。</p></div><span class="outline-tag">展示基準日：2026-08-05</span></div>
+        <div class="summary-grid">
+          <article class="card summary"><span>移工</span><strong>2 <small>位</small></strong><p>目前管理中的合成資料</p></article>
+          <article class="card summary"><span>30 天內待辦</span><strong>3 <small>項</small></strong><p>提前安排，安心完成</p></article>
+          <article class="card summary"><span>已逾期</span><strong class="green">0 <small>項</small></strong><p>目前沒有逾期待辦</p></article>
+        </div>
+        <article class="card timeline-card">
+          <div class="card-title spread"><h2>接下來的日程</h2><span class="muted small">2026 年 8 月</span></div>
+          <div class="timeline">
+            <div class="timeline-event today"><span>08.05</span><i></i><strong>今天</strong><small>預先規劃本月待辦</small></div>
+            <div class="timeline-event"><span>08.11</span><i></i><strong>LAN 定期健檢開始</strong><small>至 10/10 完成</small></div>
+            <div class="timeline-event"><span>08.19</span><i></i><strong>DEWI 定期健檢開始</strong><small>至 10/18 完成</small></div>
+            <div class="timeline-event"><span>08.25</span><i></i><strong>住宿變更通知期限</strong><small>合成情境：8/18 搬遷</small></div>
+          </div>
+        </article>
+        <article class="card task-table-card">
+          <div class="card-title spread"><h2>所有待辦</h2><div class="filters" role="group" aria-label="待辦篩選"><button class="active" data-filter="all" aria-pressed="true">全部</button><button data-filter="soon" aria-pressed="false">7天內</button><button data-filter="overdue" aria-pressed="false">已逾期</button></div></div>
+          <div class="table-scroll"><table class="tasks-table"><thead><tr><th>待辦事項 / 法規依據</th><th>移工</th><th>辦理期間 / 期限</th><th>狀態</th></tr></thead><tbody id="task-rows">
+            <tr data-soon="true"><td><strong>第6個月定期健康檢查</strong><small>健檢辦法第3條、就業服務法第57條第5款</small></td><td>NGUYEN THI LAN</td><td>2026-08-11 ～ 2026-10-10</td><td><span class="status warning">6 天後開始</span></td></tr>
+            <tr data-soon="false"><td><strong>第6個月定期健康檢查</strong><small>健檢辦法第3條、就業服務法第57條第5款</small></td><td>DEWI LESTARI</td><td>2026-08-19 ～ 2026-10-18</td><td><span class="status neutral">14 天後開始</span></td></tr>
+            <tr data-soon="false"><td><strong>住宿地點變更通知</strong><small>管理辦法第33條第5項</small></td><td>DEWI LESTARI</td><td>2026-08-25</td><td><span class="status neutral">20 天後截止</span></td></tr>
+          </tbody></table></div>
+          <p id="empty-tasks" class="empty-state" hidden>目前沒有已逾期的待辦。</p>
+        </article>
+        <div class="quick-action"><div><h3>有新的住宿安排？</h3><p>搬宿舍後 7 日內須通知市府（管理辦法第33條）。</p></div><button class="button secondary" type="button"><svg><use href="#i-file"/></svg>住宿地點變更</button></div>
+        <p class="micro-note">本頁為獨立合成日程示例，日期與倒數以展示基準日計算。</p>
+      </section>
+
+      <section class="view" id="view-chat" aria-labelledby="chat-title" hidden>
+        <div class="breadcrumb"><span id="chat-role">雇主專區</span> <span>/</span> 法規問答</div>
+        <div class="page-heading"><div><p class="eyebrow">有疑問，先找到依據</p><h1 id="chat-title">法規問答</h1><p>用日常語言提問，連同引用條文一起理解。</p></div><span class="outline-tag"><svg><use href="#i-file"/></svg>回答附引用條文</span></div>
+        <article class="card chat-card">
+          <div class="chat-top"><span class="assistant-avatar"><svg><use href="#i-shield"/></svg></span><div><strong>竹聘安 AI</strong><small>法規原文輔助查詢</small></div><span class="status neutral">合成對話展示</span></div>
+          <div class="messages" id="messages" aria-live="polite" aria-relevant="additions">
+            <div class="conversation-date">住宿地點變更 · 問答示例</div>
+            <div class="message user"><span class="message-label">您</span><div>我們工廠要把移工搬到新宿舍，搬完之後多久內要通知？</div></div>
+            <div class="message assistant"><span class="message-label">竹聘安 AI</span><div class="assistant-bubble"><p>搬遷（變更）後 <strong class="answer-highlight">7 日內</strong>，通知外國人工作所在地或住宿地點的當地主管機關（新竹市政府）。</p><details class="citation" open><summary>引用條文 <span>管理辦法第33條第5項</span></summary><div><strong>雇主聘僱外國人許可及管理辦法第33條第5項</strong><blockquote>雇主於第二項第五款規定事項有變更時，應於變更後七日內，通知外國人工作所在地或住宿地點之當地主管機關。</blockquote></div></details><small class="disclaimer">本回答依法條原文產生，非正式法律意見</small></div></div>
+          </div>
+          <form id="chat-form" class="chat-composer">
+            <div class="suggestions"><button type="button" data-question="住宿地點變更要通知哪個機關？">住宿地點變更要通知哪個機關？</button><button type="button" data-question="定期健康檢查什麼時候辦？">定期健康檢查什麼時候辦？</button><button type="button" data-question="期滿續聘何時申請？">期滿續聘何時申請？</button></div>
+            <div class="composer-input"><label class="visually-hidden" for="question">輸入法規問題</label><input id="question" placeholder="輸入您的聘僱法規問題…" required maxlength="500" autocomplete="off"><button class="button primary" type="submit">送出<svg><use href="#i-arrow"/></svg></button></div>
+            <small>此為靜態互動原型，送出問題會顯示展示回覆。</small>
+          </form>
+        </article>
+      </section>
+
+      <section class="view" id="view-line" aria-labelledby="line-title" hidden>
+        <div class="breadcrumb">雇主專區 <span>/</span> LINE 提醒</div>
+        <div class="page-heading"><div><p class="eyebrow">重要期限，送到熟悉的對話裡</p><h1 id="line-title">LINE 提醒</h1><p>依您的節奏與語言，提前提醒每一項待辦。</p></div><span class="outline-tag">訊息與設定皆為展示</span></div>
+        <div class="line-grid">
+          <div class="phone-wrap"><div class="phone"><div class="phone-status"><span>09:41</span><span>••• ▰</span></div><div class="phone-header"><span aria-hidden="true">‹</span><strong>竹聘安 AI <small>官方帳號</small></strong><span aria-hidden="true">⋮</span></div><div class="phone-chat"><div class="phone-date">8 月 12 日（三）</div><div class="line-message"><span class="line-avatar">竹</span><div class="line-bubble"><strong>健檢期間即將開始</strong><p>提醒：DEWI LESTARI 第6個月定期健康檢查期間 8/19 開始，請於 10/18 前完成。</p><small>依據：健檢辦法第3條</small><div class="line-buttons"><button type="button" class="mark-done">已完成</button><button type="button" class="show-line-detail">查看說明</button></div></div></div><div class="phone-date">8 月 22 日（六）</div><div class="line-message"><span class="line-avatar">竹</span><div class="line-bubble"><strong>住宿變更通知還有 3 天</strong><p>DEWI LESTARI 的住宿地點變更通知，請於 8/25 前完成。</p><small>依據：管理辦法第33條第5項</small><div class="line-buttons"><button type="button" class="mark-done">已完成</button><button type="button" class="show-line-detail">查看說明</button></div></div></div><p id="line-detail" class="line-detail" hidden>此為通知示例。請依公文、實際事件日期及主管機關說明確認辦理事項。</p></div><div class="phone-input">＋<span>輸入訊息</span><svg><use href="#i-chat"/></svg></div></div><p class="micro-note">LINE 對話示意・未連接官方帳號</p></div>
+          <div class="line-settings">
+            <article class="card">
+              <div class="card-title"><svg><use href="#i-bell"/></svg><h2>提醒偏好設定</h2></div>
+              <p class="card-intro">提前一步提醒，少一份期限焦慮。</p>
+              <form id="settings-form">
+                <fieldset><legend>提前提醒天數</legend><p>可複選，在截止或期間開始前收到提醒。</p><div class="check-options"><label><input type="checkbox" value="7" checked>7 天前</label><label><input type="checkbox" value="3" checked>3 天前</label><label><input type="checkbox" value="1" checked>1 天前</label></div></fieldset>
+                <fieldset><legend>接收語言</legend><label class="radio-option"><input name="language" type="radio" value="zh" checked><span>中文<small>繁體中文</small></span></label><label class="radio-option"><input name="language" type="radio" value="id"><span>Bahasa Indonesia<small>印尼文</small></span></label><label class="radio-option"><input name="language" type="radio" value="vi"><span>Tiếng Việt<small>越南文</small></span></label></fieldset>
+                <button type="submit" class="button primary full-width">儲存提醒設定</button><p class="micro-note">僅在本次頁面展示設定，重新整理後重置。</p>
+              </form>
+            </article>
+            <div class="soft-note"><svg><use href="#i-shield"/></svg><div><strong>提醒是輔助，期限有依據</strong><p>每則通知保留對應條號，方便您核對原文及安排辦理時間。</p></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-review" aria-labelledby="review-title" hidden>
+        <div class="breadcrumb">市府承辦人專區 <span>/</span> 處分書檢核</div>
+        <div class="page-heading"><div><p class="eyebrow">多一道檢核，少一項缺漏</p><h1 id="review-title">處分書檢核</h1><p>逐項比對法定要件，協助您完成送出前的最後確認。</p></div><span class="outline-tag">合成草稿 · 非正式處分</span></div>
+        <div class="review-banner"><svg><use href="#i-shield"/></svg><strong>是否裁罰、如何裁量，由承辦人決定；本工具僅提示缺漏。</strong></div>
+        <div class="review-grid">
+          <article class="card draft-card">
+            <div class="card-title spread"><h2>裁處書草稿</h2><span class="status neutral">可貼上編輯</span></div>
+            <p class="card-intro">下方為合成範例，標示待補充的段落。</p>
+            <div class="draft-paper" id="draft" contenteditable="true" role="textbox" aria-multiline="true" aria-label="裁處書草稿內容" spellcheck="false">
+              <h3>新竹市政府 裁處書（草稿）</h3>
+              <p class="draft-reference">府勞動字第1150000123號（合成字號）</p>
+              <p><strong>受處分人</strong><br>竹塹電子材料股份有限公司</p>
+              <p><strong>主旨</strong><br>處罰鍰新臺幣30,000元。</p>
+              <p><strong>事實及理由</strong><br>受處分人所聘僱之外國人連續曠職三日失去聯繫，受處分人未於三日內向當地主管機關、入出國管理機關及警察機關通報，經查證屬實。</p>
+              <p><strong>陳述意見</strong><br>本府已通知受處分人陳述意見；受處分人於期限內提出說明，經審酌後仍認違規事實成立。</p>
+              <p><strong>法令依據及裁處</strong><br>依就業服務法第56條第1項、第68條第1項，處罰鍰新臺幣30,000元。</p>
+              <div class="missing-section" contenteditable="false"><span>缺漏 01</span><strong>救濟教示尚未載明</strong><p>請補充救濟方法、期間及受理機關。</p></div>
+            </div>
+            <div class="draft-bottom"><span>本機展示，不傳送文件</span><button type="button" class="button primary" id="check-draft">檢核草稿<svg><use href="#i-arrow"/></svg></button></div>
+          </article>
+          <div class="review-results">
+            <article class="card checklist-card">
+              <div class="card-title spread"><h2>法定要件檢核</h2><span class="status danger">1 項缺漏</span></div>
+              <p class="card-intro">預設範例檢核結果 · 6 / 7 項符合</p>
+              <div class="progress-track"><span></span></div>
+              <ol class="checklist">
+                <li><span>①</span><strong>處分相對人</strong><span class="check-pass">✓ 符合</span></li>
+                <li><span>②</span><strong>事實</strong><span class="check-pass">✓ 符合</span></li>
+                <li><span>③</span><strong>違反條文</strong><span class="check-pass">✓ 符合</span></li>
+                <li><span>④</span><strong>處罰條文對應</strong><span class="check-pass">✓ 符合</span></li>
+                <li><span>⑤</span><strong>罰鍰在法定範圍<small>3萬～15萬</small></strong><span class="check-pass">✓ 符合</span></li>
+                <li><span>⑥</span><strong>陳述意見</strong><span class="check-pass">✓ 符合</span></li>
+                <li class="check-fail"><span>⑦</span><strong>救濟教示</strong><span>✕ 缺漏</span></li>
+              </ol>
+              <div class="defect-explanation"><strong>未載明救濟方法、期間及受理機關</strong><p>行政程序法第96條第1項第6款；訴願法第14條、第58條。</p></div>
+            </article>
+            <article class="card suggestion-card">
+              <div class="card-title spread"><h2>建議補充文字</h2><button class="text-button" id="copy-suggestion" type="button">複製文字</button></div>
+              <p id="suggestion-text">如不服本處分，應自本處分書送達之次日起30日內，繕具訴願書經由本府向勞動部提起訴願。</p>
+              <small class="muted">請由承辦人依個案及實際管轄確認後採用。</small>
+            </article>
+            <p class="micro-note">檢核為固定合成範例；編輯草稿不會執行實際法律分析。</p>
+          </div>
+        </div>
+      </section>
+      <footer class="page-footer"><span>竹聘安 AI · 新竹市移工聘僱合規助手</span><span>讓每一步聘僱，都有依據。</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script>
+    const all = selector => [...document.querySelectorAll(selector)];
+    let role = 'employer';
+    let toastTimer;
+
+    function notify(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 4500);
+    }
+
+    function showView(name) {
+      const permitted = role === 'employer'
+        ? ['upload', 'tasks', 'chat', 'line']
+        : ['review', 'chat'];
+      if (!permitted.includes(name)) return;
+      all('.view').forEach(view => { view.hidden = view.id !== 'view-' + name; });
+      all('.nav-item').forEach(button => {
+        const selected = button.dataset.view === name;
+        button.classList.toggle('active', selected);
+        if (selected) button.setAttribute('aria-current', 'page');
+        else button.removeAttribute('aria-current');
+      });
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+
+    all('[data-role]').forEach(button => button.addEventListener('click', () => {
+      role = button.dataset.role;
+      document.body.classList.toggle('officer', role === 'officer');
+      all('[data-role]').forEach(item => {
+        const selected = item.dataset.role === role;
+        item.classList.toggle('active', selected);
+        item.setAttribute('aria-pressed', String(selected));
+      });
+      all('[data-access]').forEach(item => {
+        item.hidden = item.dataset.access !== 'both' && item.dataset.access !== role;
+      });
+      const label = role === 'employer' ? '雇主專區' : '市府承辦人專區';
+      document.getElementById('role-label').textContent = label;
+      document.getElementById('chat-role').textContent = label;
+      showView(role === 'employer' ? 'upload' : 'review');
+    }));
+
+    all('[data-view]').forEach(button => button.addEventListener('click', () => showView(button.dataset.view)));
+    document.querySelector('.brand').addEventListener('click', event => {
+      event.preventDefault();
+      showView(role === 'employer' ? 'upload' : 'review');
+    });
+
+    function selectDocument(file) {
+      if (!file) return;
+      if (!/\.(jpe?g|png|pdf)$/i.test(file.name)) {
+        notify('請選擇 JPG、PNG 或 PDF 文件。');
+        return;
+      }
+      document.getElementById('uploaded-name').textContent = file.name;
+      document.getElementById('upload-description').textContent = '已選取文件・辨識內容仍為合成示例';
+      notify('已選取文件。此原型不會上傳或辨識您的檔案。');
+    }
+    document.getElementById('document-input').addEventListener('change', event => selectDocument(event.target.files[0]));
+    const dropzone = document.getElementById('dropzone');
+    ['dragenter', 'dragover'].forEach(name => dropzone.addEventListener(name, event => {
+      event.preventDefault();
+      dropzone.classList.add('dragging');
+    }));
+    ['dragleave', 'drop'].forEach(name => dropzone.addEventListener(name, event => {
+      event.preventDefault();
+      dropzone.classList.remove('dragging');
+      if (name === 'drop') selectDocument(event.dataTransfer.files[0]);
+    }));
+
+    document.getElementById('worker-form').addEventListener('submit', event => {
+      event.preventDefault();
+      for (const suffix of ['one', 'two']) {
+        if (document.getElementById('start-' + suffix).value > document.getElementById('end-' + suffix).value) {
+          notify('聘僱許可迄日不得早於起日，請再次核對。');
+          return;
+        }
+      }
+      document.getElementById('result-note').textContent = '已確認欄位，已載入下方合成待辦示例。此原型不會依編輯後日期重新計算法定期限。';
+      document.querySelector('.result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      notify('確認完成，已載入合成待辦示例。');
+    });
+
+    all('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      all('[data-filter]').forEach(item => {
+        const selected = item === button;
+        item.classList.toggle('active', selected);
+        item.setAttribute('aria-pressed', String(selected));
+      });
+      let visible = 0;
+      all('#task-rows tr').forEach(row => {
+        row.hidden = filter === 'overdue' || (filter === 'soon' && row.dataset.soon !== 'true');
+        if (!row.hidden) visible++;
+      });
+      document.getElementById('empty-tasks').hidden = visible > 0;
+    }));
+
+    all('[data-question]').forEach(button => button.addEventListener('click', () => {
+      const input = document.getElementById('question');
+      input.value = button.dataset.question;
+      input.focus();
+    }));
+    document.getElementById('chat-form').addEventListener('submit', event => {
+      event.preventDefault();
+      const input = document.getElementById('question');
+      const question = input.value.trim();
+      if (!question) return;
+      const messages = document.getElementById('messages');
+      function appendMessage(type, label, content) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'message ' + type;
+        const caption = document.createElement('span');
+        caption.className = 'message-label';
+        caption.textContent = label;
+        const bubble = document.createElement('div');
+        bubble.textContent = content;
+        wrapper.append(caption, bubble);
+        messages.append(wrapper);
+      }
+      appendMessage('user', '您', question);
+      appendMessage('assistant', '竹聘安 AI', '展示提示：本原型未連接即時問答服務。可展開上方「引用條文」，查看住宿地點變更後 7 日內通知主管機關的法規示例；其他問題請依最新法規及主管機關說明確認。');
+      input.value = '';
+      messages.scrollTop = messages.scrollHeight;
+    });
+
+    document.getElementById('settings-form').addEventListener('submit', event => {
+      event.preventDefault();
+      notify('已儲存本次頁面的提醒偏好（展示設定，未啟用實際通知）。');
+    });
+    all('.mark-done').forEach(button => button.addEventListener('click', () => {
+      button.textContent = '已標記完成';
+      button.disabled = true;
+      notify('已在本次展示中標記完成。');
+    }));
+    all('.show-line-detail').forEach(button => button.addEventListener('click', () => {
+      document.getElementById('line-detail').hidden = false;
+      notify('此為合成通知；請依實際事件日期及對應條文確認。');
+    }));
+    document.getElementById('check-draft').addEventListener('click', () => {
+      notify('已顯示預設範例檢核：6 項符合、1 項缺漏。編輯內容不會重新分析。');
+    });
+    document.getElementById('copy-suggestion').addEventListener('click', async () => {
+      const element = document.getElementById('suggestion-text');
+      try {
+        if (!navigator.clipboard) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(element.textContent.trim());
+        notify('已複製建議文字，請依個案確認後採用。');
+      } catch {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        notify('已選取建議文字，請按 Ctrl+C 或使用系統複製功能。');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+ "doc_id": "doc_13",
+ "model": "sonnet",
+ "mode": "extract",
+ "seconds": 38.0,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "聘僱許可函",
+  "workers": [
+   {
+    "name": "MARK ANTHONY SORIANO",
+    "entry_date": "2026-10-10",
+    "permit_start": "2026-09-06",
+    "permit_end": "2029-09-05",
+    "event_date": null
+   },
+   {
+    "name": "LE THI MAI",
+    "entry_date": "2026-10-10",
+    "permit_start": null,
+    "permit_end": "2029-12-06",
+    "event_date": null
+   }
+  ]
+ },
+ "error": null,
+ "raw": "{\"doc_type\": \"聘僱許可函\", \"workers\": [{\"name\": \"MARK ANTHONY SORIANO\", \"entry_date\": \"2026-10-10\", \"permit_start\": \"2026-09-06\", \"permit_end\": \"2029-09-05\", \"event_date\": null}, {\"name\": \"LE THI MAI\", \"entry_date\": \"2026-10-10\", \"permit_start\": null, \"permit_end\": \"2029-12-06\", \"event_date\": null}]}",
+ "usage": {
+  "total_cost_usd": 0.04877145,
+  "num_turns": 2,
+  "duration_ms": 35274
+ }
+}

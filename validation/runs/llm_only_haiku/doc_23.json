@@ -1,0 +1,24 @@
+{
+ "doc_id": "doc_23",
+ "model": "haiku",
+ "mode": "llm_only",
+ "seconds": 21.0,
+ "returncode": 0,
+ "parsed": {
+  "obligations": [
+   {
+    "key": "recheck_report",
+    "worker": "YUNI LESTARI",
+    "start": null,
+    "due": "2026-08-09"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"obligations\": [{\"key\": \"recheck_report\", \"worker\": \"YUNI LESTARI\", \"start\": null, \"due\": \"2026-08-09\"}]}\n```\n\n**說明：**\n\n根據《受聘僱外國人健康檢查管理辦法》第14條，雇主應於再檢查診斷證明開立日後**10日內**，將診斷證明向衛生主管機關（勞動部或衛福部）備查。\n\n- 開立日：115年7月30日（2026-07-30）\n- 期限計算：依行政程序法第130條及民法第121條，開立日不計入，自翌日起算10日\n- 期限日期：2026-08-09\n\n⚠️ **重點提醒：** 雇主收文日期（8月5日）晚於開立日期（7月30日），請確認已在8月9日前完成向衛生主管機關備查，以免違反規定。",
+ "usage": {
+  "total_cost_usd": 0.014459999999999999,
+  "num_turns": 1,
+  "duration_ms": 18713
+ }
+}
