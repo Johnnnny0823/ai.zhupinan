@@ -44,6 +44,14 @@ body.officer .spinner { border-top-color: #C0754A; }
 @keyframes flash { 0% { box-shadow: 0 0 0 3px rgba(47, 133, 90, .6); } 100% { box-shadow: 0 0 0 0 rgba(47, 133, 90, 0); } }
 .nav-count.bump { animation: bump .6s ease-out 2; }
 @keyframes bump { 50% { transform: scale(1.45); background: #2F855A; color: #fff; } }
+.abscond-btn { margin-top: 12px; border-color: #C0754A !important; color: #C0754A !important; }
+.abscond-guide { margin-top: 18px; padding: 18px 20px; background: #FDF6F1; border: 1px solid #F0D9C8; border-radius: 10px; }
+.abscond-guide h3 { margin: 0 0 10px; font-size: 16px; color: #A65A2E; }
+.abscond-guide ol { margin: 0 0 12px; padding-left: 20px; line-height: 1.8; font-size: 13.5px; }
+.abscond-guide li { margin-bottom: 6px; }
+.abscond-prevent { padding: 12px 14px; background: #fff; border-left: 3px solid #2A8A7A; border-radius: 6px; font-size: 13px; line-height: 1.8; }
+.abscond-prevent p { margin: 4px 0 0; }
+.worker-table select { font: inherit; padding: 6px 8px; border: 1px solid #E6E2D8; border-radius: 8px; width: 100%; }
 .button.pulse { animation: pulse 1s ease-in-out 4; }
 @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(42, 138, 122, .55); } 50% { box-shadow: 0 0 0 10px rgba(42, 138, 122, 0); } }
 .health-ok span { background: #2F855A !important; }

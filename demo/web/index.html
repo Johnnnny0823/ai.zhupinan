@@ -71,6 +71,7 @@
               <svg><use href="#i-upload"/></svg><strong>拖曳公文到這裡</strong><span>或點擊選擇檔案</span><small>JPG、PNG、PDF、TXT</small>
             </label>
             <input id="document-input" class="visually-hidden" type="file" accept=".jpg,.jpeg,.png,.pdf,.txt">
+            <button type="button" class="button secondary full-width abscond-btn" id="abscond-btn">移工失聯了？登錄失聯應變</button>
             <div class="sample-list">
               <p class="micro-note">或使用範例公文（合成測試資料）：</p>
               <div class="sample-buttons" id="sample-buttons"></div>
@@ -92,7 +93,7 @@
               <label class="doc-type-row">文件類型
                 <select id="doc-type">
                   <option>聘僱許可函</option><option>期滿續聘許可函</option><option>入國通報受理證明書</option>
-                  <option>再檢查診斷證明書</option><option>住宿地點變更</option><option>聘僱關係終止</option>
+                  <option>再檢查診斷證明書</option><option>住宿地點變更</option><option>聘僱關係終止</option><option>移工失聯</option>
                 </select>
               </label>
               <div class="table-scroll">
@@ -109,6 +110,21 @@
         <article class="card result-card" id="result-card" hidden>
           <div class="card-title spread"><div><span class="section-number">03</span><h2>法定待辦</h2></div><span class="muted small" id="result-sub"></span></div>
           <div class="obligation-list" id="obligation-list"></div>
+          <div class="abscond-guide" id="abscond-guide" hidden>
+            <h3>失聯應變清單</h3>
+            <ol>
+              <li><strong>先確認是否真的失聯</strong>：聯繫移工本人、仲介、同事或室友。通報必須屬實——不實通報移工得申訴，查證屬實將撤銷處分（就業服務法第56條第2項）。</li>
+              <li><strong>3 日內書面通報</strong>：當地主管機關（新竹市政府勞工處）、移民署、警察機關，並副知勞動部（就業服務法第56條第1項；管理辦法第68條）。</li>
+              <li><strong>聘僱許可將被廢止</strong>（就業服務法第73條第3款）；依規定通知而廢止後，<strong>就業安定費免再繳</strong>（就業服務法第55條第4項）。</li>
+              <li><strong>把握遞補期限</strong>：一般移工通報滿 3 個月、家庭看護工滿 1 個月未查獲，可申請遞補，須於 6 個月內提出，逾期不予許可；原許可所餘不足 6 個月者不予遞補（就業服務法第58條；管理辦法第24條）。</li>
+              <li><strong>失聯比率會影響日後招募</strong>：聘僱之外國人行蹤不明達一定人數或比率，主管機關得不予核發招募或聘僱許可（就業服務法第54條第1項第3款）。</li>
+            </ol>
+            <div class="abscond-prevent">
+              <strong>如何降低失聯？</strong>
+              <p>常見原因是溝通不良、權益或工資問題無處反映。建議定期以移工母語溝通、提供 1955 勞工諮詢申訴專線（有多國語言）。<br>
+              <strong>不可</strong>以扣留護照、居留證或財物「防逃」——屬違法行為，處新臺幣 6 萬至 30 萬元罰鍰（就業服務法第57條第8款、第67條）。</p>
+            </div>
+          </div>
           <p class="legal-note">期限依行政程序法第48條計算（始日不算入，末日遇假日順延）；國定假日依行政院人事行政總處辦公日曆（<span id="cal-years"></span>）。</p>
         </article>
         <div class="validation-strip"><strong>驗證數據</strong><span>期限判讀 <b>91.7%</b>（217 項）</span><span>連假期限 <b>33/33</b></span><span>法規問答 <b>97%</b></span><span>處分書缺漏偵測 <b>97%</b></span><small>合成測試結果</small></div>
@@ -145,6 +161,7 @@
               <button type="button" data-question="我們工廠要把移工搬到新宿舍，搬完之後多久內要通知？">搬宿舍後多久要通知？</button>
               <button type="button" data-question="移工連續曠職失聯，雇主要在幾天內通報？沒通報會罰多少？">失聯要多久內通報？罰多少？</button>
               <button type="button" data-question="雇主可以幫移工保管護照嗎？違反的罰則是什麼？">可以幫移工保管護照嗎？</button>
+              <button type="button" data-question="移工失聯後，雇主多久可以申請遞補？申請期限是多久？">失聯多久可以申請遞補？</button>
               <button type="button" data-question="市府要對違規雇主開罰之前，一定要給雇主陳述意見的機會嗎？">開罰前一定要給陳述意見嗎？</button>
             </div>
             <div class="composer-input"><label class="visually-hidden" for="question">輸入法規問題</label><input id="question" placeholder="輸入您的聘僱法規問題…" required maxlength="500" autocomplete="off"><button class="button primary" type="submit" id="ask-btn">送出<svg><use href="#i-arrow"/></svg></button></div>

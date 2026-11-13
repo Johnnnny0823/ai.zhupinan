@@ -146,7 +146,23 @@ const FIELDS = {
   '再檢查診斷證明書': [['event_date', '雇主收文日']],
   '住宿地點變更': [['event_date', '遷入新住處日（變更日）']],
   '聘僱關係終止': [['event_date', '聘僱關係終止日']],
+  '移工失聯': [['event_date', '連續曠職滿 3 日之日'], ['notify_date', '實際書面通報日（選填）'], ['permit_end', '聘僱許可迄日（選填）']],
 };
+
+/* 失聯不是公文：直接開啟空白表單讓雇主填寫 */
+$('abscond-btn').addEventListener('click', () => {
+  lastExtract = { doc_type: '移工失聯', is_image: false, model: '', workers: [{ name: '', event_date: '', job: '製造', flags: {}, evidence: {} }] };
+  $('uploaded-file').hidden = true;
+  $('extract-empty').hidden = true; $('extract-loading').hidden = true; $('result-card').hidden = true;
+  $('worker-form').hidden = false;
+  $('doc-type').value = '移工失聯';
+  renderWorkerTable();
+  $('flag-count').className = 'status warning'; $('flag-count').textContent = '失聯應變';
+  $('model-note').textContent = '失聯日＝連續曠職滿 3 日之日；通報須屬實';
+  setStep(2);
+  document.querySelector('#worker-rows input[data-k=name]').focus();
+  $('worker-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
 
 function renderExtract(data) {
   $('extract-loading').hidden = true;
@@ -168,15 +184,17 @@ function renderExtract(data) {
 function renderWorkerTable() {
   const type = $('doc-type').value;
   const fields = FIELDS[type] || [];
-  $('worker-head').innerHTML = `<tr><th>移工姓名</th>${fields.map(([, l]) => `<th>${esc(l)}</th>`).join('')}</tr>`;
+  const isAbscond = type === '移工失聯';
+  $('worker-head').innerHTML = `<tr><th>移工姓名</th>${isAbscond ? '<th>工作類別</th>' : ''}${fields.map(([, l]) => `<th>${esc(l)}</th>`).join('')}</tr>`;
   const workers = (lastExtract && lastExtract.workers) || [];
   $('worker-rows').innerHTML = workers.map((w, i) => `<tr data-i="${i}">
-      <td><input type="text" data-k="name" value="${esc(w.name)}" required><span class="worker-meta">移工 ${String(i + 1).padStart(2, '0')}</span></td>
+      <td><input type="text" data-k="name" value="${esc(w.name)}" required placeholder="移工姓名"><span class="worker-meta">移工 ${String(i + 1).padStart(2, '0')}</span></td>
+      ${isAbscond ? `<td><select data-k="job"><option value="製造" ${w.job !== '家庭看護' ? 'selected' : ''}>製造／營造等</option><option value="家庭看護" ${w.job === '家庭看護' ? 'selected' : ''}>家庭看護</option></select><small>家庭看護工遞補時程較短</small></td>` : ''}
       ${fields.map(([k]) => {
         const flag = (w.flags || {})[k];
         const src = (w.evidence || {})[k];
         return `<td class="${flag ? 'flagged' : ''}"><input type="date" data-k="${k}" value="${esc(w[k] || '')}">
-          ${src ? `<small>原文：「${esc(src)}」</small>` : (w[k] ? '' : '<small>文件中未找到</small>')}
+          ${src ? `<small>原文：「${esc(src)}」</small>` : (w[k] || isAbscond ? '' : '<small>文件中未找到</small>')}
           ${flag ? `<span class="field-warning">${esc(flag)}</span>` : ''}</td>`;
       }).join('')}</tr>`).join('');
 }
@@ -187,9 +205,10 @@ $('worker-form').addEventListener('submit', async e => {
   const type = $('doc-type').value;
   const workers = all('#worker-rows tr').map(tr => {
     const w = { name: '', entry_date: null, permit_start: null, permit_end: null, event_date: null };
-    tr.querySelectorAll('input[data-k]').forEach(inp => { w[inp.dataset.k] = inp.value || (inp.dataset.k === 'name' ? '' : null); });
+    tr.querySelectorAll('input[data-k], select[data-k]').forEach(inp => { w[inp.dataset.k] = inp.value || (inp.dataset.k === 'name' ? '' : null); });
     return w;
   });
+  if (type === '移工失聯' && workers.some(w => !w.name || !w.event_date)) { notify('請填寫移工姓名與失聯日（連續曠職滿 3 日之日）。'); return; }
   if (workers.some(w => w.permit_start && w.permit_end && w.permit_start > w.permit_end)) { notify('聘僱許可迄日不得早於起日，請再次核對。'); return; }
   if (workers.some(w => (FIELDS[type] || []).every(([k]) => !w[k]))) { notify('請至少填入一個日期。'); return; }
   const btn = e.submitter || document.querySelector('#worker-form button[type=submit]');
@@ -218,6 +237,7 @@ function statusChip(o) {
   const startLeft = o.start ? daysBetween(today(), o.start) : null;
   if (o.days_left < 0) return ['danger', `已逾期 ${-o.days_left} 天`];
   if (startLeft !== null && startLeft > 0) return [startLeft <= 30 ? 'warning' : 'neutral', `${startLeft} 天後開始`];
+  if (o.days_left === 0) return ['danger', '今天截止'];
   if (o.days_left <= 7) return ['danger', `剩 ${o.days_left} 天`];
   if (o.days_left <= 30) return ['warning', `剩 ${o.days_left} 天`];
   return ['neutral', `剩 ${o.days_left} 天`];
@@ -240,6 +260,7 @@ function renderObligations(list, workers, msg = '', added = true) {
       <span class="status ${cls}">${esc(txt)}</span></div>`;
   }).join('') : '<p class="empty-state">這份文件沒有觸發需要追蹤的法定期限。</p>');
   all('#obligation-list [data-goto]').forEach(b => b.addEventListener('click', () => showView(b.dataset.goto)));
+  $('abscond-guide').hidden = !list.some(o => o.key === 'abscond_notice');
   $('result-card').classList.remove('flash'); void $('result-card').offsetWidth; $('result-card').classList.add('flash');
   $('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }

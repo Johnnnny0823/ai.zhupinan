@@ -257,6 +257,8 @@ def reminder_text(o, lang="zh"):
     start_left = (date.fromisoformat(o["start"]) - date.today()).days if o.get("start") else None
     if o["days_left"] < 0:
         status = over.format(n=-o["days_left"])
+    elif o["days_left"] == 0:
+        status = {"zh": "今天截止，請立即辦理", "id": "Batas waktu hari ini", "vi": "Hạn chót hôm nay"}[lang]
     elif start_left is not None and start_left > 0:
         status = starts.format(n=start_left)
     else:
@@ -271,12 +273,14 @@ TITLE_I18N = {
            "health_6m": "Pemeriksaan kesehatan berkala bulan ke-6", "health_18m": "Pemeriksaan kesehatan berkala bulan ke-18",
            "health_30m": "Pemeriksaan kesehatan berkala bulan ke-30", "renewal_window": "Ajukan perpanjangan atau pindah majikan",
            "permit_expiry": "Izin kerja berakhir", "recheck_report": "Laporkan hasil pemeriksaan ulang ke dinas kesehatan",
-           "dorm_change": "Laporkan perubahan tempat tinggal", "termination_notice": "Laporkan pemutusan hubungan kerja"},
+           "dorm_change": "Laporkan perubahan tempat tinggal", "termination_notice": "Laporkan pemutusan hubungan kerja",
+           "abscond_notice": "Laporkan pekerja yang hilang kontak (3 hari)", "replacement_window": "Ajukan penggantian pekerja"},
     "vi": {"apply_permit": "Nộp đơn xin giấy phép tuyển dụng (聘僱許可)", "health_entry": "Khám sức khỏe trong 3 ngày làm việc sau khi nhập cảnh",
            "health_6m": "Khám sức khỏe định kỳ tháng thứ 6", "health_18m": "Khám sức khỏe định kỳ tháng thứ 18",
            "health_30m": "Khám sức khỏe định kỳ tháng thứ 30", "renewal_window": "Nộp đơn gia hạn hoặc chuyển chủ khi hết hạn",
            "permit_expiry": "Giấy phép tuyển dụng hết hạn", "recheck_report": "Nộp kết quả khám lại cho cơ quan y tế",
-           "dorm_change": "Thông báo thay đổi nơi ở", "termination_notice": "Thông báo chấm dứt quan hệ lao động"},
+           "dorm_change": "Thông báo thay đổi nơi ở", "termination_notice": "Thông báo chấm dứt quan hệ lao động",
+           "abscond_notice": "Thông báo lao động mất liên lạc (3 ngày)", "replacement_window": "Nộp đơn xin bổ sung lao động"},
 }
 
 

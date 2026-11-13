@@ -115,6 +115,44 @@ def renewal_window(permit_end: date, worker: str) -> list[Obligation]:
     ]
 
 
+def abscond(w: dict, name: str, ev: date) -> list[Obligation]:
+    """移工連續曠職三日失去聯繫。
+    ev          = 連續曠職滿三日之日（雇主確認失聯日）
+    notify_date = 實際書面通報日（選填；未填時以法定最後通報日推算遞補時程）
+    job         = '家庭看護' or other
+    permit_end  = 原聘僱許可迄日（選填，用於檢查是否不足六個月不予遞補）
+    """
+    out: list[Obligation] = []
+    notice_due, n = days_after(ev, 3)
+    out.append(Obligation(
+        "abscond_notice", name, "書面通知當地主管機關、移民署及警察機關（並副知勞動部）", None, notice_due.isoformat(),
+        "就業服務法第56條第1項；雇主聘僱外國人許可及管理辦法第68條第1項",
+        "以連續曠職滿三日之日起算3日內。通知須屬實：不實通報移工得申訴，經查證屬實將撤銷廢止聘僱許可處分（就業服務法第56條第2項）。"
+        + (n and "；" + n or "")))
+
+    notified = _p(w.get("notify_date")) or notice_due
+    home_care = "看護" in (w.get("job") or "")
+    if home_care:
+        start = add_months(notified, 1)            # 就服法58②2：通報滿一個月
+        window_end_base = add_months(ev, 1)        # 管理辦法24②2：行蹤不明屆滿一個月之日起六個月內
+        basis = "就業服務法第58條第2項第2款；雇主聘僱外國人許可及管理辦法第24條第2項第2款"
+        rule = "家庭看護工於雇主處所行蹤不明：通報滿1個月未查獲可申請"
+    else:
+        start = add_months(notified, 3)            # 就服法58①：通報滿三個月
+        window_end_base = start                    # 管理辦法24①：屆滿三個月之日起六個月內
+        basis = "就業服務法第58條第1項；雇主聘僱外國人許可及管理辦法第24條第1項"
+        rule = "通報滿3個月未查獲可申請"
+    due, n2 = roll_weekend(add_months(window_end_base, 6) - timedelta(days=1))
+    note = f"{rule}，6個月內提出，逾期不予許可" + ("" if w.get("notify_date") else "（未填實際通報日，以法定最後通報日推算）")
+    pe = _p(w.get("permit_end"))
+    if pe and add_months(start, 6) > pe:
+        note += "。注意：原聘僱許可所餘期間可能不足6個月，依就業服務法第58條第3項不予遞補，請確認"
+    if n2:
+        note += "；" + n2
+    out.append(Obligation("replacement_window", name, "申請遞補移工", start.isoformat(), due.isoformat(), basis, note))
+    return out
+
+
 def compute(doc_type: str, w: dict) -> list[Obligation]:
     """w: one worker record with ISO date strings (entry_date, permit_start,
     permit_end, event_date)."""
@@ -151,6 +189,9 @@ def compute(doc_type: str, w: dict) -> list[Obligation]:
         d, n = days_after(ev, 7)
         out.append(Obligation("dorm_change", name, "通知當地主管機關住宿地點變更", None, d.isoformat(),
                               "雇主聘僱外國人許可及管理辦法第33條第5項", n))
+
+    elif doc_type == "移工失聯" and ev:
+        out += abscond(w, name, ev)
 
     elif doc_type == "聘僱關係終止" and ev:
         d, n = days_after(ev, 3)
