@@ -12,11 +12,11 @@ import json
 import os
 import sys
 import uuid
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 
 import httpx
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -46,17 +46,16 @@ DEMO_EXTRACT_SYS = EXTRACT_SYS + """
 只列出非 null 的欄位，原文片段照抄文件（例如「一一五年三月十日」），不要改寫。"""
 
 
-@app.post("/api/extract")
-async def extract(file: UploadFile = File(...)):
-    suffix = Path(file.filename or "upload").suffix.lower()
-    raw = await file.read()
+def ingest(raw: bytes, filename: str, folder: Path, prefix: str = ""):
+    """Save an upload; return (path, image_path_or_None, text_or_None)."""
+    suffix = Path(filename or "upload").suffix.lower()
     if len(raw) > 15 * 1024 * 1024:
         raise HTTPException(413, "檔案太大（上限 15MB）")
-    fid = uuid.uuid4().hex[:10]
-    path = UPLOADS / f"{fid}{suffix}"
+    fid = prefix + uuid.uuid4().hex[:10]
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / f"{fid}{suffix}"
     path.write_bytes(raw)
-    image = None
-    text_doc = None
+    image, text_doc = None, None
     if suffix in (".png", ".jpg", ".jpeg", ".webp"):
         image = path
     elif suffix == ".pdf":
@@ -66,23 +65,33 @@ async def extract(file: UploadFile = File(...)):
         if len(page_text.strip()) > 50:
             text_doc = page_text
         else:
-            image = UPLOADS / f"{fid}.png"
+            image = folder / f"{fid}.png"
             doc[0].get_pixmap(dpi=150).save(image)
     elif suffix in (".txt", ".md"):
         text_doc = raw.decode("utf-8", errors="replace")
     else:
         raise HTTPException(415, "請上傳圖片（JPG/PNG）、PDF 或文字檔")
+    return path, image, text_doc
+
+
+def read_with_llm(system: str, image: Path | None, text_doc: str | None, intro: str):
+    """Images go to Sonnet (validation: Haiku 0% on scans, Sonnet 78.6%); text goes to Haiku."""
     try:
         if image is not None:
-            # validation: Haiku 0% on scans, Sonnet 78.6% -> images go to Sonnet
-            out = llm.call(DEMO_EXTRACT_SYS, "請只輸出 JSON。", model="sonnet", image=image)
-            model = "sonnet"
+            out, model = llm.call(system, "請只輸出 JSON。", model="sonnet", image=image), "sonnet"
         else:
-            out = llm.call(DEMO_EXTRACT_SYS, "以下是雇主上傳的文件內容：\n\n" + text_doc, model="haiku")
-            model = "haiku"
-        data = llm.parse_json(out)
+            out, model = llm.call(system, intro + "\n\n" + text_doc, model="haiku"), "haiku"
+        return llm.parse_json(out), model
     except llm.LLMError as e:
         raise HTTPException(502, str(e)) from e
+
+
+@app.post("/api/extract")
+async def extract(file: UploadFile = File(...)):
+    raw = await file.read()
+    path, image, text_doc = ingest(raw, file.filename, UPLOADS)
+    fid = path.stem
+    data, model = read_with_llm(DEMO_EXTRACT_SYS, image, text_doc, "以下是雇主上傳的文件內容：")
     # flag fields that need human confirmation
     for w in data.get("workers", []):
         flags = {}
@@ -148,8 +157,14 @@ def todos():
             if _okey(o) not in seen:  # also cleans duplicates saved before this fix
                 seen.add(_okey(o))
                 items.append(o)
+    status = state.get("status", {})
     for o in items:
         o["days_left"] = (date.fromisoformat(o["due"]) - date.today()).days
+        o["id"] = todo_id(o)
+        st = status.get(o["id"], {})
+        o["assigned"] = st.get("assigned")
+        o["proof"] = st.get("proof")
+        o["done"] = bool(o["proof"] and o["proof"].get("verdict") in ("on_time", "late"))
     items.sort(key=lambda x: x["due"])
     workers = sorted({o["worker"] for o in items})
     return {"workers": workers, "items": items}
@@ -157,8 +172,120 @@ def todos():
 
 @app.delete("/api/todos")
 def clear_todos():
-    save_state({"docs": []})
+    save_state({"docs": [], "status": {}})
     return {"ok": True}
+
+
+# ---------------------------------------------------------------- proof of completion
+def todo_id(o) -> str:
+    return hashlib.sha1("|".join(str(x) for x in _okey(o)).encode("utf-8")).hexdigest()[:12]
+
+
+def _find_todo(tid: str):
+    for o in todos()["items"]:
+        if o["id"] == tid:
+            return o
+    raise HTTPException(404, "找不到這項待辦")
+
+
+def _set_status(tid: str, **kv):
+    state = load_state()
+    st = state.setdefault("status", {}).setdefault(tid, {})
+    st.update(kv)
+    save_state(state)
+
+
+class Assign(BaseModel):
+    assignee: str | None = None   # "仲介" or None
+
+
+@app.post("/api/todos/{tid}/assign")
+def assign(tid: str, body: Assign):
+    _find_todo(tid)
+    _set_status(tid, assigned=body.assignee or None)
+    return {"ok": True, "assigned": body.assignee or None}
+
+
+PROOF_SYS = """你是「竹聘安 AI」的辦理證明核對模組。雇主或仲介上傳一份文件，用來證明某項移工法定待辦已經辦理。
+你的工作只有抽取欄位，輸出 JSON（不要 markdown 程式碼框），不要判斷是否逾期：
+{"doc_kind": "<文件種類，例如健康檢查報告、收件回執、許可函>",
+ "completed_date": "<辦理完成日期 YYYY-MM-DD 或 null>",
+ "date_label": "<該日期在文件上的欄位名稱，例如檢查日期、收件日期>",
+ "evidence": "<該日期在文件中的原文片段，照抄>",
+ "worker_name": "<文件上的外國人姓名，照抄；沒有則 null>",
+ "relevant": <true/false：這份文件能否證明下方待辦已辦理>,
+ "reason": "<一句繁體中文說明 relevant 的判斷>"}
+規則：日期一律換算成西元；民國年+1911。completed_date 是「辦理完成」的日期（檢查日、收件日、通報日、核准日），
+不是列印日、出生日、護照效期或下次應辦日。"""
+
+VERDICT_TEXT = {
+    "on_time": "準時完成", "late": "已辦理但逾期", "early": "早於辦理期間，不算完成",
+    "mismatch": "文件與待辦不符", "unknown": "讀不到完成日期", "name_mismatch": "移工姓名不符",
+}
+
+
+def _norm_name(s):
+    return "".join(ch for ch in (s or "").upper() if ch.isalnum())
+
+
+def judge_proof(task: dict, data: dict) -> dict:
+    """Deterministic verdict: the LLM only reads the date; this function decides on-time/late."""
+    d = data.get("completed_date")
+    verdict = "unknown"
+    if data.get("relevant") is False:
+        verdict = "mismatch"
+    elif d:
+        try:
+            cd = date.fromisoformat(d)
+            if task.get("start") and cd < date.fromisoformat(task["start"]):
+                verdict = "early"
+            elif cd > date.fromisoformat(task["due"]):
+                verdict = "late"
+            else:
+                verdict = "on_time"
+        except ValueError:
+            verdict = "unknown"
+    name_ok = True
+    if data.get("worker_name"):
+        a, b = _norm_name(data["worker_name"]), _norm_name(task["worker"])
+        name_ok = bool(a and b and (a in b or b in a))
+    if verdict in ("on_time", "late") and not name_ok:
+        verdict = "name_mismatch"
+    late_days = (date.fromisoformat(d) - date.fromisoformat(task["due"])).days if verdict == "late" else 0
+    return {"verdict": verdict, "verdict_text": VERDICT_TEXT[verdict] + (f" {late_days} 天" if late_days else ""),
+            "completed_date": d, "date_label": data.get("date_label"), "evidence": data.get("evidence"),
+            "doc_kind": data.get("doc_kind"), "worker_name": data.get("worker_name"), "reason": data.get("reason")}
+
+
+@app.post("/api/todos/{tid}/proof")
+async def upload_proof(tid: str, file: UploadFile = File(...), by: str = Form("雇主")):
+    task = _find_todo(tid)
+    raw = await file.read()
+    path, image, text_doc = ingest(raw, file.filename, UPLOADS / "proofs", prefix=f"{tid}_")
+    sys_prompt = PROOF_SYS + f"\n\n待辦事項：{task['title']}\n移工：{task['worker']}\n法定期限：" + \
+        (f"{task['start']} ～ {task['due']}" if task.get("start") else f"{task['due']} 前")
+    data, model = read_with_llm(sys_prompt, image, text_doc, "以下是上傳的辦理證明：")
+    result = judge_proof(task, data)
+    result.update({"file": path.name, "filename": file.filename, "uploaded_by": by,
+                   "uploaded_at": datetime.now().isoformat(timespec="minutes"), "model": model})
+    _set_status(tid, proof=result)
+    return result
+
+
+@app.delete("/api/todos/{tid}/proof")
+def delete_proof(tid: str):
+    _set_status(tid, proof=None)
+    return {"ok": True}
+
+
+@app.get("/api/todos/{tid}/proof/file")
+def proof_file(tid: str):
+    st = load_state().get("status", {}).get(tid, {})
+    proof = st.get("proof") or {}
+    f = UPLOADS / "proofs" / (proof.get("file") or "")
+    if not proof.get("file") or not f.exists():
+        raise HTTPException(404, "沒有證明檔案")
+    return FileResponse(f, filename=proof.get("filename") or f.name)
 
 
 # ---------------------------------------------------------------- legal Q&A
@@ -300,9 +427,17 @@ def _due_items(days: int):
     for o in todos()["items"]:
         start_left = (date.fromisoformat(o["start"]) - date.today()).days if o.get("start") else None
         in_range = o["days_left"] <= days or (start_left is not None and 0 <= start_left <= days)
-        if in_range:
+        if in_range and not o.get("done"):   # completed (proof verified) items are no longer reminded
             out.append(o)
     return out
+
+
+BROKER_PENDING = {"zh": "※ 已委任仲介辦理，尚未上傳辦理證明", "id": "※ Diserahkan ke agen, bukti belum diunggah",
+                  "vi": "※ Đã giao cho môi giới, chưa tải lên chứng từ"}
+
+
+def _broker_flag(o, lang):
+    return ("\n" + BROKER_PENDING[lang]) if o.get("assigned") == "仲介" and not o.get("proof") else ""
 
 
 DIGEST_HEAD = {"zh": "【竹聘安提醒】近期待辦 {n} 項", "id": "[Pengingat Zhu Pin An] {n} tugas mendatang",
@@ -316,7 +451,8 @@ def digest(items, lang="zh", limit=8):
     """One LINE message listing all due items (instead of one message per item)."""
     lang = lang if lang in TEMPLATES else "zh"
     body = SEP.join(f"{i}. " + reminder_text(o, lang).split("\n", 1)[0].split("】")[-1].split("] ")[-1] + "\n"
-                    + reminder_text(o, lang).split("\n", 1)[1] for i, o in enumerate(items[:limit], 1))
+                    + reminder_text(o, lang).split("\n", 1)[1] + _broker_flag(o, lang)
+                    for i, o in enumerate(items[:limit], 1))
     text = DIGEST_HEAD[lang].format(n=len(items)) + SEP + body
     if len(items) > limit:
         text += SEP + DIGEST_MORE[lang].format(n=len(items) - limit)

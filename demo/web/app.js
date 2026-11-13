@@ -281,23 +281,93 @@ async function loadTodos() {
     const t = await api('/api/todos');
     todoItems = t.items;
     $('sum-workers').innerHTML = `${t.workers.length} <small>位</small>`;
-    const soon = t.items.filter(o => o.days_left >= 0 && o.days_left <= 30).length;
-    const over = t.items.filter(o => o.days_left < 0).length;
+    const soon = t.items.filter(o => !o.done && o.days_left >= 0 && o.days_left <= 30).length;
+    const over = t.items.filter(o => !o.done && o.days_left < 0).length;
     $('sum-soon').innerHTML = `${soon} <small>項</small>`;
     $('sum-overdue').innerHTML = `${over} <small>項</small>`;
     $('sum-overdue').className = over ? 'red' : 'green';
     $('sum-overdue-note').textContent = over ? '請儘速辦理或確認是否已完成' : '目前沒有逾期待辦';
-    renderTodoRows('all');
+    renderTodoRows(currentFilter);
     $('nav-count').textContent = t.items.length;
   } catch (err) { notify(err.message); }
 }
+let currentFilter = 'all';
+const VERDICT_CLS = { on_time: 'ok', late: 'danger', early: 'warning', mismatch: 'warning', unknown: 'warning', name_mismatch: 'warning' };
+function proofCell(o) {
+  const p = o.proof;
+  const assignBtn = `<button type="button" class="chip-btn ${o.assigned === '仲介' ? 'on' : ''}" data-assign="${o.id}">${o.assigned === '仲介' ? '✓ 已委任仲介' : '委任仲介'}</button>`;
+  if (o.key === 'permit_expiry') return `<span class="muted small">期滿出國或續聘後自動結案</span>`;
+  if (p) {
+    return `<div class="proof-box"><span class="status ${VERDICT_CLS[p.verdict] || 'neutral'}">${p.verdict === 'on_time' ? '✓ ' : ''}${esc(p.verdict_text)}</span>
+      <small>${esc(p.doc_kind || '證明文件')}・${esc(p.date_label || '完成日')} ${esc(p.completed_date || '—')}</small>
+      ${p.evidence ? `<small>原文：「${esc(p.evidence)}」</small>` : ''}
+      <small>${esc(p.uploaded_by)}上傳 ${esc((p.uploaded_at || '').replace('T', ' '))}</small>
+      <div class="proof-actions"><a href="/api/todos/${o.id}/proof/file" target="_blank" rel="noopener">查看證明</a><button type="button" class="text-button" data-unproof="${o.id}">移除</button></div></div>`;
+  }
+  return `<div class="proof-box"><span class="status neutral">尚未上傳</span>${assignBtn}
+    <div class="proof-actions"><button type="button" class="text-button" data-proof="${o.id}">上傳證明</button>
+    <button type="button" class="text-button muted" data-sample-proof="${o.id}" data-late="0">範例：準時</button>
+    <button type="button" class="text-button muted" data-sample-proof="${o.id}" data-late="1">範例：逾期</button></div></div>`;
+}
 function renderTodoRows(filter) {
-  const rows = todoItems.filter(o => filter === 'all' || (filter === 'soon' && o.days_left >= 0 && o.days_left <= 30) || (filter === 'overdue' && o.days_left < 0));
+  currentFilter = filter;
+  const rows = todoItems.filter(o => filter === 'all' || (filter === 'open' && !o.done)
+    || (filter === 'soon' && !o.done && o.days_left >= 0 && o.days_left <= 30)
+    || (filter === 'overdue' && !o.done && o.days_left < 0) || (filter === 'done' && o.done));
   $('task-rows').innerHTML = rows.map(o => {
-    const [cls, txt] = statusChip(o);
-    return `<tr><td><strong>${esc(o.title)}</strong><small>${esc(o.basis)}</small></td><td>${esc(o.worker)}</td><td>${esc(o.start ? `${o.start} ～ ${o.due}` : o.due)}</td><td><span class="status ${cls}">${esc(txt)}</span></td></tr>`;
+    const [cls, txt] = o.done ? (o.proof.verdict === 'late' ? ['danger', '逾期完成'] : ['ok', '已完成']) : statusChip(o);
+    return `<tr class="${o.done ? 'row-done' : ''}"><td><strong>${esc(o.title)}</strong><small>${esc(o.basis)}</small></td><td>${esc(o.worker)}</td><td>${esc(o.start ? `${o.start} ～ ${o.due}` : o.due)}</td><td><span class="status ${cls}">${esc(txt)}</span></td><td>${proofCell(o)}</td></tr>`;
   }).join('');
   $('empty-tasks').hidden = rows.length > 0;
+  all('[data-assign]').forEach(b => b.addEventListener('click', () => toggleAssign(b.dataset.assign)));
+  all('[data-proof]').forEach(b => b.addEventListener('click', () => { proofTarget = b.dataset.proof; $('proof-input').value = ''; $('proof-input').click(); }));
+  all('[data-unproof]').forEach(b => b.addEventListener('click', () => removeProof(b.dataset.unproof)));
+  all('[data-sample-proof]').forEach(b => b.addEventListener('click', () => sampleProof(b.dataset.sampleProof, b.dataset.late === '1')));
+}
+let proofTarget = null;
+async function toggleAssign(id) {
+  const o = todoItems.find(x => x.id === id);
+  await api(`/api/todos/${id}/assign`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ assignee: o.assigned === '仲介' ? null : '仲介' }) });
+  notify(o.assigned === '仲介' ? '已取消委任。' : '已標記為委任仲介辦理；仲介上傳證明後即可在此看到結果。');
+  loadTodos();
+}
+async function removeProof(id) {
+  await api(`/api/todos/${id}/proof`, { method: 'DELETE' });
+  loadTodos();
+}
+async function submitProof(id, file) {
+  const o = todoItems.find(x => x.id === id);
+  const fd = new FormData(); fd.append('file', file); fd.append('by', o.assigned === '仲介' ? '仲介' : '雇主');
+  const cell = document.querySelector(`[data-proof="${id}"]`)?.closest('td');
+  if (cell) cell.innerHTML = '<div class="proof-box"><span class="spinner small-spinner dark"></span><small>AI 正在讀取證明…</small></div>';
+  try {
+    const r = await api(`/api/todos/${id}/proof`, { method: 'POST', body: fd });
+    notify(`證明判定：${r.verdict_text}（${r.date_label || '完成日'} ${r.completed_date || '讀不到'}）`);
+  } catch (err) { notify('證明上傳失敗：' + err.message); }
+  loadTodos();
+}
+$('proof-input').addEventListener('change', e => { if (proofTarget && e.target.files[0]) submitProof(proofTarget, e.target.files[0]); });
+
+/* 範例證明：依待辦事項產生一份合成的完成證明（展示用） */
+const PROOF_KIND = {
+  health_entry: ['受聘僱外國人健康檢查報告', '檢查日期'], health_6m: ['受聘僱外國人定期健康檢查報告', '檢查日期'],
+  health_18m: ['受聘僱外國人定期健康檢查報告', '檢查日期'], health_30m: ['受聘僱外國人定期健康檢查報告', '檢查日期'],
+  apply_permit: ['勞動部聘僱許可申請收件回執', '收件日期'], renewal_window: ['勞動部期滿續聘許可申請收件回執', '收件日期'],
+  recheck_report: ['衛生局備查收件回執', '收件日期'], dorm_change: ['住宿地點變更通報收執聯', '收件日期'],
+  termination_notice: ['聘僱關係終止通報收執聯', '通報日期'], abscond_notice: ['外國人連續曠職三日失去聯繫通報收執聯', '通報日期'],
+  replacement_window: ['勞動部遞補申請收件回執', '收件日期'],
+};
+function sampleProof(id, late) {
+  const o = todoItems.find(x => x.id === id);
+  const [kind, label] = PROOF_KIND[o.key] || ['辦理收件回執', '收件日期'];
+  const due = new Date(o.due);
+  let d;
+  if (late) { d = new Date(due); d.setDate(d.getDate() + 5); }
+  else { const start = o.start ? new Date(o.start) : null; d = new Date(Math.min(Date.now(), due.getTime())); if (start && d < start) d = start; }
+  const text = ['【合成測試文件・非真實公文・僅供竹聘安 AI 驗證使用】', kind, '',
+    `外國人姓名：${o.worker}`, '雇主：（展示用）', `${label}：${rocDate(d)}`,
+    `列印日期：${rocDate(new Date())}`, '', '上述事項已受理完成。'].join('\n');
+  submitProof(id, new File([text], `${kind}.txt`, { type: 'text/plain' }));
 }
 all('[data-filter]').forEach(b => b.addEventListener('click', () => {
   all('[data-filter]').forEach(x => { const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-pressed', String(on)); });

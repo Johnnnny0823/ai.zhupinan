@@ -44,6 +44,17 @@ body.officer .spinner { border-top-color: #C0754A; }
 @keyframes flash { 0% { box-shadow: 0 0 0 3px rgba(47, 133, 90, .6); } 100% { box-shadow: 0 0 0 0 rgba(47, 133, 90, 0); } }
 .nav-count.bump { animation: bump .6s ease-out 2; }
 @keyframes bump { 50% { transform: scale(1.45); background: #2F855A; color: #fff; } }
+.proof-hint { margin: -4px 0 12px; font-size: 13px; color: #6B7280; line-height: 1.7; }
+.proof-box { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; min-width: 190px; }
+.proof-box small { color: #6B7280; font-size: 11.5px; line-height: 1.5; }
+.proof-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; font-size: 12px; }
+.proof-actions a { color: #2A8A7A; }
+.text-button.muted { color: #9CA3AF; }
+.chip-btn { font: inherit; font-size: 11.5px; padding: 2px 8px; border-radius: 999px; border: 1px solid #D6D0C2; background: #fff; color: #4B5563; cursor: pointer; }
+.chip-btn.on { background: #FDF3EC; border-color: #C0754A; color: #A65A2E; }
+.small-spinner.dark { border-color: #E6E2D8 !important; border-top-color: #2A8A7A !important; }
+.tasks-table tr.row-done td { background: #F6FBF8; }
+.status.ok { background: #E8F5EE; color: #2F855A; }
 .abscond-btn { margin-top: 12px; border-color: #C0754A !important; color: #C0754A !important; }
 .abscond-guide { margin-top: 18px; padding: 18px 20px; background: #FDF6F1; border: 1px solid #F0D9C8; border-radius: 10px; }
 .abscond-guide h3 { margin: 0 0 10px; font-size: 16px; color: #A65A2E; }

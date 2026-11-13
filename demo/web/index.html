@@ -140,8 +140,10 @@
           <article class="card summary"><span>已逾期</span><strong id="sum-overdue" class="green">0 <small>項</small></strong><p id="sum-overdue-note">目前沒有逾期待辦</p></article>
         </div>
         <article class="card task-table-card">
-          <div class="card-title spread"><h2>所有待辦</h2><div class="filters" role="group" aria-label="待辦篩選"><button class="active" data-filter="all" aria-pressed="true">全部</button><button data-filter="soon" aria-pressed="false">30天內</button><button data-filter="overdue" aria-pressed="false">已逾期</button></div></div>
-          <div class="table-scroll"><table class="tasks-table"><thead><tr><th>待辦事項 / 法規依據</th><th>移工</th><th>辦理期間 / 期限</th><th>狀態</th></tr></thead><tbody id="task-rows"></tbody></table></div>
+          <div class="card-title spread"><h2>所有待辦</h2><div class="filters" role="group" aria-label="待辦篩選"><button class="active" data-filter="all" aria-pressed="true">全部</button><button data-filter="open" aria-pressed="false">尚未完成</button><button data-filter="soon" aria-pressed="false">30天內</button><button data-filter="overdue" aria-pressed="false">已逾期</button><button data-filter="done" aria-pressed="false">已完成</button></div></div>
+          <p class="proof-hint">辦完一項，就上傳證明（健檢報告、收件回執、許可函…）。AI 讀出證明上的完成日期，系統依法定期限判定是否準時。委任仲介的事項，仲介上傳後雇主即可看到。</p>
+          <input type="file" id="proof-input" class="visually-hidden" accept=".jpg,.jpeg,.png,.pdf,.txt">
+          <div class="table-scroll"><table class="tasks-table"><thead><tr><th>待辦事項 / 法規依據</th><th>移工</th><th>辦理期間 / 期限</th><th>期限狀態</th><th>辦理證明</th></tr></thead><tbody id="task-rows"></tbody></table></div>
           <p id="empty-tasks" class="empty-state" hidden>目前沒有待辦。請先到「上傳公文」產生待辦。</p>
         </article>
         <div class="quick-action"><div><h3>有新的住宿安排？</h3><p>搬宿舍後 7 日內須通知市府（雇主聘僱外國人許可及管理辦法第33條第5項）。上傳變更表即可自動排入待辦。</p></div><button class="button secondary" type="button" data-goto="upload"><svg><use href="#i-file"/></svg>上傳住宿變更表</button></div>
