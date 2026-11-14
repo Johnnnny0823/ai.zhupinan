@@ -153,6 +153,34 @@ def abscond(w: dict, name: str, ev: date) -> list[Obligation]:
     return out
 
 
+ONESTOP_SRC = "勞動部《移工一站式服務問答集》113年7月"
+
+
+def onestop_entry(name: str, entry: date) -> list[Obligation]:
+    """家事移工（家庭看護工、家庭幫傭）自國外新聘入國：移工一站式服務（112-01-01 起）。
+    最遲於預定入國日5日（含）前完成線上登錄，且聘僱許可須受理完成；
+    例：入國日 112-01-01 → 最晚 111-12-27（入國日減5日）。
+    這是勞動部作業規定（問答集），非法條；線上系統24小時可申請，故不依行政程序法第48條順延。"""
+    reg_due = entry - timedelta(days=5)
+    out = [Obligation(
+        "onestop_register", name, "至移工一站式服務網登錄入國講習，並線上申請聘僱許可（須受理完成）",
+        None, reg_due.isoformat(),
+        f"{ONESTOP_SRC}雇主篇問題1、4、6；聘僱許可篇問題1（作業規定，非法條）",
+        "以預定入國日減5日為最後期限。一併申辦居留許可、職災保險、全民健保、入國通報生活照顧檢查。"
+        "逾期將自動取消講習申請，須延後入國日；改期亦須於原入國日5日前辦理，新入國日限5～30日內。"
+        "適用：自國外新聘之家庭看護工／家庭幫傭（未持5年內入國講習完訓證明）；"
+        "國內接續聘僱、期滿續聘、期滿轉換不適用。網址 https://fwots.wda.gov.tw/",
+    ), Obligation(
+        "health_entry", name, "安排入國三日內健康檢查", None,
+        working_days_after(entry, 3).isoformat(),
+        "受聘僱外國人健康檢查管理辦法第3條第3款",
+        "入國後三個工作日內（依人事行政總處辦公日曆）；一站式講習完訓交接當日或隔日安排。"
+        "因故未能依限完成者，得於延長三個工作日內補行辦理",
+    )]
+    out += periodic_health_checks(entry, name, "入國日")
+    return out
+
+
 def compute(doc_type: str, w: dict) -> list[Obligation]:
     """w: one worker record with ISO date strings (entry_date, permit_start,
     permit_end, event_date)."""
@@ -189,6 +217,9 @@ def compute(doc_type: str, w: dict) -> list[Obligation]:
         d, n = days_after(ev, 7)
         out.append(Obligation("dorm_change", name, "通知當地主管機關住宿地點變更", None, d.isoformat(),
                               "雇主聘僱外國人許可及管理辦法第33條第5項", n))
+
+    elif doc_type == "家事移工預定入國" and entry:
+        out += onestop_entry(name, entry)
 
     elif doc_type == "移工失聯" and ev:
         out += abscond(w, name, ev)

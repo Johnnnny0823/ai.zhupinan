@@ -147,7 +147,23 @@ const FIELDS = {
   '住宿地點變更': [['event_date', '遷入新住處日（變更日）']],
   '聘僱關係終止': [['event_date', '聘僱關係終止日']],
   '移工失聯': [['event_date', '連續曠職滿 3 日之日'], ['notify_date', '實際書面通報日（選填）'], ['permit_end', '聘僱許可迄日（選填）']],
+  '家事移工預定入國': [['entry_date', '預定入國日']],
 };
+
+/* 一站式服務：入國前尚無公文，直接開啟空白表單 */
+$('onestop-btn').addEventListener('click', () => {
+  lastExtract = { doc_type: '家事移工預定入國', is_image: false, model: '', workers: [{ name: '', entry_date: '', flags: {}, evidence: {} }] };
+  $('uploaded-file').hidden = true;
+  $('extract-empty').hidden = true; $('extract-loading').hidden = true; $('result-card').hidden = true;
+  $('worker-form').hidden = false;
+  $('doc-type').value = '家事移工預定入國';
+  renderWorkerTable();
+  $('flag-count').className = 'status warning'; $('flag-count').textContent = '入國前期限';
+  $('model-note').textContent = '適用自國外新聘之家庭看護工／家庭幫傭；國內接續聘僱、期滿續聘不適用';
+  setStep(2);
+  document.querySelector('#worker-rows input[data-k=name]').focus();
+  $('worker-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
 
 /* 失聯不是公文：直接開啟空白表單讓雇主填寫 */
 $('abscond-btn').addEventListener('click', () => {
@@ -185,6 +201,7 @@ function renderWorkerTable() {
   const type = $('doc-type').value;
   const fields = FIELDS[type] || [];
   const isAbscond = type === '移工失聯';
+  const isManual = isAbscond || type === '家事移工預定入國';  /* 手動填寫，非 AI 判讀 */
   $('worker-head').innerHTML = `<tr><th>移工姓名</th>${isAbscond ? '<th>工作類別</th>' : ''}${fields.map(([, l]) => `<th>${esc(l)}</th>`).join('')}</tr>`;
   const workers = (lastExtract && lastExtract.workers) || [];
   $('worker-rows').innerHTML = workers.map((w, i) => `<tr data-i="${i}">
@@ -194,7 +211,7 @@ function renderWorkerTable() {
         const flag = (w.flags || {})[k];
         const src = (w.evidence || {})[k];
         return `<td class="${flag ? 'flagged' : ''}"><input type="date" data-k="${k}" value="${esc(w[k] || '')}">
-          ${src ? `<small>原文：「${esc(src)}」</small>` : (w[k] || isAbscond ? '' : '<small>文件中未找到</small>')}
+          ${src ? `<small>原文：「${esc(src)}」</small>` : (w[k] || isManual ? '' : '<small>文件中未找到</small>')}
           ${flag ? `<span class="field-warning">${esc(flag)}</span>` : ''}</td>`;
       }).join('')}</tr>`).join('');
 }
@@ -356,6 +373,7 @@ const PROOF_KIND = {
   recheck_report: ['衛生局備查收件回執', '收件日期'], dorm_change: ['住宿地點變更通報收執聯', '收件日期'],
   termination_notice: ['聘僱關係終止通報收執聯', '通報日期'], abscond_notice: ['外國人連續曠職三日失去聯繫通報收執聯', '通報日期'],
   replacement_window: ['勞動部遞補申請收件回執', '收件日期'],
+  onestop_register: ['移工一站式服務網入國講習申請完成畫面', '申請日期'],
 };
 function sampleProof(id, late) {
   const o = todoItems.find(x => x.id === id);

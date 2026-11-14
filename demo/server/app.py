@@ -401,13 +401,15 @@ TITLE_I18N = {
            "health_30m": "Pemeriksaan kesehatan berkala bulan ke-30", "renewal_window": "Ajukan perpanjangan atau pindah majikan",
            "permit_expiry": "Izin kerja berakhir", "recheck_report": "Laporkan hasil pemeriksaan ulang ke dinas kesehatan",
            "dorm_change": "Laporkan perubahan tempat tinggal", "termination_notice": "Laporkan pemutusan hubungan kerja",
-           "abscond_notice": "Laporkan pekerja yang hilang kontak (3 hari)", "replacement_window": "Ajukan penggantian pekerja"},
+           "abscond_notice": "Laporkan pekerja yang hilang kontak (3 hari)", "replacement_window": "Ajukan penggantian pekerja",
+           "onestop_register": "Daftar layanan terpadu (一站式) paling lambat 5 hari sebelum tiba"},
     "vi": {"apply_permit": "Nộp đơn xin giấy phép tuyển dụng (聘僱許可)", "health_entry": "Khám sức khỏe trong 3 ngày làm việc sau khi nhập cảnh",
            "health_6m": "Khám sức khỏe định kỳ tháng thứ 6", "health_18m": "Khám sức khỏe định kỳ tháng thứ 18",
            "health_30m": "Khám sức khỏe định kỳ tháng thứ 30", "renewal_window": "Nộp đơn gia hạn hoặc chuyển chủ khi hết hạn",
            "permit_expiry": "Giấy phép tuyển dụng hết hạn", "recheck_report": "Nộp kết quả khám lại cho cơ quan y tế",
            "dorm_change": "Thông báo thay đổi nơi ở", "termination_notice": "Thông báo chấm dứt quan hệ lao động",
-           "abscond_notice": "Thông báo lao động mất liên lạc (3 ngày)", "replacement_window": "Nộp đơn xin bổ sung lao động"},
+           "abscond_notice": "Thông báo lao động mất liên lạc (3 ngày)", "replacement_window": "Nộp đơn xin bổ sung lao động",
+           "onestop_register": "Đăng ký dịch vụ một cửa (一站式) chậm nhất 5 ngày trước khi nhập cảnh"},
 }
 
 
