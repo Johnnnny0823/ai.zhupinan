@@ -113,6 +113,37 @@ class Confirmed(BaseModel):
     save: bool = True
 
 
+# 辦理窗口（許願卡 1：「知道要做什麼、去哪裡辦」）。
+# 機關依各條文所定之受理機關；線上連結只放官方新聞稿或問答集寫明可線上辦理者。
+FWAPPLY = ("勞動部線上申辦系統", "https://fwapply.wda.gov.tw")   # 勞動部 2016-06-16 新聞稿：聘僱許可、行蹤不明通報、遞補等可線上申辦
+HSINCHU_LABOR = "新竹市政府勞工及青年處（跨國勞動力服務中心）"
+HOSPITAL = "衛生福利部指定醫院（受聘僱外國人健康檢查指定醫院）"
+OFFICE = {
+    "onestop_register": {"office": "移工一站式服務網（勞動部）", "online": ("移工一站式服務網", "https://fwots.wda.gov.tw/")},
+    "apply_permit": {"office": "勞動部勞動力發展署", "online": FWAPPLY},
+    "health_entry": {"office": HOSPITAL},
+    "health_6m": {"office": HOSPITAL},
+    "health_18m": {"office": HOSPITAL},
+    "health_30m": {"office": HOSPITAL},
+    "recheck_report": {"office": "新竹市政府衛生局（定期健檢再檢查證明備查）"},
+    "dorm_change": {"office": HSINCHU_LABOR},
+    "renewal_window": {"office": "勞動部勞動力發展署"},
+    "permit_expiry": {"office": "勞動部勞動力發展署（續聘），或安排移工出國"},
+    "termination_notice": {"office": f"{HSINCHU_LABOR}、內政部移民署、轄區警察機關"},
+    "abscond_notice": {"office": f"{HSINCHU_LABOR}、內政部移民署、轄區警察機關，並副知勞動部", "online": FWAPPLY},
+    "replacement_window": {"office": "勞動部勞動力發展署", "online": FWAPPLY},
+}
+HELPLINES = "有疑問：1955 勞工諮詢申訴專線（多國語言）、勞動力發展署 0800-035-688"
+
+
+def with_office(o: dict) -> dict:
+    info = OFFICE.get(o.get("key"), {})
+    o["office"] = info.get("office")
+    online = info.get("online")
+    o["online"] = {"label": online[0], "url": online[1]} if online else None
+    return o
+
+
 @app.post("/api/obligations")
 def obligations(body: Confirmed):
     items = []
@@ -120,7 +151,7 @@ def obligations(body: Confirmed):
         for o in compute(body.doc_type, w):
             d = o.to_dict()
             d["days_left"] = (date.fromisoformat(d["due"]) - date.today()).days
-            items.append(d)
+            items.append(with_office(d))
     items.sort(key=lambda x: x["start"] or x["due"])
     added = len(items)
     if body.save:
@@ -165,6 +196,7 @@ def todos():
         o["assigned"] = st.get("assigned")
         o["proof"] = st.get("proof")
         o["done"] = bool(o["proof"] and o["proof"].get("verdict") in ("on_time", "late"))
+        with_office(o)
     items.sort(key=lambda x: x["due"])
     workers = sorted({o["worker"] for o in items})
     return {"workers": workers, "items": items}
@@ -391,7 +423,14 @@ def reminder_text(o, lang="zh"):
     else:
         status = left.format(n=o["days_left"])
     title = TITLE_I18N.get(lang, {}).get(o["key"], o["title"])
-    return TEMPLATES[lang].format(status=status, worker=o["worker"], title=title, when=when, basis=o["basis"])
+    text = TEMPLATES[lang].format(status=status, worker=o["worker"], title=title, when=when, basis=o["basis"])
+    office = o.get("office") or OFFICE.get(o.get("key"), {}).get("office")
+    if office:
+        text += "\n" + {"zh": "辦理窗口：", "id": "Tempat pengurusan: ", "vi": "Nơi làm thủ tục: "}[lang] + office
+    online = OFFICE.get(o.get("key"), {}).get("online")
+    if online:
+        text += "\n" + online[1]
+    return text
 
 
 # translation drafts (to be reviewed by native speakers before real use)

@@ -262,6 +262,13 @@ function statusChip(o) {
 const today = () => new Date().toISOString().slice(0, 10);
 const daysBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000);
 
+/* 辦理窗口（許願卡 1：知道要做什麼、去哪裡辦） */
+function officeLine(o) {
+  if (!o.office) return '';
+  const link = o.online && /^https:\/\//.test(o.online.url)
+    ? ` ・<a href="${esc(o.online.url)}" target="_blank" rel="noopener">${esc(o.online.label)}</a>` : '';
+  return `<span class="office">辦理窗口：${esc(o.office)}${link}</span>`;
+}
 function renderObligations(list, workers, msg = '', added = true) {
   $('result-card').hidden = false;
   $('result-sub').textContent = workers.map(w => w.name).join('、');
@@ -272,7 +279,7 @@ function renderObligations(list, workers, msg = '', added = true) {
     const [cls, txt] = statusChip(o);
     const when = o.start ? `${o.start} ～ ${o.due}` : `${o.due} 前`;
     return `<div class="obligation"><div class="task-icon"><svg><use href="#i-${o.key.startsWith('health') ? 'shield' : 'file'}"/></svg></div>
-      <div class="obligation-name"><strong>${esc(o.title)}</strong><small>${esc(o.worker)}・${esc(o.basis)}</small>${o.note ? `<span class="note">${esc(o.note)}</span>` : ''}</div>
+      <div class="obligation-name"><strong>${esc(o.title)}</strong><small>${esc(o.worker)}・${esc(o.basis)}</small>${officeLine(o)}${o.note ? `<span class="note">${esc(o.note)}</span>` : ''}</div>
       <div class="deadline"><strong>${esc(when)}</strong><small>${o.start ? '辦理期間' : '最後期限'}</small></div>
       <span class="status ${cls}">${esc(txt)}</span></div>`;
   }).join('') : '<p class="empty-state">這份文件沒有觸發需要追蹤的法定期限。</p>');
@@ -333,7 +340,7 @@ function renderTodoRows(filter) {
     || (filter === 'overdue' && !o.done && o.days_left < 0) || (filter === 'done' && o.done));
   $('task-rows').innerHTML = rows.map(o => {
     const [cls, txt] = o.done ? (o.proof.verdict === 'late' ? ['danger', '逾期完成'] : ['ok', '已完成']) : statusChip(o);
-    return `<tr class="${o.done ? 'row-done' : ''}"><td><strong>${esc(o.title)}</strong><small>${esc(o.basis)}</small></td><td>${esc(o.worker)}</td><td>${esc(o.start ? `${o.start} ～ ${o.due}` : o.due)}</td><td><span class="status ${cls}">${esc(txt)}</span></td><td>${proofCell(o)}</td></tr>`;
+    return `<tr class="${o.done ? 'row-done' : ''}"><td><strong>${esc(o.title)}</strong><small>${esc(o.basis)}</small>${officeLine(o)}</td><td>${esc(o.worker)}</td><td>${esc(o.start ? `${o.start} ～ ${o.due}` : o.due)}</td><td><span class="status ${cls}">${esc(txt)}</span></td><td>${proofCell(o)}</td></tr>`;
   }).join('');
   $('empty-tasks').hidden = rows.length > 0;
   all('[data-assign]').forEach(b => b.addEventListener('click', () => toggleAssign(b.dataset.assign)));
