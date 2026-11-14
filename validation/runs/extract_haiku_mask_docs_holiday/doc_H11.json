@@ -1,0 +1,27 @@
+{
+ "doc_id": "doc_H11",
+ "model": "haiku",
+ "mode": "extract",
+ "seconds": 13.0,
+ "returncode": 0,
+ "parsed": {
+  "doc_type": "聘僱關係終止",
+  "workers": [
+   {
+    "name": "LE THI MAI",
+    "entry_date": null,
+    "permit_start": null,
+    "permit_end": null,
+    "event_date": "2026-06-16"
+   }
+  ]
+ },
+ "error": null,
+ "raw": "```json\n{\"doc_type\": \"聘僱關係終止\", \"workers\": [{\"name\": \"PERSON_01\", \"entry_date\": null, \"permit_start\": null, \"permit_end\": null, \"event_date\": \"2026-06-16\"}]}\n```",
+ "usage": {
+  "total_cost_usd": 0.008518000000000001,
+  "num_turns": 1,
+  "duration_ms": 10674
+ },
+ "masked": true
+}

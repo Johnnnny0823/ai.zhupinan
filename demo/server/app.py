@@ -29,6 +29,7 @@ import llm  # noqa: E402
 import penalty as pen_mod  # noqa: E402
 import qa as qa_mod  # noqa: E402
 from extract import EXTRACT_SYS  # noqa: E402
+from privacy import PROMPT_NOTE, mask, restore  # noqa: E402  (personal data masked before any LLM call)
 from rules import CAL_YEARS, compute  # noqa: E402
 
 WEB = HERE.parent / "web"
@@ -78,10 +79,12 @@ def read_with_llm(system: str, image: Path | None, text_doc: str | None, intro: 
     """Images go to Sonnet (validation: Haiku 0% on scans, Sonnet 78.6%); text goes to Haiku."""
     try:
         if image is not None:
+            # pixels cannot be masked locally; the UI tells the user (government version: on-prem model)
             out, model = llm.call(system, "請只輸出 JSON。", model="sonnet", image=image), "sonnet"
-        else:
-            out, model = llm.call(system, intro + "\n\n" + text_doc, model="haiku"), "haiku"
-        return llm.parse_json(out), model
+            return llm.parse_json(out), model
+        masked, mapping = mask(text_doc)
+        out, model = llm.call(system + PROMPT_NOTE, intro + "\n\n" + masked, model="haiku"), "haiku"
+        return restore(llm.parse_json(out), mapping), model
     except llm.LLMError as e:
         raise HTTPException(502, str(e)) from e
 
@@ -337,7 +340,8 @@ def ask(body: Ask):
     hits = _RETR.top(q)
     ctx = "\n\n".join(f"【{h['law']} {h['no']}】\n{h['text']}" for h in hits)
     try:
-        ans = llm.call(qa_mod.SYS_STRICT, f"參考條文：\n{ctx}\n\n問題：{q}", model="haiku")
+        mq, qmap = mask(q)
+        ans = restore(llm.call(qa_mod.SYS_STRICT, f"參考條文：\n{ctx}\n\n問題：{mq}", model="haiku"), qmap)
     except llm.LLMError as e:
         raise HTTPException(502, str(e)) from e
     cited = [h for h in hits if h["no"].replace("第", "").replace("條", "") in ans or h["no"] in ans]
@@ -360,12 +364,20 @@ def check_penalty(body: Draft):
     if len(body.text.strip()) < 30:
         raise HTTPException(400, "請貼上完整的裁處書草稿")
     try:
-        out = llm.call(PEN_SYS + "\n\n" + pen_mod.refs(), "請檢核以下裁處書草稿：\n\n" + body.text, model="haiku")
-        data = llm.parse_json(out)
+        masked, mapping = mask(body.text)
+        out = llm.call(PEN_SYS + PROMPT_NOTE + "\n\n" + pen_mod.refs(), "請檢核以下裁處書草稿：\n\n" + masked, model="haiku")
+        data = restore(llm.parse_json(out), mapping)
     except llm.LLMError as e:
         raise HTTPException(502, str(e)) from e
     items = [{"id": c, "name": pen_mod.CHECK_ZH[c], **(data.get(c) or {"ok": None, "reason": "未回傳"})} for c in pen_mod.CHECKS]
-    return {"items": items}
+    return {"items": items, "masked_preview": masked}
+
+
+@app.post("/api/mask-preview")
+def mask_preview(body: Draft):
+    """Show exactly what would be sent to the AI (for the demo and for auditing)."""
+    masked, mapping = mask(body.text)
+    return {"masked": masked, "pseudonyms": len(mapping)}
 
 
 # ---------------------------------------------------------------- LINE

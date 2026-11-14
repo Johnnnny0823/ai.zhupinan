@@ -189,7 +189,8 @@ function renderExtract(data) {
   const flags = (data.workers || []).reduce((n, w) => n + Object.keys(w.flags || {}).length, 0);
   $('flag-count').className = 'status ' + (flags ? 'warning' : 'ok');
   $('flag-count').textContent = flags ? `${flags} 項請再確認` : '辨識完成';
-  $('model-note').textContent = `${data.is_image ? '掃描圖片' : '文字公文'}・使用 Claude ${data.model === 'sonnet' ? 'Sonnet' : 'Haiku'} 判讀・請以原件核對`;
+  $('model-note').textContent = `${data.is_image ? '掃描圖片' : '文字公文'}・使用 Claude ${data.model === 'sonnet' ? 'Sonnet' : 'Haiku'} 判讀・請以原件核對`
+    + (data.is_image ? '・⚠ 掃描圖片無法先在本機遮蔽個資，建議改傳 PDF 或文字檔' : '・🔒 姓名與證號已在本機遮蔽後才送給 AI');
   const btn = document.querySelector('#worker-form button[type=submit]');
   btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
   btn.classList.add('pulse');
@@ -474,6 +475,10 @@ $('check-draft').addEventListener('click', async () => {
   try {
     const r = await api('/api/check-penalty', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
     const fails = r.items.filter(i => i.ok === false);
+    if (r.masked_preview) {
+      $('masked-card').hidden = false;
+      $('masked-text').textContent = r.masked_preview;
+    }
     $('checklist').innerHTML = r.items.map((it, i) => `<li class="check-item ${it.ok === false ? 'check-fail' : ''}">
       <div class="check-row"><span>${CIRCLED[i]}</span><strong>${esc(it.name)}</strong>
       ${it.ok === true ? '<span class="check-state check-pass">✓ 符合</span>' : it.ok === false ? '<span class="check-state">✕ 需修正</span>' : '<span class="check-state check-unknown">？未判定</span>'}</div>

@@ -155,13 +155,23 @@ C7 救濟教示：是否正確載明救濟方法、期間及受理機關（不�
 reason 請用一句繁體中文說明，並引用條號。以下附參考條文，請以參考條文為準。"""
 
 
+MASK = False   # set by --mask: personal data is masked locally before the LLM sees the draft
+
+
 def run_one(pid, model):
-    out = OUT / model / f"{pid}.json"
+    out = OUT / (model + ("_mask" if MASK else "")) / f"{pid}.json"
     if out.exists():
         return "cached"
-    sp = ROOT / "runs" / "_system_penalty.txt"
-    sp.write_text(SYS + "\n\n" + refs(), encoding="utf-8")
     doc = (DIR / f"{pid}.txt").read_text(encoding="utf-8")
+    mapping = {}
+    if MASK:
+        from privacy import PROMPT_NOTE, mask
+        doc, mapping = mask(doc)
+        sp = ROOT / "runs" / "_system_penalty_mask.txt"
+        sp.write_text(SYS + PROMPT_NOTE + "\n\n" + refs(), encoding="utf-8")
+    else:
+        sp = ROOT / "runs" / "_system_penalty.txt"
+        sp.write_text(SYS + "\n\n" + refs(), encoding="utf-8")
     p = subprocess.run([claude_bin(), "-p", "--model", model, "--system-prompt-file", str(sp), "--tools", "",
                         "--strict-mcp-config", "--no-session-persistence", "--output-format", "json"],
                        input="請檢核以下裁處書草稿：\n\n" + doc, capture_output=True, text=True, encoding="utf-8",
@@ -174,7 +184,11 @@ def run_one(pid, model):
     if err and ("401" in err or "limit" in err.lower()):
         return "FATAL " + err[:150]
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"raw": res, "parsed": parse_json(res or "") if not err else None, "error": err},
+    parsed = parse_json(res or "") if not err else None
+    if parsed and mapping:
+        from privacy import restore
+        parsed = restore(parsed, mapping)
+    out.write_text(json.dumps({"raw": res, "parsed": parsed, "error": err, "masked": MASK},
                               ensure_ascii=False, indent=1), encoding="utf-8")
     return "ok" if not err else "ERR " + err[:100]
 
@@ -222,7 +236,10 @@ def main():
     ap.add_argument("action", choices=["gen", "run", "score"])
     ap.add_argument("--model", default="haiku")
     ap.add_argument("--workers", type=int, default=3)
+    ap.add_argument("--mask", action="store_true", help="mask personal data before the LLM")
     a = ap.parse_args()
+    global MASK
+    MASK = a.mask
     if a.action == "gen":
         return gen()
     if a.action == "score":

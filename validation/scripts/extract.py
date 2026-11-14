@@ -18,6 +18,9 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))   # sibling modules (privacy) under python -I
+
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / os.environ.get("DOCS_DIR", "docs")
 
@@ -73,13 +76,20 @@ def parse_json(text: str):
     return json.loads(m.group(0)) if m else None
 
 
+MASK = False   # set by --mask: personal data is masked locally before the LLM sees the text
+
+
 def run_one(doc: dict, model: str, mode: str, out_dir: Path) -> str:
     out = out_dir / f"{doc['doc_id']}.json"
     if out.exists():
         return f"{doc['doc_id']} cached"
     sys_prompt = EXTRACT_SYS if mode == "extract" else LLM_ONLY_SYS
+    mapping = {}
+    if MASK:
+        from privacy import PROMPT_NOTE
+        sys_prompt += PROMPT_NOTE
     path = DOCS / doc["file"]
-    sp_file = ROOT / "runs" / f"_system_{mode}.txt"
+    sp_file = ROOT / "runs" / f"_system_{mode}{'_mask' if MASK else ''}.txt"
     sp_file.write_text(sys_prompt, encoding="utf-8")
     cmd = [claude_bin(), "-p", "--model", model, "--system-prompt-file", str(sp_file),
            "--strict-mcp-config", "--no-session-persistence", "--output-format", "json"]
@@ -88,7 +98,11 @@ def run_one(doc: dict, model: str, mode: str, out_dir: Path) -> str:
         user = f"Use the Read tool to open this uploaded document image, then output only the JSON as instructed: {path}"
     else:
         cmd += ["--tools", ""]
-        user = "以下是雇主上傳的文件內容：\n\n" + path.read_text(encoding="utf-8")
+        text = path.read_text(encoding="utf-8")
+        if MASK:
+            from privacy import mask
+            text, mapping = mask(text)
+        user = "以下是雇主上傳的文件內容：\n\n" + text
     t0 = time.time()
     p = subprocess.run(cmd, input=user, capture_output=True, text=True, encoding="utf-8", timeout=300,
                        cwd=str(ROOT))
@@ -102,6 +116,10 @@ def run_one(doc: dict, model: str, mode: str, out_dir: Path) -> str:
             rec["error"] = env.get("result")
         else:
             rec["parsed"] = parse_json(env.get("result") or "")
+            if mapping:
+                from privacy import restore
+                rec["parsed"] = restore(rec["parsed"], mapping)
+                rec["masked"] = True
     except Exception as e:  # noqa: BLE001
         rec["error"] = f"{type(e).__name__}: {e}; stdout={p.stdout[:300]!r}; stderr={p.stderr[:300]!r}"
     if rec["error"] and ("401" in rec["error"] or "authenticate" in rec["error"].lower() or "limit" in rec["error"].lower()):
@@ -116,12 +134,17 @@ def main():
     ap.add_argument("--mode", choices=["extract", "llm_only"], default="extract")
     ap.add_argument("--only", default="")
     ap.add_argument("--workers", type=int, default=2)
+    ap.add_argument("--mask", action="store_true", help="mask personal data before the LLM (text docs only)")
     a = ap.parse_args()
+    global MASK
+    MASK = a.mask
     truth = json.loads((DOCS / "ground_truth.json").read_text(encoding="utf-8"))
     if a.only:
         keep = set(a.only.split(","))
         truth = [d for d in truth if d["doc_id"] in keep]
-    out_dir = ROOT / "runs" / (f"{a.mode}_{a.model}" + ("" if DOCS.name == "docs" else "_" + DOCS.name))
+    if a.mask:
+        truth = [d for d in truth if not d["is_image"]]   # pixels cannot be masked locally
+    out_dir = ROOT / "runs" / (f"{a.mode}_{a.model}" + ("_mask" if a.mask else "") + ("" if DOCS.name == "docs" else "_" + DOCS.name))
     out_dir.mkdir(parents=True, exist_ok=True)
     with ThreadPoolExecutor(a.workers) as ex:
         for msg in ex.map(lambda d: run_one(d, a.model, a.mode, out_dir), truth):
