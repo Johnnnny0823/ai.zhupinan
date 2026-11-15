@@ -230,3 +230,79 @@ def compute(doc_type: str, w: dict) -> list[Obligation]:
                               "就業服務法第56條第1項", n))
 
     return out
+
+
+# Release API trace mapping. Legacy compute() stays stable for historical scoring.
+# No unverified date from the legacy weekend fallback is exposed by this adapter.
+RULES_VERSION = 'hackathon-2026.11.15'
+
+def law_versions():
+    import hashlib
+    root = Path(__file__).resolve().parent.parent / 'laws'
+    return {p.stem: {'revision': p.read_text(encoding='utf-8').splitlines()[1],
+                     'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
+            for p in sorted(root.glob('*.txt'))}
+
+
+def compute_traced(doc_type: str, w: dict) -> list[dict]:
+    """All date arithmetic and its explanation live alongside compute, never in the model."""
+    import hashlib
+    results = []
+    versions = law_versions()
+    calendar_hash = hashlib.sha256((Path(__file__).resolve().parent.parent/'laws'/'calendar.json').read_bytes()).hexdigest()
+    for o in compute(doc_type, w):
+        key = o.key
+        anchor_key = 'entry_date' if w.get('entry_date') else 'permit_start'
+        if doc_type == '期滿續聘許可函':
+            anchor_key = 'permit_start'
+        event = _p(w.get(anchor_key))
+        raw = _p(o.due)
+        rule = o.note or '依條文所定期間'
+        if key == 'apply_permit':
+            event = _p(w.get('entry_date')); raw = event + timedelta(days=15)
+            rule = '始日不計，入國日加15日；末日依行政程序法第48條第4項順延'
+        elif key == 'health_entry':
+            event = _p(w.get('entry_date'))
+            cur, count = event, 0
+            while count < 3:
+                cur += timedelta(days=1)
+                if not is_off(cur): count += 1
+            raw = cur
+            rule = '入國翌日起，依政府辦公日曆累計3個工作日；休息日不計'
+        elif key.startswith('health_'):
+            month = int(key.removeprefix('health_').removesuffix('m'))
+            raw = add_months(event, month) + timedelta(days=30)
+            rule = f'起算日滿{month}個月之日前後30日（健檢期間；不另作末日順延）'
+        elif key in ('renewal_window','permit_expiry'):
+            event = _p(w.get('permit_end'))
+            raw = add_months(event,-2) if key == 'renewal_window' else event
+            rule = '許可屆滿日前4個月至2個月（不另作末日順延）' if key == 'renewal_window' else '許可屆滿日期（不另作末日順延）'
+        elif key == 'onestop_register':
+            event = _p(w.get('entry_date')); raw = event - timedelta(days=5)
+            rule = '預定入國日減5日；一站式作業規定，線上系統不作假日順延'
+        elif key in ('recheck_report','dorm_change','termination_notice','abscond_notice'):
+            event = _p(w.get('event_date'))
+            n = {'recheck_report':15,'dorm_change':7,'termination_notice':3,'abscond_notice':3}[key]
+            raw = event + timedelta(days=n)
+            rule = f'始日不計，事件日加{n}日；末日依行政程序法第48條第4項順延'
+        elif key == 'replacement_window':
+            event = _p(w.get('event_date'))
+            rule = o.note
+        dates = [d for d in (event, raw, _p(o.due), _p(o.start)) if d]
+        covered = bool(dates) and all(str(d.year) in CAL_YEARS for d in dates)
+        if key == 'replacement_window' and not w.get('notify_date'):
+            covered = False
+            rule += '；實際通報日尚未確認，禁止以推算日期當成事實'
+        law_ids = [code for code, name in [('N0090001','就業服務法'),('N0090027','雇主聘僱外國人許可及管理辦法'),('A0030055','行政程序法'),('L0050018','受聘僱外國人健康檢查管理辦法')] if name in o.basis]
+        if key in ('apply_permit','recheck_report','dorm_change','termination_notice','abscond_notice'):
+            law_ids.append('A0030055')
+        trace = {'event': doc_type, 'event_date': event.isoformat() if event else None,
+                 'start_date': (event + timedelta(days=1)).isoformat() if event and key in ('apply_permit','health_entry','recheck_report','dorm_change','termination_notice','abscond_notice') else (event.isoformat() if event else None),
+                 'rule':rule, 'original_due_date':raw.isoformat() if covered else None,
+                 'holiday_adjustment': (o.note if raw and raw.isoformat()!=o.due else '未順延；依上列規則') if covered else '日曆範圍或起算事實不足，需人工確認',
+                 'final_due_date':o.due if covered else None,
+                 'law_versions': {i:versions[i] for i in set(law_ids)},
+                 'calendar_version':calendar_hash, 'calendar_years':sorted(CAL_YEARS), 'rules_version':RULES_VERSION}
+        results.append({**o.to_dict(), 'due':o.due if covered else None, 'start':o.start if covered else None,
+                        'status':'todo' if covered else 'needs_review', 'calc_trace':trace})
+    return results

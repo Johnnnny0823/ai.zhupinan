@@ -27,3 +27,13 @@ demo/mockup/codex_log*.txt
 demo/mockup/codex_answer.md
 訪談與驗證素材.md
 訪談素材/
+
+# release demo runtime
+.venv/
+*.sqlite*
+*.db
+.pytest_cache/
+.coverage
+.DS_Store
+playwright-report/
+test-results/

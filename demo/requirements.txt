@@ -1,7 +1,2 @@
-fastapi>=0.110
-uvicorn>=0.29
-python-multipart>=0.0.9
-httpx>=0.27
-pydantic>=2
-PyMuPDF>=1.24
-Pillow>=10
+# Tested runtime versions; no front-end build dependencies.
+-r requirements.lock.txt

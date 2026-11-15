@@ -1,10 +1,16 @@
 @echo off
-echo ==========================================
-echo   ¦Ë¸u¦w AI DEMO ±Ò°Ê¤¤...
-echo   ±Ò°Ê«á½Ğ¥ÎÂsÄı¾¹¶}±Ò http://localhost:8765
-echo   ­nÃö³¬½Ğ«ö Ctrl+C
-echo ==========================================
-echo.
-start "" http://localhost:8765
-python -m uvicorn app:app --app-dir "%~dp0demo\server" --host 127.0.0.1 --port 8765
+chcp 65001 >nul
+cd /d "%~dp0"
+if not exist ".venv\Scripts\python.exe" (
+  echo è«‹å…ˆä¾ demo\DEVELOPMENT.md å»ºç«‹ Python 3.12 è™›æ“¬ç’°å¢ƒã€‚
+  pause
+  exit /b 1
+)
+if not exist "demo\.env" (
+  echo è«‹å…ˆè¤‡è£½ demo\.env.example ç‚º demo\.env ä¸¦è¨­å®šç™»å…¥ç¢¼ã€‚
+  pause
+  exit /b 1
+)
+echo ç«¹è˜å®‰åˆæˆç¤ºç¯„ï¼š http://127.0.0.1:8765
+.venv\Scripts\python.exe -m demo.run serve
 pause
