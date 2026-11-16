@@ -27,8 +27,8 @@
 在 repo 根目錄開 PowerShell：
 
 ```powershell
-git clone https://github.com/RoyLin0905/ai.zhupinan.git
-cd ai.zhupinan
+git clone https://github.com/z1nnz/zhupinan.git
+cd zhupinan
 py -3.12 -m venv .venv
 .venv\Scripts\python -m pip install -r demo\requirements.txt
 ```
