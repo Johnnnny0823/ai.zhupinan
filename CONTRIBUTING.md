@@ -11,8 +11,8 @@
 | `feature/<人或代號>-sXX-主題` | 每項工作一支，例：`feature/roy-s04-today-list`、`feature/claude-s01-sqlite`。從最新 `main` 開。 |
 
 ```bash
-git clone https://github.com/RoyLin0905/ai.zhupinan.git
-cd ai.zhupinan
+git clone https://github.com/z1nnz/zhupinan.git
+cd zhupinan
 git switch -c feature/<代號>-s01-<主題> origin/main
 # ……修改、測試……
 git push -u origin feature/<代號>-s01-<主題>
