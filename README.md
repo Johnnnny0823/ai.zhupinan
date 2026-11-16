@@ -7,6 +7,8 @@
 
 > ⚠️ 本系統為競賽原型。所有測試文件均為**合成資料**（標註「非真實公文」，人名、文號、地址皆虛構）；系統輸出**不構成法律意見**，個案請洽主管機關或 1955 專線。
 
+> 🛠 **決賽開發（2026-11-15 起）**：決賽協作庫為 [z1nnz/zhupinan](https://github.com/z1nnz/zhupinan)，與原始程式庫 [Johnnnny0823/ai.zhupinan](https://github.com/Johnnnny0823/ai.zhupinan) 共用完整提交歷史。開發範圍見 [`docs/竹聘安_決賽系統開發_130人時.md`](docs/竹聘安_決賽系統開發_130人時.md)，協作規則見 [`CONTRIBUTING.md`](CONTRIBUTING.md)，啟動、測試與資料重置見 [`demo/DEVELOPMENT.md`](demo/DEVELOPMENT.md)，API 見 [`demo/API.md`](demo/API.md)。`design/concept/` 是**靜態介面草稿**，不是已實作功能。
+
 ---
 
 ## 目錄
@@ -180,6 +182,8 @@
 完整Windows／macOS啟動、環境變數、模型備援、LINE每日排程、重置與遷移：
 [demo/DEVELOPMENT.md](demo/DEVELOPMENT.md)。API範例見[demo/API.md](demo/API.md)。
 驗收結果及未完成項目見[demo/ACCEPTANCE.md](demo/ACCEPTANCE.md)；現場路線見[demo/DEMO_SCRIPT.md](demo/DEMO_SCRIPT.md)。
+
+共同開發規則（分支、PR、協作者、給 Claude Code／Codex 的說明）見 [CONTRIBUTING.md](CONTRIBUTING.md)、[AI_WORKFLOW.md](AI_WORKFLOW.md)。
 
 雇主流程：選合成文件 → 逐欄修改／確認 → 查看待辦法源與計算 → 官方入口辦理 → 上傳證明 → 雇主核對完成。
 LINE必須先取得一次性配對碼並在指定對話輸入，只寄該雇主案件；不向所有好友群發。

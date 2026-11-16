@@ -30,8 +30,12 @@ demo/mockup/codex_answer.md
 
 # release demo runtime
 .venv/
+.env
 *.sqlite*
 *.db
+*.db-journal
+*.db-wal
+*.db-shm
 .pytest_cache/
 .coverage
 .DS_Store
