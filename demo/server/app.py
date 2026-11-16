@@ -22,6 +22,8 @@ import httpx
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Response, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
+import starlette.formparsers
 from pydantic import BaseModel
 
 HERE = Path(__file__).resolve().parent
@@ -29,6 +31,7 @@ VALID = HERE.parent.parent / "validation" / "scripts"
 sys.path.insert(0, str(VALID))
 
 import auth  # noqa: E402
+import store  # noqa: E402
 import documents  # noqa: E402
 import db  # noqa: E402
 import llm  # noqa: E402
@@ -39,7 +42,7 @@ from privacy import PROMPT_NOTE, mask, restore  # noqa: E402  (personal data mas
 from rules import CAL_YEARS, compute  # noqa: E402
 
 SERVICE = "zhupinan-demo"
-SERVICE_VERSION = "2026.11-finals-s00"
+SERVICE_VERSION = "2026.11-finals-s02"
 LAWS = HERE.parent.parent / "validation" / "laws"
 
 # DEMO_DATA=true is the single marker that this server runs on synthetic data only.
@@ -55,6 +58,10 @@ UPLOADS = Path(os.environ.get("ZP_UPLOAD_DIR") or HERE / "uploads")
 UPLOADS.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="竹聘安 AI demo")
+
+# Uploads up to the 15 MB limit stay in memory: Starlette would otherwise spool anything over 1 MB to an OS temp file.
+starlette.formparsers.MultiPartParser.spool_max_size = documents.MAX_BYTES + 1024 * 1024
+MAX_REQUEST_BYTES = documents.MAX_BYTES + 1024 * 1024   # file plus multipart overhead
 
 # ---------------------------------------------------------------- database, sessions (S01)
 db.init_db()
@@ -78,6 +85,9 @@ async def guard(request: Request, call_next):
     """Reject cross-site writes before any handler runs; never let case or Q&A responses be cached."""
     if request.url.path.startswith("/api/") and auth.cross_site(request):
         return JSONResponse({"detail": "拒絕跨站請求"}, status_code=403)
+    length = request.headers.get("content-length")
+    if length and length.isdigit() and int(length) > MAX_REQUEST_BYTES:
+        return JSONResponse({"detail": "檔案太大（上限 15 MB）"}, status_code=413)  # refused before the body is read
     response = await call_next(request)
     if request.url.path.startswith("/api/"):
         response.headers["Cache-Control"] = "no-store"
@@ -148,11 +158,11 @@ def get_case(case_id: int, acct=EMPLOYER, con: sqlite3.Connection = DB):
 def demo_reset(acct=Depends(auth.require_demo_admin), con: sqlite3.Connection = DB):
     db.reset_demo(con)
     documents.forget_account(None)
-    shutil.rmtree(documents.tmp_root(), ignore_errors=True)
-    for folder in (UPLOADS, llm.TMP):
-        if folder.exists():
-            shutil.rmtree(folder, ignore_errors=True)
-        folder.mkdir(exist_ok=True)
+    if UPLOADS.exists():  # files left by pre-S02 versions; nothing writes here any more
+        shutil.rmtree(UPLOADS, ignore_errors=True)
+    UPLOADS.mkdir(exist_ok=True)
+    # model calls in progress clean up their own temp files; only leftovers from crashes are removed here
+    documents.sweep_stale([documents.tmp_root(), llm.TMP])
     with db.tx(con):
         db.audit(con, acct["id"], None, "demo", None, "reset")
     return {"ok": True}
@@ -164,8 +174,7 @@ DEMO_EXTRACT_SYS = EXTRACT_SYS + """
 只列出非 null 的欄位，原文片段照抄文件（例如「一一五年三月十日」），不要改寫。"""
 
 
-DATE_FIELDS = ("entry_date", "permit_start", "permit_end", "event_date", "notify_date")
-KEEP_FIELDS = ("name", "job") + DATE_FIELDS   # the only worker fields stored after confirmation
+DATE_FIELDS, KEEP_FIELDS = store.DATE_FIELDS, store.KEEP_FIELDS
 
 
 def read_with_llm(system: str, up: documents.Upload, intro: str):
@@ -196,7 +205,8 @@ async def read_upload(file: UploadFile) -> documents.Upload:
 async def extract(file: UploadFile = File(...), acct=EMPLOYER):
     """Read a document for the user to check. Writes nothing to the case."""
     up = await read_upload(file)
-    data, model, masked = read_with_llm(DEMO_EXTRACT_SYS, up, "以下是雇主上傳的文件內容：")
+    # the model call takes seconds; run it off the event loop so other users are not frozen meanwhile
+    data, model, masked = await run_in_threadpool(read_with_llm, DEMO_EXTRACT_SYS, up, "以下是雇主上傳的文件內容：")
     kind = data.get("doc_type") or ""
     fields, flagged, workers = [], {}, []
     for i, w in enumerate(data.get("workers") or []):
@@ -277,44 +287,16 @@ def _compute_items(kind: str, workers: list[dict]) -> list[dict]:
     return items
 
 
-def _save_document(con: sqlite3.Connection, acct, case, kind: str, workers: list[dict], items: list[dict],
-                   filename: str | None, digest: str | None) -> tuple[int, list[int], int]:
-    """Store only the confirmed fields (no original) and the tasks, in one transaction."""
-    kept = [{k: w.get(k) for k in KEEP_FIELDS if w.get(k)} for w in workers]
-    fields = json.dumps({"doc_type": kind, "workers": kept}, ensure_ascii=False, sort_keys=True)
-    added, task_ids = 0, []
-    with db.tx(con):
-        doc_id = con.execute(
-            "INSERT INTO documents(case_id, kind, source_filename, confirmed_fields_json, confirmed_at, source_digest) "
-            "VALUES (?,?,?,?,?,?)",
-            (case["id"], kind, filename, fields, db.now(), digest or hashlib.sha256(fields.encode("utf-8")).hexdigest())).lastrowid
-        for o in items:
-            cur = con.execute(
-                "INSERT OR IGNORE INTO tasks(case_id, document_id, rule_key, worker, worker_norm, title, start_date, "
-                "due_date, law_ref, note, office, official_url, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
-                (case["id"], doc_id, o["key"], o["worker"], _norm_worker(o["worker"]), o["title"], o.get("start"),
-                 o["due"], o.get("basis"), o.get("note"), o.get("office"), (o.get("online") or {}).get("url"), db.now()))
-            added += cur.rowcount
-            row = con.execute(
-                "SELECT id FROM tasks WHERE case_id=? AND worker_norm=? AND rule_key=? AND IFNULL(start_date,'')=? AND due_date=?",
-                (case["id"], _norm_worker(o["worker"]), o["key"], o.get("start") or "", o["due"])).fetchone()
-            task_ids.append(row["id"])
-        con.execute("UPDATE cases SET updated_at=? WHERE id=?", (db.now(), case["id"]))
-        db.audit(con, acct["id"], case["id"], "document", doc_id, f"confirm:{added}_tasks")
-    return doc_id, task_ids, added
-
-
 @app.post("/api/obligations")
 def obligations(body: Confirmed, acct=EMPLOYER, con: sqlite3.Connection = DB):
     """Compute deadlines with the deterministic rules. save=true stores user-typed values directly
     (manual entry); documents read by the AI go through /api/documents/confirm instead."""
-    case = owned_case(con, acct, body.case_id) if body.save else None
+    if body.save:  # same single write path as the confirm screen (manual entry, no AI extraction)
+        r = confirm_document(ConfirmDoc(document_kind=body.doc_type, workers=body.workers, case_id=body.case_id),
+                             acct, con)
+        return {**r, "obligations": r["obligations"]}
     items = _compute_items(body.doc_type, body.workers)
-    added = len(items)
-    if body.save:
-        _, _, added = _save_document(con, acct, case, body.doc_type, body.workers, items, body.source_filename, None)
-    return {"obligations": items, "added": added, "calendar_years": sorted(CAL_YEARS),
-            "case_id": case["id"] if case else None}
+    return {"obligations": items, "added": len(items), "calendar_years": sorted(CAL_YEARS), "case_id": None}
 
 
 class ConfirmDoc(BaseModel):
@@ -350,28 +332,31 @@ def confirm_document(body: ConfirmDoc, acct=EMPLOYER, con: sqlite3.Connection = 
     items = _compute_items(body.document_kind, body.workers)
     if body.document_kind in RULE_KINDS and not items:
         warnings.append("填入的日期沒有產生任何期限；請確認日期欄位，必要時人工確認")
-    _, task_ids, added = _save_document(con, acct, case, body.document_kind, body.workers, items,
-                                        pending.filename if pending else "手動輸入", pending.digest if pending else None)
+    _, task_ids, added = store.save_document(con, acct["id"], case["id"], body.document_kind, body.workers, items,
+                                             pending.filename if pending else "手動輸入", pending.digest if pending else None)
     if pending:
         documents.take(body.extract_id, acct["id"])  # consumed only after a successful save
     return {"task_ids": [str(x) for x in task_ids], "added": added, "warnings": warnings, "obligations": items,
             "case_id": case["id"], "calendar_years": sorted(CAL_YEARS)}
 
 
-def _norm_worker(name: str) -> str:
-    """Same worker + same task + same deadline = same to-do (prevents duplicates)."""
-    return (name or "").strip().upper()
-
-
-def _task_items(con: sqlite3.Connection, owner_id: int, case_id: int | None = None) -> list[dict]:
-    """All tasks of the owner's cases, shaped like the pre-S01 /api/todos items. Owner filter is in SQL."""
-    sql = ("SELECT t.*, c.display_code FROM tasks t JOIN cases c ON c.id = t.case_id WHERE c.owner_id = ?"
-           + (" AND c.id = ?" if case_id is not None else "") + " ORDER BY t.due_date, t.id")
-    rows = con.execute(sql, (owner_id, case_id) if case_id is not None else (owner_id,)).fetchall()
+def _task_items(con: sqlite3.Connection, owner_id: int, case_id: int | None = None,
+                task_id: int | None = None) -> list[dict]:
+    """Tasks of the owner's cases (optionally one case or one task) with their latest proof, in one query.
+    The owner filter is in SQL."""
+    sql = ("SELECT t.*, c.display_code, p.detail_json AS proof_json FROM tasks t JOIN cases c ON c.id = t.case_id "
+           "LEFT JOIN proofs p ON p.id = (SELECT MAX(id) FROM proofs WHERE task_id = t.id) WHERE c.owner_id = ?")
+    args: list = [owner_id]
+    if case_id is not None:
+        sql += " AND c.id = ?"
+        args.append(case_id)
+    if task_id is not None:
+        sql += " AND t.id = ?"
+        args.append(task_id)
+    rows = con.execute(sql + " ORDER BY t.due_date, t.id", args).fetchall()
     items = []
     for t in rows:
-        p = con.execute("SELECT * FROM proofs WHERE task_id=? ORDER BY id DESC LIMIT 1", (t["id"],)).fetchone()
-        proof = json.loads(p["detail_json"]) if p and p["detail_json"] else None
+        proof = json.loads(t["proof_json"]) if t["proof_json"] else None
         o = {"id": str(t["id"]), "case_id": t["case_id"], "case_code": t["display_code"], "key": t["rule_key"],
              "worker": t["worker"], "title": t["title"], "start": t["start_date"], "due": t["due_date"],
              "basis": t["law_ref"], "note": t["note"], "status": t["status"], "assigned": t["assigned"],
@@ -409,11 +394,10 @@ def _find_todo(con: sqlite3.Connection, acct: sqlite3.Row, tid: str) -> dict:
     """The caller's own task, or 404."""
     if not tid.isdigit():
         raise HTTPException(404, "找不到這項待辦")
-    row = con.execute("SELECT t.case_id FROM tasks t JOIN cases c ON c.id = t.case_id WHERE t.id=? AND c.owner_id=?",
-                      (int(tid), acct["id"])).fetchone()
-    if row is None:
+    found = _task_items(con, acct["id"], task_id=int(tid))
+    if not found:
         raise HTTPException(404, "找不到這項待辦")
-    return next(o for o in _task_items(con, acct["id"], row["case_id"]) if o["id"] == tid)
+    return found[0]
 
 
 class Assign(BaseModel):
@@ -490,7 +474,7 @@ async def upload_proof(tid: str, file: UploadFile = File(...), by: str = Form("�
     # the worker's name is NOT sent: judge_proof compares names locally after the model answers
     sys_prompt = PROOF_SYS + f"\n\n待辦事項：{task['title']}\n法定期限：" + \
         (f"{task['start']} ～ {task['due']}" if task.get("start") else f"{task['due']} 前")
-    data, model, _ = read_with_llm(sys_prompt, up, "以下是上傳的辦理證明：")
+    data, model, _ = await run_in_threadpool(read_with_llm, sys_prompt, up, "以下是上傳的辦理證明：")
     result = judge_proof(task, data)
     result.update({"file": None, "filename": file.filename, "uploaded_by": by, "original_kept": False,
                    "uploaded_at": datetime.now().isoformat(timespec="minutes"), "model": model})

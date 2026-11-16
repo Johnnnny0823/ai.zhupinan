@@ -12,9 +12,11 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
 import shutil
 import tempfile
 import time
+import unicodedata
 import uuid
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -62,6 +64,27 @@ def tmp_root() -> Path:
     return p
 
 
+def decode_text(raw: bytes) -> str | None:
+    """UTF-8 (with or without BOM), UTF-16 with BOM (Notepad "Unicode"), or Big5/CP950 that is plainly text."""
+    if raw.startswith((b"\xff\xfe", b"\xfe\xff")):
+        try:
+            return raw.decode("utf-16")
+        except UnicodeDecodeError:
+            return None
+    if b"\x00" in raw[:8192]:
+        return None
+    for enc in ("utf-8-sig", "cp950"):
+        try:
+            s = raw.decode(enc)
+        except UnicodeDecodeError:
+            continue
+        sample = s[:20000]
+        printable = sum(ch.isprintable() or ch in "\r\n\t" for ch in sample)
+        if sample and printable / len(sample) > 0.97:
+            return s
+    return None
+
+
 def sniff(raw: bytes) -> str | None:
     if raw.startswith(b"%PDF-"):
         return "pdf"
@@ -69,13 +92,7 @@ def sniff(raw: bytes) -> str | None:
         return "png"
     if raw.startswith(b"\xff\xd8\xff"):
         return "jpeg"
-    if b"\x00" in raw[:8192]:
-        return None
-    try:
-        raw.decode("utf-8-sig")
-        return "text"
-    except UnicodeDecodeError:
-        return None
+    return "text" if decode_text(raw) is not None else None
 
 
 @dataclass
@@ -105,13 +122,15 @@ def inspect(raw: bytes, filename: str) -> Upload:
     if claimed is None:
         raise HTTPException(415, "只接受 JPG、PNG、PDF 或 TXT 檔案")
     actual = sniff(raw)
+    if actual is None and claimed == "text":
+        raise HTTPException(415, "文字檔無法辨識：請另存為 UTF-8 編碼的純文字檔")
     if actual != claimed:
         raise HTTPException(415, "檔案內容與副檔名不符，請確認檔案格式（只接受 JPG、PNG、PDF、TXT）")
     digest = hashlib.sha256(raw).hexdigest()
     synthetic = digest in SYNTHETIC_DIGESTS
     up = Upload(filename=filename, digest=digest, kind="text", synthetic_sample=synthetic)
     if actual == "text":
-        up.text = raw.decode("utf-8-sig")
+        up.text = decode_text(raw)
         return up
     if actual in ("png", "jpeg"):
         up.kind, up.image_bytes, up.image_suffix = "image", raw, ".png" if actual == "png" else ".jpg"
@@ -160,8 +179,33 @@ def image_file(up: Upload):
         shutil.rmtree(folder, ignore_errors=True)
 
 
+def sweep_stale(folders: list[Path], older_than: float = 600) -> None:
+    """Remove leftovers older than `older_than` seconds (e.g. after a crash). Fresh files belong to calls that
+    are still running and are left alone; every call removes its own files in `finally`."""
+    cutoff = time.time() - older_than
+    for folder in folders:
+        if not folder.exists():
+            continue
+        for p in sorted(folder.rglob("*"), key=lambda x: len(x.parts), reverse=True):
+            try:
+                if p.is_dir():
+                    if p.stat().st_mtime < cutoff:
+                        p.rmdir()  # only succeeds when empty, so a folder holding fresh files survives
+                elif p.stat().st_mtime < cutoff:
+                    p.unlink()
+            except OSError:
+                pass
+
+
 # ---------------------------------------------------------------- warnings per date field
 CN_DIGITS = "〇零一二三四五六七八九十"
+_YEAR = re.compile(r"(?<!\d)(\d{1,4})\s*(?:年|[/.\-])\s*\d{1,2}")
+
+
+def _roc_year(s: str) -> bool:
+    """115年3月5日, 115/03/05, 115.3.5, 115-03-05: a leading year below 1911 is an ROC year."""
+    m = _YEAR.search(unicodedata.normalize("NFKC", s))
+    return bool(m and int(m.group(1)) < 1911)
 
 
 def field_warning(excerpt: str | None, is_image: bool) -> str | None:
@@ -172,10 +216,8 @@ def field_warning(excerpt: str | None, is_image: bool) -> str | None:
         reasons.append("掃描文件，請對照原件核對")
     if any(c in s for c in CN_DIGITS):
         reasons.append("國字日期，請核對換算")
-    elif "年" in s and any(ch.isdigit() for ch in s.split("年")[0]):
-        year = "".join(ch for ch in s.split("年")[0] if ch.isdigit())
-        if year and int(year) < 1911:
-            reasons.append("民國年已換算為西元，請核對")
+    elif "民國" in s or _roc_year(s):
+        reasons.append("民國年已換算為西元，請核對")
     if not s:
         reasons.append("找不到原文片段，請核對")
     return "；".join(reasons) or None

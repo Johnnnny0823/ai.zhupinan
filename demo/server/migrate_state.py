@@ -10,7 +10,6 @@ Proof results are not migrated: re-upload proofs after migration (S02/S03 change
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import shutil
 import sys
@@ -20,6 +19,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import db  # noqa: E402
+import store  # noqa: E402
 
 
 def main() -> int:
@@ -60,20 +60,11 @@ def main() -> int:
         print(f"已備份到 {backup}")
 
         added = 0
+        for d in docs:  # one transaction per document, through the same write path as the API
+            _, _, n = store.save_document(con, None, case["id"], d.get("doc_type") or "未知", d.get("workers", []),
+                                          d.get("obligations", []), "migrated:state.json", None)
+            added += n
         with db.tx(con):
-            for d in docs:
-                fields = json.dumps({"doc_type": d.get("doc_type"), "workers": d.get("workers", [])},
-                                    ensure_ascii=False, sort_keys=True)
-                doc_id = con.execute(
-                    "INSERT INTO documents(case_id, kind, source_filename, confirmed_fields_json, confirmed_at, source_digest) "
-                    "VALUES (?,?,?,?,?,?)", (case["id"], d.get("doc_type") or "未知", "migrated:state.json", fields,
-                                             db.now(), hashlib.sha256(fields.encode("utf-8")).hexdigest())).lastrowid
-                for o in d.get("obligations", []):
-                    added += con.execute(
-                        "INSERT OR IGNORE INTO tasks(case_id, document_id, rule_key, worker, worker_norm, title, start_date, "
-                        "due_date, law_ref, note, created_at) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                        (case["id"], doc_id, o["key"], o["worker"], o["worker"].strip().upper(), o["title"],
-                         o.get("start"), o["due"], o.get("basis"), o.get("note"), db.now())).rowcount
             db.audit(con, None, case["id"], "migration", None, f"state.json:{added}_tasks")
         print(f"完成：新增 {added} 項待辦（重複的已略過）。")
         return 0

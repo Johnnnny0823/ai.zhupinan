@@ -80,25 +80,42 @@ _fails: dict[str, list[float]] = {}
 _lock = threading.Lock()
 
 
-def _key(request: Request, account: str) -> str:
-    return f"{account}|{request.client.host if request.client else '-'}"
+ACCOUNT_MAX_FAILS = 50  # per account across all clients: bounds guessing even if X-Forwarded-For is forged
 
 
-def _locked(key: str) -> bool:
+def client_ip(request: Request) -> str:
+    """Behind a tunnel or reverse proxy every request comes from 127.0.0.1; the proxy's X-Forwarded-For
+    carries the real client. Forging it only moves a guesser between per-client buckets, and the
+    account-wide cap still applies; login codes are random 48-bit strings, so guessing is not practical."""
+    fwd = request.headers.get("x-forwarded-for", "").split(",")[0].strip()
+    return fwd or (request.client.host if request.client else "-")
+
+
+def _keys(request: Request, account: str) -> tuple[str, str]:
+    return f"{account}|{client_ip(request)}", f"{account}|*"
+
+
+def _recent(key: str) -> list[float]:
+    recent = [t for t in _fails.get(key, []) if time.monotonic() - t < FAIL_WINDOW]
+    _fails[key] = recent
+    return recent
+
+
+def _locked(request: Request, account: str) -> bool:
+    per_client, per_account = _keys(request, account)
     with _lock:
-        recent = [t for t in _fails.get(key, []) if time.monotonic() - t < FAIL_WINDOW]
-        _fails[key] = recent
-        return len(recent) >= MAX_FAILS
+        return len(_recent(per_client)) >= MAX_FAILS or len(_recent(per_account)) >= ACCOUNT_MAX_FAILS
 
 
-def _fail(key: str) -> None:
+def _fail(request: Request, account: str) -> None:
     with _lock:
-        _fails.setdefault(key, []).append(time.monotonic())
+        for k in _keys(request, account):
+            _fails.setdefault(k, []).append(time.monotonic())
 
 
 def login(con: sqlite3.Connection, request: Request, response: Response, account: str, code: str) -> sqlite3.Row:
-    key = _key(request, account)
-    if _locked(key):
+    key = _keys(request, account)[0]
+    if _locked(request, account):
         raise HTTPException(429, "嘗試次數過多，請 10 分鐘後再試")
     acct = con.execute("SELECT * FROM accounts WHERE login_name=?", (account,)).fetchone()
     match = None
@@ -111,7 +128,7 @@ def login(con: sqlite3.Connection, request: Request, response: Response, account
                 match = row
                 break
     if match is None:
-        _fail(key)
+        _fail(request, account)
         raise HTTPException(401, "帳號或登入碼不正確")  # same message whether or not the account exists
     token = secrets.token_urlsafe(32)
     expires = datetime.now(timezone.utc) + timedelta(hours=SESSION_HOURS)
