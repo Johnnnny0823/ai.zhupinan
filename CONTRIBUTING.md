@@ -34,11 +34,11 @@ git clone https://github.com/z1nnz/zhupinan.git
 cd zhupinan
 git config pull.ff only
 py -3.12 -m venv .venv
-.venv\Scripts\python -m pip install -r demo\requirements.txt
-.venv\Scripts\python -m unittest discover -s demo\tests
+.venv\Scripts\python -m pip install -r demo\requirements-dev.txt
+.venv\Scripts\python -m pytest demo\tests -q
 ```
 
-最後一行應該顯示 `OK`。啟動方式、登入碼與資料重置請看 [`demo/DEVELOPMENT.md`](demo/DEVELOPMENT.md)。
+最後一行應該顯示 `passed`，而且沒有 `failed`。要啟動網頁前，先把 `demo\.env.example` 複製成 `demo\.env`，填入三個至少 8 字元、彼此不同的示範登入碼（這個檔不會進版控），再執行 `.venv\Scripts\python -m demo.run seed` 與 `啟動DEMO.bat`。啟動方式、登入碼與資料重置請看 [`demo/DEVELOPMENT.md`](demo/DEVELOPMENT.md)。
 
 第一次推送時，Git 會跳出 GitHub 登入視窗，用你自己的帳號登入即可。如果使用 GitHub CLI，執行 `gh auth login`。
 
@@ -93,7 +93,7 @@ git push -u origin feature/b-s04-today-list
 ```powershell
 git fetch origin
 git merge origin/main
-.venv\Scripts\python -m unittest discover -s demo\tests
+.venv\Scripts\python -m pytest demo\tests -q
 git push
 ```
 
@@ -103,8 +103,8 @@ git push
 
 ## 驗證
 
-- 修改程式後，至少要跑 `.venv\Scripts\python -m unittest discover -s demo\tests`，並在 PR 附上結果。
-- 動到期限規則、擷取、問答或處分書檢核時，另外跑 `demo/DEVELOPMENT.md` 第 5.2 節的離線基準，`git status` 不能出現差異。
+- 修改程式後，至少要跑 `.venv\Scripts\python -m pytest demo\tests -q`，並在 PR 附上結果。
+- 動到期限規則、擷取、問答或處分書檢核時，另外跑 `python -m demo.verify_baseline` 離線基準，`git status` 不能出現差異。
 - 只在本機看過、沒有實際操作過的功能，PR 要寫「未實測」。
 
 ## 給 AI 助手（Claude Code、Codex）

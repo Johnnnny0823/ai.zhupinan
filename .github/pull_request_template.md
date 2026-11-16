@@ -16,8 +16,8 @@
 
 ## 驗收證據
 
-- [ ] `.venv\Scripts\python -m unittest discover -s demo\tests` → 結果：
-- [ ] 動到規則／擷取／問答／處分書：跑過 `demo/DEVELOPMENT.md` 5.2 離線基準，`git status` 無差異
+- [ ] `.venv\Scripts\python -m pytest demo\tests -q` → 結果：
+- [ ] 動到規則／擷取／問答／處分書：跑過 `python -m demo.verify_baseline` 離線基準，`git status` 無差異
 - [ ] 介面：附 320／390／1280 px 截圖，沒有橫向捲動
 - 工作包驗收情境逐條結果：
 

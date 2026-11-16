@@ -39,10 +39,10 @@
 ## 3. 驗證與 PR
 
 ```powershell
-.venv\Scripts\python -m unittest discover -s demo\tests
+.venv\Scripts\python -m pytest demo\tests -q
 ```
 
-- 動到規則、擷取、問答或處分書時，加跑 `demo/DEVELOPMENT.md` 第 5.2 節的離線基準。
+- 動到規則、擷取、問答或處分書時，加跑 `python -m demo.verify_baseline` 離線基準。
 - 介面變更：附上手機 320／390 px 與桌面 1280 px 的截圖，並確認畫面沒有橫向捲動。
 - 提交前先跑 `git diff --check` 和 `git status --short`；不可提交 `.env`、`*.db`、上傳檔。
 - PR 照範本填寫：工作包、使用者看得到的變化、變更檔案、API／資料表、測試命令與結果、截圖、已知限制與交接事項。

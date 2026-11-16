@@ -1,0 +1,308 @@
+{
+  "synthetic": true,
+  "mode": "預存示範結果",
+  "document": {
+    "label": "產業移工入國通報（合成）",
+    "kind": "入國通報受理證明書",
+    "text": "【合成示範・非真實公文】\n入國通報受理證明書\n案件代號：DEMO-B01\n外國人姓名：DEMO WORKER\n入國日期：2026-11-13\n",
+    "fields": [
+      {
+        "name": "移工代號01",
+        "entry_date": "2026-11-13",
+        "evidence": {
+          "entry_date": "入國日期：2026-11-13"
+        }
+      }
+    ]
+  },
+  "tasks": [
+    {
+      "key": "apply_permit",
+      "worker": "移工代號01",
+      "title": "申請聘僱許可",
+      "start": null,
+      "due": "2026-11-30",
+      "basis": "雇主聘僱外國人許可及管理辦法第36條",
+      "note": "末日2026-11-28為星期六，依行政程序法第48條第4項順延至2026-11-30",
+      "status": "todo",
+      "calc_trace": {
+        "event": "入國通報受理證明書",
+        "event_date": "2026-11-13",
+        "start_date": "2026-11-14",
+        "rule": "始日不計，入國日加15日；末日依行政程序法第48條第4項順延",
+        "original_due_date": "2026-11-28",
+        "holiday_adjustment": "末日2026-11-28為星期六，依行政程序法第48條第4項順延至2026-11-30",
+        "final_due_date": "2026-11-30",
+        "law_versions": {
+          "N0090027": {
+            "revision": "修正日期：民國 114 年 12 月 30 日",
+            "sha256": "6d07cd18ce27fd2137976efda266f8350f13fc954ad9f79886356f59c154a125"
+          },
+          "A0030055": {
+            "revision": "修正日期：民國 110 年 01 月 20 日",
+            "sha256": "a679e1d110a5b8f258812bd01b9903908bdc7c8816ce79cda441ed422f16ae1a"
+          }
+        },
+        "calendar_version": "a595966774e8e33180570eeb1bff5cf6acd7a4303546393cd057be71c077f9b3",
+        "calendar_years": [
+          "2026",
+          "2027"
+        ],
+        "rules_version": "hackathon-2026.11.15",
+        "source_excerpts": {
+          "entry_date": "入國日期：2026-11-13"
+        }
+      },
+      "rule_key": "apply_permit:0"
+    },
+    {
+      "key": "health_entry",
+      "worker": "移工代號01",
+      "title": "安排入國三日內健康檢查",
+      "start": null,
+      "due": "2026-11-18",
+      "basis": "受聘僱外國人健康檢查管理辦法第3條第3款",
+      "note": "入國後三個工作日內（依人事行政總處辦公日曆）",
+      "status": "todo",
+      "calc_trace": {
+        "event": "入國通報受理證明書",
+        "event_date": "2026-11-13",
+        "start_date": "2026-11-14",
+        "rule": "入國翌日起，依政府辦公日曆累計3個工作日；休息日不計",
+        "original_due_date": "2026-11-18",
+        "holiday_adjustment": "未順延；依上列規則",
+        "final_due_date": "2026-11-18",
+        "law_versions": {
+          "L0050018": {
+            "revision": "修正日期：民國 114 年 12 月 31 日",
+            "sha256": "3f8bae884f504e6667f609ebcaeb575708034eaf3d78facbdf576e3461adcc28"
+          }
+        },
+        "calendar_version": "a595966774e8e33180570eeb1bff5cf6acd7a4303546393cd057be71c077f9b3",
+        "calendar_years": [
+          "2026",
+          "2027"
+        ],
+        "rules_version": "hackathon-2026.11.15",
+        "source_excerpts": {
+          "entry_date": "入國日期：2026-11-13"
+        }
+      },
+      "rule_key": "health_entry:0"
+    },
+    {
+      "key": "health_6m",
+      "worker": "移工代號01",
+      "title": "安排第6個月定期健康檢查",
+      "start": "2027-04-13",
+      "due": "2027-06-12",
+      "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+      "note": "以入國日起算滿6個月之日（2027-05-13）前後30日",
+      "status": "todo",
+      "calc_trace": {
+        "event": "入國通報受理證明書",
+        "event_date": "2026-11-13",
+        "start_date": "2026-11-13",
+        "rule": "起算日滿6個月之日前後30日（健檢期間；不另作末日順延）",
+        "original_due_date": "2027-06-12",
+        "holiday_adjustment": "未順延；依上列規則",
+        "final_due_date": "2027-06-12",
+        "law_versions": {
+          "L0050018": {
+            "revision": "修正日期：民國 114 年 12 月 31 日",
+            "sha256": "3f8bae884f504e6667f609ebcaeb575708034eaf3d78facbdf576e3461adcc28"
+          },
+          "N0090001": {
+            "revision": "修正日期：民國 114 年 01 月 20 日",
+            "sha256": "a437769a1a8efc341de7ada6e3f99dd18950f1a8d92b876aecfd0dfdef134286"
+          }
+        },
+        "calendar_version": "a595966774e8e33180570eeb1bff5cf6acd7a4303546393cd057be71c077f9b3",
+        "calendar_years": [
+          "2026",
+          "2027"
+        ],
+        "rules_version": "hackathon-2026.11.15",
+        "source_excerpts": {
+          "entry_date": "入國日期：2026-11-13"
+        }
+      },
+      "rule_key": "health_6m:0"
+    },
+    {
+      "key": "health_18m",
+      "worker": "移工代號01",
+      "title": "安排第18個月定期健康檢查",
+      "start": null,
+      "due": null,
+      "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+      "note": "以入國日起算滿18個月之日（2028-05-13）前後30日",
+      "status": "needs_review",
+      "calc_trace": {
+        "event": "入國通報受理證明書",
+        "event_date": "2026-11-13",
+        "start_date": "2026-11-13",
+        "rule": "起算日滿18個月之日前後30日（健檢期間；不另作末日順延）",
+        "original_due_date": null,
+        "holiday_adjustment": "日曆範圍或起算事實不足，需人工確認",
+        "final_due_date": null,
+        "law_versions": {
+          "L0050018": {
+            "revision": "修正日期：民國 114 年 12 月 31 日",
+            "sha256": "3f8bae884f504e6667f609ebcaeb575708034eaf3d78facbdf576e3461adcc28"
+          },
+          "N0090001": {
+            "revision": "修正日期：民國 114 年 01 月 20 日",
+            "sha256": "a437769a1a8efc341de7ada6e3f99dd18950f1a8d92b876aecfd0dfdef134286"
+          }
+        },
+        "calendar_version": "a595966774e8e33180570eeb1bff5cf6acd7a4303546393cd057be71c077f9b3",
+        "calendar_years": [
+          "2026",
+          "2027"
+        ],
+        "rules_version": "hackathon-2026.11.15",
+        "source_excerpts": {
+          "entry_date": "入國日期：2026-11-13"
+        }
+      },
+      "rule_key": "health_18m:0"
+    },
+    {
+      "key": "health_30m",
+      "worker": "移工代號01",
+      "title": "安排第30個月定期健康檢查",
+      "start": null,
+      "due": null,
+      "basis": "受聘僱外國人健康檢查管理辦法第3條第4款、第6條第1項第2款；就業服務法第57條第5款",
+      "note": "以入國日起算滿30個月之日（2029-05-13）前後30日",
+      "status": "needs_review",
+      "calc_trace": {
+        "event": "入國通報受理證明書",
+        "event_date": "2026-11-13",
+        "start_date": "2026-11-13",
+        "rule": "起算日滿30個月之日前後30日（健檢期間；不另作末日順延）",
+        "original_due_date": null,
+        "holiday_adjustment": "日曆範圍或起算事實不足，需人工確認",
+        "final_due_date": null,
+        "law_versions": {
+          "L0050018": {
+            "revision": "修正日期：民國 114 年 12 月 31 日",
+            "sha256": "3f8bae884f504e6667f609ebcaeb575708034eaf3d78facbdf576e3461adcc28"
+          },
+          "N0090001": {
+            "revision": "修正日期：民國 114 年 01 月 20 日",
+            "sha256": "a437769a1a8efc341de7ada6e3f99dd18950f1a8d92b876aecfd0dfdef134286"
+          }
+        },
+        "calendar_version": "a595966774e8e33180570eeb1bff5cf6acd7a4303546393cd057be71c077f9b3",
+        "calendar_years": [
+          "2026",
+          "2027"
+        ],
+        "rules_version": "hackathon-2026.11.15",
+        "source_excerpts": {
+          "entry_date": "入國日期：2026-11-13"
+        }
+      },
+      "rule_key": "health_30m:0"
+    }
+  ],
+  "penalty": [
+    {
+      "id": "C1",
+      "name": "處分相對人",
+      "status": "已找到",
+      "reason": "已載明法人名稱、統一編號、代表人姓名、出生年月日〔出生日期已遮蔽〕，符合行政程序法第96條第1項第1款規定。",
+      "source_excerpt": "受處分人：竹塹電子材料股份有限公司（統一編號：〔統一編號已遮蔽〕）",
+      "law_ref": "行政程序法第96條第1項第1款",
+      "next_step": "請承辦人對照草稿、卷證與上列條文補查，並自行決定是否採用。"
+    },
+    {
+      "id": "C2",
+      "name": "事實",
+      "status": "已找到",
+      "reason": "具體載明違規日期（115年7月18日）、被指派人名（PERSON_01）、原許可工作內容（家庭看護工）、實際從事之工作（備餐、洗碗等許可以外之工作）及證據來源（訪查紀錄、談話紀錄），非概括性用語，符合行政程序法第96條第1項第2款要求。",
+      "source_excerpt": "事實：",
+      "law_ref": "行政程序法第96條第1項第2款",
+      "next_step": "請承辦人對照草稿、卷證與上列條文補查，並自行決定是否採用。"
+    },
+    {
+      "id": "C3",
+      "name": "違反條文",
+      "status": "已找到",
+      "reason": "事實所述『指派所聘僱之外國人從事許可以外之工作』完全符合就業服務法第57條第3款規定。",
+      "source_excerpt": "理由及法令依據：",
+      "law_ref": "就業服務法第56、57條",
+      "next_step": "請承辦人對照草稿、卷證與上列條文補查，並自行決定是否採用。"
+    },
+    {
+      "id": "C4",
+      "name": "處罰條文",
+      "status": "已找到",
+      "reason": "違反就業服務法第57條第3款之對應罰則為第68條第1項，該條文明文列舉『第五十七條第三款』。",
+      "source_excerpt": "二、受處分人違反上開規定，依就業服務法第68條第1項規定，處新臺幣60,000元罰鍰。",
+      "law_ref": "就業服務法第63、67、68條",
+      "next_step": "請承辦人對照草稿、卷證與上列條文補查，並自行決定是否採用。"
+    },
+    {
+      "id": "C5",
+      "name": "罰鍰金額",
+      "status": "已找到",
+      "reason": "罰鍰金額新臺幣60,000元在就業服務法第68條第1項規定之『三萬元以上十五萬元以下』法定範圍內。",
+      "source_excerpt": "主旨：處受處分人新臺幣60,000元罰鍰。",
+      "law_ref": "就業服務法第63、67、68條",
+      "next_step": "請承辦人對照草稿、卷證與上列條文補查，並自行決定是否採用。"
+    },
+    {
+      "id": "C6",
+      "name": "陳述意見",
+      "status": "已找到",
+      "reason": "已載明於115年7月23日以書面通知受處分人陳述意見，且陳述意見已經審酌，符合行政程序法第102條要求。",
+      "source_excerpt": "三、本府前於115年7月23日以書面通知受處分人陳述意見，受處分人陳述意見未能採為有利之認定。",
+      "law_ref": "行政程序法第102、103條",
+      "next_step": "請承辦人對照草稿、卷證與上列條文補查，並自行決定是否採用。"
+    },
+    {
+      "id": "C7",
+      "name": "救濟教示",
+      "status": "可能缺漏",
+      "reason": "本處分書缺漏救濟教示，未載明訴願期間（30日）及受理機關（中央主管機關），違反行政程序法第96條第1項第6款規定；應補載『不服本處分，得自送達次日起30日內，經由原處分機關向中央主管機關提起訴願』。",
+      "source_excerpt": "未找到對應片段",
+      "law_ref": "行政程序法第96條第1項第6款；訴願法第14、58條",
+      "next_step": "請承辦人對照草稿、卷證與上列條文補查，並自行決定是否採用。"
+    }
+  ],
+  "missing_examples": [
+    {
+      "title": "連續三個應工作日不到工",
+      "input": "三天均應工作、未到工、未查得正當理由且聯絡不上；班表與聯絡均已核對",
+      "expected": "可能符合要件，請核對"
+    },
+    {
+      "title": "跨週末、週末休息",
+      "input": "週五、週一應工作，週六日休息：共兩個應工作日",
+      "expected": "先聯繫及確認"
+    },
+    {
+      "title": "週末有值班",
+      "input": "週五、六、日都應工作且不到工，未查得正當理由、聯絡不上",
+      "expected": "可能符合要件，請核對"
+    },
+    {
+      "title": "聯絡恢復",
+      "input": "確認本人已恢復聯絡，請進一步核實住宿與出勤",
+      "expected": "先聯繫及確認"
+    },
+    {
+      "title": "1955求助、資料不足",
+      "input": "曾求助但住宿地點、期間、聯絡方式尚未查實",
+      "expected": "先核實，不自動認定不屬失去聯繫"
+    },
+    {
+      "title": "可核實安置資訊",
+      "input": "地點、期間、聯繫方式均已查認屬實",
+      "expected": "先聯繫及確認，保留紀錄洽主管機關"
+    }
+  ]
+}

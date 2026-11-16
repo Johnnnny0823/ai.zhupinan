@@ -1,587 +1,202 @@
-'use strict';
-const $ = id => document.getElementById(id);
-const all = sel => [...document.querySelectorAll(sel)];
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-let role = 'employer';
-let toastTimer;
-let lastExtract = null;
+const $ = (s, p = document) => p.querySelector(s);
+const main = $('#main');
+const h = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let state = {account:null, page:'tasks', cases:[], tasks:[], caseId:'', filter:'all', draft:null, proof:null, selected:null};
+const labels = {todo:'待辦理',delegated:'已委任',proof_submitted:'待雇主確認',done:'已完成',needs_review:'需人工確認'};
+const fieldLabels = {entry_date:'入國日期',permit_start:'聘僱許可起日',permit_end:'聘僱許可迄日',event_date:'事件／收受日期',notify_date:'實際通報日期'};
+let busy = false;
 
-function notify(msg) {
-  const t = $('toast'); t.textContent = msg; t.hidden = false;
-  clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.hidden = true; }, 5000);
-}
-
-async function api(path, opts = {}) {
-  const r = await fetch(path, { credentials: 'same-origin', ...opts });
-  let data = null;
-  try { data = await r.json(); } catch { /* ignore */ }
-  if (r.status === 401 && path !== '/api/session') showLogin((data && data.detail) || '請先登入');
-  if (!r.ok) {
-    const err = new Error((data && data.detail) || `伺服器錯誤（${r.status}）`);
-    err.status = r.status; err.data = data || {};
-    throw err;
+async function api(path, options = {}) {
+  let headers = {...options.headers};
+  if (options.body && !(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json'; options.body = JSON.stringify(options.body);
+  }
+  let response;
+  try { response = await fetch(path, {...options,headers,cache:'no-store',credentials:'same-origin'}); }
+  catch { throw new Error('目前無法讀取個案資料。請檢查網路，或開啟公開的預存展示頁。'); }
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    if (response.status === 401 && state.account) { clearState(); loginPage(); }
+    throw new Error(typeof data.detail === 'string' ? data.detail : '欄位格式有誤，請核對後再試。');
   }
   return data;
 }
-
-/* ---------------- login (S01) ---------------- */
-let me = null;
-function showLogin(msg) {
-  me = null;
-  document.body.classList.add('logged-out');
-  $('login').hidden = false;
-  $('login-error').hidden = !msg; $('login-error').textContent = msg || '';
-  $('login-error').classList.toggle('info', msg === '已登出。');
-  $('login-code').value = '';
-  setTimeout(() => $('login-account').focus(), 0);
+function notice(text) {
+  const toast = $('#toast'); toast.textContent = text; toast.hidden = false;
+  clearTimeout(notice.timer); notice.timer = setTimeout(() => toast.hidden = true,5000);
 }
-function applySession(data) {
-  me = data;
-  document.body.classList.remove('logged-out');
-  $('login').hidden = true;
-  const c = (data.cases || [])[0];
-  $('who').textContent = data.account.display_name + (c ? `・案件 ${c.display_code}` : '');
-  applyRole(data.account.role);
-  refreshCount();
+function error(message, target = main) {
+  $('.error',target)?.remove();
+  const el=document.createElement('div');el.className='error';el.setAttribute('role','alert');el.tabIndex=-1;
+  el.innerHTML=`<h2>這一步還沒完成</h2><p>${h(message)}</p><p><a href="/local-demo.html">開啟預存展示頁</a></p>`;
+  target.prepend(el);el.focus();
 }
-$('login-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const btn = $('login-submit'); btn.disabled = true;
-  try {
-    const data = await api('/api/session', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ account: $('login-account').value, code: $('login-code').value }) });
-    applySession(data);
-  } catch (err) {
-    $('login-error').hidden = false; $('login-error').classList.remove('info'); $('login-error').textContent = err.message;
-    $('login-code').focus();
-  } finally { btn.disabled = false; }
-});
-$('logout').addEventListener('click', async () => {
-  try { await api('/api/session', { method: 'DELETE' }); } catch { /* ignore */ }
-  showLogin('已登出。');
-});
-
-/* ---------------- navigation ---------------- */
-function showView(name) {
-  const permitted = role === 'employer' ? ['upload', 'tasks', 'chat', 'line'] : ['review', 'chat'];
-  if (!permitted.includes(name)) return;
-  all('.view').forEach(v => { v.hidden = v.id !== 'view-' + name; });
-  all('.nav-item').forEach(b => {
-    const on = b.dataset.view === name;
-    b.classList.toggle('active', on);
-    if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+function clearState() {
+  state={account:null,page:'tasks',cases:[],tasks:[],caseId:'',filter:'all',draft:null,proof:null,selected:null};
+  $('#navigation').hidden=true; $('#identity').replaceChildren();main.replaceChildren();
+}
+function heading(eyebrow,title,description='') {
+  return `<div class="page-heading"><div><div class="eyebrow">${h(eyebrow)} · 合成示範</div><h1>${h(title)}</h1><p>${h(description)}</p></div></div>`;
+}
+function focusPage() { main.focus(); window.scrollTo({top:0,behavior:'instant'}); }
+function identity() {
+  $('#identity').innerHTML=`<span>${h(state.account.display_name)}</span><button class="quiet" id="logout">登出 ↗</button>`;
+  $('#logout').onclick=async()=>{
+    try { await api('/api/session',{method:'DELETE'}); }
+    catch(e) { error(e.message); return; }
+    clearState();loginPage();
+  };
+}
+function navigation() {
+  const officer=state.account.role==='officer';
+  const items=officer?[['penalty','草稿檢核'],['qa','法規問答']]:[['tasks','今日待辦'],['documents','讀取文件'],['missing','聯絡確認'],['line','LINE提醒'],['qa','法規問答']];
+  const nav=$('#navigation');nav.hidden=false;
+  nav.innerHTML=`<div class="nav-eyebrow">${officer?'承辦人工作桌':'雇主的辦理索引'}</div><nav aria-label="主要功能">${items.map(([id,title],i)=>`<button data-page="${id}" aria-current="${state.page===id?'page':'false'}"><span class="nav-index">0${i+1}</span>${title}</button>`).join('')}</nav>`;
+  nav.querySelectorAll('[data-page]').forEach(el=>el.onclick=async()=>{
+    if(state.draft) { await api('/api/documents/drafts/'+encodeURIComponent(state.draft.draft_id),{method:'DELETE'}).catch(()=>{}); state.draft=null; }
+    await go(el.dataset.page);
   });
-  window.scrollTo({ top: 0, behavior: 'instant' });
-  if (name === 'tasks') loadTodos();
-  if (name === 'line') loadLine();
 }
-function applyRole(r) {
-  role = r;
-  document.body.classList.toggle('officer', role === 'officer');
-  all('[data-role]').forEach(b => { const on = b.dataset.role === role; b.classList.toggle('active', on); b.setAttribute('aria-pressed', String(on)); });
-  all('[data-access]').forEach(el => { el.hidden = el.dataset.access !== 'both' && el.dataset.access !== role; });
-  const label = role === 'employer' ? '雇主專區' : '市府承辦人專區';
-  $('role-label').textContent = label; $('chat-role').textContent = label;
-  showView(role === 'employer' ? 'upload' : 'review');
+function loginPage() {
+  main.innerHTML=`<section class="login"><div class="eyebrow">一本手帖，安心辦妥</div><h1>把期限理清楚，<br>下一步就有方向。</h1><p class="muted">以合成文件走一遍辦理流程。沒有真實個資，也不作正式辦案使用。</p><form id="login-form"><label for="account">示範帳號</label><select id="account" name="account"><option value="employer-a">家庭看護雇主 A</option><option value="employer-b">產業雇主 B</option><option value="officer">市府承辦人／示範管理員</option></select><label for="code">一次性登入碼</label><input id="code" name="code" type="password" autocomplete="one-time-code" required aria-describedby="code-hint"><p id="code-hint" class="hint">請使用展示者提供的登入碼；有效24小時，使用一次後失效。</p><button type="submit">打開我的案件手帖 →</button></form><div class="note">網路或模型無法使用時，可開啟明確標示的<a href="/local-demo.html">預存展示頁</a>。</div></section>`;
+  $('#login-form').onsubmit=async e=>{
+    e.preventDefault();const button=$('button[type=submit]',e.target);button.disabled=true;
+    try { const r=await api('/api/session',{method:'POST',body:{account_id:$('#account').value,code:$('#code').value}});$('#code').value='';state.account=r.account;await enter(); }
+    catch(err) { error(err.message,$('.login')); }
+    finally {button.disabled=false;}
+  };
 }
-all('[data-view]').forEach(b => b.addEventListener('click', () => showView(b.dataset.view)));
-all('[data-goto]').forEach(b => b.addEventListener('click', () => showView(b.dataset.goto)));
-document.querySelector('.brand').addEventListener('click', e => { e.preventDefault(); showView(role === 'employer' ? 'upload' : 'review'); });
-
-/* ---------------- health ---------------- */
-(async () => {
-  const b = $('health-badge');
+async function loadCases() {
+  const r=await api('/api/cases');state.cases=r.items;
+  if(!state.caseId || !state.cases.some(c=>c.id===state.caseId)) state.caseId=state.cases[0]?.id || '';
+  const details=await Promise.all(state.cases.map(c=>api('/api/cases/'+encodeURIComponent(c.id))));
+  state.tasks=details.flatMap(d=>d.tasks);
+}
+async function enter() { identity();if(state.account.role==='employer')await loadCases();await go(state.account.role==='officer'?'penalty':'tasks'); }
+async function go(page) {
+  state.page=page;navigation();main.innerHTML='<div class="loading" role="status">正在讀取…</div>';
   try {
-    const h = await api('/api/health');
-    b.classList.add('health-ok');
-    b.innerHTML = `<span></span>系統連線正常・法條 ${h.articles} 條・辦公日曆 ${h.calendar_years.join('、')}`;
-    $('cal-years').textContent = h.calendar_years.map(y => `${y - 1911} 年`).join('、');
-  } catch {
-    b.classList.add('health-bad'); b.innerHTML = '<span></span>後端未連線';
-  }
-  try { applySession(await api('/api/session')); } catch { showLogin(''); }
-})();
-
-/* ---------------- upload & extract ---------------- */
-const SAMPLES = [
-  ['聘僱許可函_掃描.png', '聘僱許可函（掃描圖片）', '圖片改用較強模型判讀'],
-  ['聘僱許可函_國字日期.txt', '聘僱許可函（國字日期）', '例：一一五年…'],
-  ['入國通報證明_國字日期.txt', '入國通報受理證明書（國字日期）', ''],
-  ['入國通報證明_春節連假.txt', '入國通報受理證明書（遇春節）', '期限遇連假自動順延'],
-  ['住宿地點變更_掃描.png', '住宿地點變更表（掃描，2 位移工）', ''],
-];
-/* samples dated relative to today, so LINE reminders fire immediately during the demo */
-const rocDate = d => `${d.getFullYear() - 1911}年${d.getMonth() + 1}月${d.getDate()}日`;
-const daysAgo = n => { const d = new Date(); d.setDate(d.getDate() - n); return d; };
-const DYNAMIC = {
-  'live:entry': () => ['入國通報證明_昨天入國.txt', [
-    '【合成測試文件・非真實公文・僅供竹聘安 AI 驗證使用】', '新竹市政府', '受理雇主聘僱外國人入國通報證明書',
-    '證明書字號：府勞外字第1159990001號', '雇主名稱：風城精密工業股份有限公司', '雇主地址：新竹市東區光復路一段100號',
-    '外國人姓名：PUTRI AYU LESTARI', '國籍：印尼', '護照號碼：C7788123',
-    `入國日期：${rocDate(daysAgo(1))}`, `通報日期：${rocDate(daysAgo(0))}`, '住宿地點：新竹市北區中正路200號',
-    '', '茲證明上開雇主已依雇主聘僱外國人許可及管理辦法第34條規定辦理入國通報。', '', `中華民國${rocDate(daysAgo(0))}`].join('\n')],
-  'live:dorm': () => ['住宿地點變更_前天搬遷.txt', [
-    '【合成測試文件・非真實公文・僅供竹聘安 AI 驗證使用】',
-    '外國人生活照顧服務計畫書　變更事項表（第五款：住宿地點及生活照顧服務人員）',
-    '雇主名稱：竹塹電子材料股份有限公司', `填表日期：${rocDate(daysAgo(1))}`, '',
-    '原住宿地點：新竹市香山區西濱路一段50號', '新住宿地點：新竹市東區經國路一段300號',
-    `新宿舍租賃契約起租日：${rocDate(daysAgo(15))}`, `外國人遷入新住宿地點日期（變更日）：${rocDate(daysAgo(2))}`,
-    '', '異動外國人：', '（1）NGUYEN VAN AN　越南　護照號碼 B5566778', '（2）TRAN THI HONG　越南　護照號碼 B5566779'].join('\n')],
-};
-SAMPLES.unshift(['live:entry', '★ 昨天剛入國的移工（現場展示用）', '依今天日期產生，期限就在這幾天'],
-                ['live:dorm', '★ 前天搬宿舍（現場展示用）', '7 日內須通報，可立即測 LINE 推播']);
-$('sample-buttons').innerHTML = SAMPLES.map(([f, t, s]) => `<button type="button" data-sample="${esc(f)}">${esc(t)}${s ? `<small>${esc(s)}</small>` : ''}</button>`).join('');
-all('[data-sample]').forEach(b => b.addEventListener('click', async () => {
-  const name = b.dataset.sample;
-  if (DYNAMIC[name]) {
-    const [fname, text] = DYNAMIC[name]();
-    uploadDocument(new File([text], fname, { type: 'text/plain' }));
-    return;
-  }
-  const blob = await (await fetch('samples/' + encodeURIComponent(name))).blob();
-  uploadDocument(new File([blob], name, { type: blob.type }));
-}));
-$('document-input').addEventListener('change', e => uploadDocument(e.target.files[0]));
-const dz = $('dropzone');
-['dragenter', 'dragover'].forEach(n => dz.addEventListener(n, e => { e.preventDefault(); dz.classList.add('dragging'); }));
-['dragleave', 'drop'].forEach(n => dz.addEventListener(n, e => {
-  e.preventDefault(); dz.classList.remove('dragging');
-  if (n === 'drop') uploadDocument(e.dataTransfer.files[0]);
-}));
-
-function setStep(n) {
-  all('#stepper li').forEach((li, i) => { li.classList.toggle('current', i === n - 1); li.classList.toggle('done', i < n - 1); });
+    if(page==='tasks') {await loadCases();tasksPage();}
+    else if(page==='documents')await documentsPage();
+    else if(page==='line')await linePage();
+    else if(page==='missing')missingPage();
+    else if(page==='qa')qaPage();
+    else if(page==='penalty')penaltyPage();
+    focusPage();
+  } catch(e) { main.innerHTML=heading('稍後再試','資料暫時無法讀取');error(e.message);const b=document.createElement('button');b.textContent='重新讀取';b.onclick=()=>go(page);main.append(b); }
 }
-
-async function uploadDocument(file) {
-  if (!file) return;
-  if (!/\.(jpe?g|png|pdf|txt)$/i.test(file.name)) { notify('請選擇 JPG、PNG、PDF 或 TXT 檔案。'); return; }
-  $('uploaded-file').hidden = false;
-  $('uploaded-name').textContent = file.name;
-  $('upload-description').textContent = `${(file.size / 1024).toFixed(0)} KB`;
-  $('upload-status').className = 'status warning'; $('upload-status').textContent = '辨識中';
-  $('extract-empty').hidden = true; $('worker-form').hidden = true; $('result-card').hidden = true;
-  $('extract-blocked').hidden = true; $('sent-preview').hidden = true;
-  $('extract-loading').hidden = false;
-  discardExtract();
-  const isImg = /\.(jpe?g|png)$/i.test(file.name);
-  $('loading-text').textContent = isImg ? 'AI 正在閱讀掃描圖片…（約 20～40 秒）' : 'AI 正在閱讀公文…（約 10～20 秒）';
-  $('flag-count').className = 'status neutral'; $('flag-count').textContent = '辨識中';
-  setStep(1);
-  const fd = new FormData(); fd.append('file', file);
+function caseSelect() {
+  return `<div class="case-select"><label for="case-select">案件</label><select id="case-select">${state.cases.map(c=>`<option value="${h(c.id)}" ${c.id===state.caseId?'selected':''}>${h(c.display_code)} · 合成</option>`).join('')}</select></div>`;
+}
+function wireCase() { const select=$('#case-select');if(select)select.onchange=()=>state.caseId=select.value; }
+function tasksPage() {
+  let tasks=[...state.tasks].sort((a,b)=>a.status==='done'&&b.status!=='done'?1:b.status==='done'&&a.status!=='done'?-1:(a.due_date||'9999').localeCompare(b.due_date||'9999'));
+  if(state.filter==='week')tasks=tasks.filter(t=>t.days_left!==null&&t.days_left>=0&&t.days_left<=7&&t.status!=='done');
+  if(state.filter==='done')tasks=tasks.filter(t=>t.status==='done');
+  const active=state.tasks.filter(t=>t.status!=='done');
+  main.innerHTML=heading('辦理索引 / 01','今天，先辦這幾件。','每一項都留有來源、期限與辦理窗口。完成後，再由你親自確認。')+
+    `<div class="summary-line"><span><strong>${active.length}</strong>項待辦</span><span><strong>${active.filter(t=>t.overdue).length}</strong>項已逾期</span><span><strong>${active.filter(t=>t.status==='needs_review').length}</strong>項需核對</span></div><div class="toolbar"><div class="filters" aria-label="待辦篩選">${[['all','全部'],['week','本週'],['done','已完成']].map(([id,label])=>`<button data-filter="${id}" aria-pressed="${state.filter===id}">${label}</button>`).join('')}</div><button id="new-document">＋ 讀取合成公文</button></div><div class="list-note"><span>依期限排序</span><span>事項 ／ 日期 ／ 辦理狀態</span></div><div class="task-list">${tasks.length?tasks.map(t=>`<article class="task-row"><div class="task-date">${t.due_date?h(t.due_date.slice(5).replace('-','/')):'待核對'}<span>${h(t.due_date?.slice(0,4)||'無確認日期')}</span></div><div><button class="task-title" data-task="${h(t.id)}">${h(t.title)}</button><div class="task-meta"><span>${h(t.display_code)}</span><span class="status ${t.overdue?'overdue':''}">${h(labels[t.status])}${t.overdue?' · 已逾期':''}</span></div></div><button class="quiet row-arrow" data-task="${h(t.id)}" aria-label="查看${h(t.title)}">↗</button></article>`).join(''):'<div class="empty"><h2>這一頁，暫時沒有事項。</h2><p>可以切換篩選，或選一份合成公文開始。</p></div>'}</div><div class="note">「已委任」仍需取得證明；「準時」是判讀結果，按下「我已辦好，確認完成」才會完成待辦。</div>`;
+  $('#new-document').onclick=()=>go('documents');
+  main.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;tasksPage();});
+  main.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>detailPage(b.dataset.task));
+}
+async function detailPage(id) {
   try {
-    const data = await api('/api/documents/extract', { method: 'POST', body: fd });
-    lastExtract = data;
-    renderExtract(data);
-    $('upload-status').className = 'status ok'; $('upload-status').textContent = '已完成辨識';
-    setStep(2);
-  } catch (err) {
-    $('extract-loading').hidden = true;
-    $('upload-status').className = 'status danger';
-    if (err.data && err.data.code === 'real_image_blocked') {
-      $('upload-status').textContent = '未送出';
-      $('flag-count').className = 'status warning'; $('flag-count').textContent = '圖片未送出';
-      $('blocked-text').textContent = err.message;
-      $('extract-blocked').hidden = false;
-      $('manual-entry').focus();
-      return;
-    }
-    $('extract-empty').hidden = false;
-    $('upload-status').textContent = '辨識失敗';
-    $('flag-count').textContent = '辨識失敗';
-    notify(err.message);
-  }
+    const r=await api('/api/tasks/'+encodeURIComponent(id));state.selected=r;state.proof=r.proofs[0]||null;
+    const t=r.task,tr=t.calc_trace;
+    main.innerHTML=`<button class="quiet back" id="back">← 回到待辦</button>`+heading(t.display_code,t.title,'先看清楚何時前、去哪裡辦；辦理後再回來核對證明。')+
+      `<div class="two-column"><section><div class="eyebrow">何時前</div><p class="detail-deadline">${h(t.due_date||'需人工確認')}</p><p><span class="status ${t.overdue?'overdue':''}">${h(labels[t.status])}${t.overdue?' · 原期限已逾':''}</span></p><dl class="details-grid"><dt>可以開始辦理</dt><dd>${h(t.start_date||'依期限前辦理')}</dd><dt>去哪裡辦</dt><dd>${h(t.office)}</dd><dt>文件來源</dt><dd>${h(r.document.kind)} · 合成示範</dd></dl><div class="actions"><a class="button" href="${h(t.official_url)}" target="_blank" rel="noopener">前往官方辦理入口 ↗</a>${t.status==='todo'?'<button class="secondary" id="delegate">委任代辦</button>':''}</div><details><summary>查看來源、法條與每一步計算</summary><dl class="details-grid">${[['事件',tr.event],['事件日',tr.event_date],['起算日',tr.start_date],['計算規則',tr.rule],['原到期日',tr.original_due_date],['假日順延',tr.holiday_adjustment],['最後期限',tr.final_due_date],['依據條文',t.law_ref],['條文版本',Object.values(tr.law_versions).map(v=>v.revision).join('；')],['日曆涵蓋',tr.calendar_years.join('、')],['日曆版本',tr.calendar_version],['規則版本',tr.rules_version]].map(([k,v])=>`<dt>${h(k)}</dt><dd>${h(v||'需人工確認')}</dd>`).join('')}</dl><h3>原文邊註</h3>${Object.entries(tr.source_excerpts||{}).map(([k,v])=>`<p class="source">${h(fieldLabels[k]||k)}：${h(v)}</p>`).join('')||'<p>尚無可核對的原文片段，請人工核對。</p>'}</details></section><section class="section"><h2>辦好了，留下一份證明。</h2><div id="proof-area"></div></section></div><details><summary>誰確認了這項待辦</summary><ul class="timeline">${r.audit_events.map(a=>`<li>${h(a.created_at.slice(0,16).replace('T',' '))}<br>${h(a.actor_id)} · ${h({confirm_fields:'確認文件日期',delegate:'委任代辦',submit_proof:'上傳證明，待雇主確認',confirm_done:'雇主確認完成',delete_proof:'刪除證明判讀'}[a.action]||a.action)}</li>`).join('')}</ul></details><details><summary>刪除此合成文件及相關待辦</summary><p>會移除此文件產生的全部待辦、證明判讀與通知紀錄。原件未保存。</p><button class="danger" id="delete-document">刪除此合成文件</button></details>`;
+    $('#back').onclick=()=>go('tasks');
+    if($('#delegate'))$('#delegate').onclick=async()=>{try{await api('/api/tasks/'+id,{method:'PATCH',body:{status:'delegated'}});notice('已委任；仍需證明與雇主確認。');await detailPage(id);}catch(e){error(e.message);}};
+    $('#delete-document').onclick=async()=>{try{await api('/api/documents/'+r.document.id,{method:'DELETE'});notice('合成文件與相關資料已刪除');await go('tasks');}catch(e){error(e.message);}};
+    renderProof();focusPage();
+  } catch(e){error(e.message);}
 }
+function renderProof() {
+  const {task:t}=state.selected,p=state.proof,area=$('#proof-area');
+  if(t.status==='needs_review'){area.innerHTML='<p>期限尚未確認，請先向辦理窗口核對，再使用其他合成範例展示辦理流程。</p>';return;}
+  if(t.status==='done') {area.innerHTML=`<div class="note"><h3>雇主已確認完成</h3><p>${h(p?.read_mode)}</p><p>辦理日期：${h(p?.observed_date)}<br>${p?.verdict==='late'?'已辦理，保留逾期事實。':'證明已核對。'}</p></div>`;return;}
+  area.innerHTML=`<p>上傳後只暫時讀取日期，原始檔不保存。</p><div class="actions"><button class="secondary" id="sample-proof">使用固定合成證明</button></div><form id="proof-form"><label for="proof-file">上傳合成辦理證明</label><input id="proof-file" type="file" accept=".txt,.pdf" required><button type="submit" class="secondary">讀取證明日期</button></form>${p?`<div class="note"><p>${h(p.read_mode)}</p><strong>${h({on_time:'判讀為準時，等待你確認',late:'判讀為逾期，等待你確認',early:'早於辦理期間，請核對',unknown:'日期尚未讀取，請人工填寫',mismatch:'可能不是此待辦的證明'}[p.verdict]||'需核對證明')}</strong><p class="source">${h(p.excerpt)}</p></div><form id="complete-form"><label for="observed-date">核對後的實際辦理日期</label><input id="observed-date" type="date" required value="${h(p.observed_date||'')}"><label class="check"><input type="checkbox" id="proof-matches" required>我已核對此證明的案件、事項與辦理日期，確認已辦好。</label><label class="check"><input type="checkbox" id="outside-window">若早於辦理期間，我已另向窗口核對例外。</label><button type="submit">我已辦好，確認完成</button><button type="button" class="quiet" id="remove-proof">刪除這份判讀</button></form>`:''}`;
+  $('#sample-proof').onclick=async()=>{
+    try{const sample=await api('/api/tasks/'+t.id+'/proof-sample');const fd=new FormData();fd.append('file',new Blob([sample.text],{type:'text/plain'}),'合成證明.txt');fd.append('mode','stored');await submitProof(fd);}catch(e){error(e.message,area);}
+  };
+  $('#proof-form').onsubmit=async e=>{e.preventDefault();const file=$('#proof-file').files[0];if(!file)return;const fd=new FormData();fd.append('file',file);fd.append('mode','live');await submitProof(fd);};
+  if(p){$('#complete-form').onsubmit=async e=>{e.preventDefault();try{await api('/api/tasks/'+t.id+'/confirm',{method:'POST',body:{proof_id:p.id,confirmed:true,observed_date:$('#observed-date').value,matches_task:$('#proof-matches').checked,outside_window_acknowledged:$('#outside-window').checked}});notice('你已確認完成，辦理紀錄已保留。');await detailPage(t.id);}catch(err){error(err.message,area);}};
+    $('#remove-proof').onclick=async()=>{try{await api('/api/tasks/'+t.id+'/proof/'+p.id,{method:'DELETE'});await detailPage(t.id);}catch(err){error(err.message,area);}};}
+}
+async function submitProof(fd){const area=$('#proof-area');try{area.setAttribute('aria-busy','true');const r=await api('/api/tasks/'+state.selected.task.id+'/proof',{method:'POST',body:fd});notice(r.mode+'；仍待你確認');await detailPage(state.selected.task.id);}catch(e){error(e.message,area);}finally{area.removeAttribute('aria-busy');}}
 
-/* an unconfirmed extraction is dropped on the server when the user moves on */
-function discardExtract() {
-  const x = lastExtract && lastExtract.extract_id;
-  if (x) api(`/api/documents/extract/${x}`, { method: 'DELETE' }).catch(() => {});
-  lastExtract = null;
+async function documentsPage(){
+  const r=await api('/api/demo/samples');
+  main.innerHTML=heading('文件邊註 / 02','先讀日期，再由你確認。','文件欄位在你確認前，不會寫入案件，也不會產生待辦。')+
+    `<div class="step"><span class="active">01 選擇文件</span><span>→</span><span>02 核對日期</span><span>→</span><span>03 新增待辦</span></div>${caseSelect()}<div class="two-column"><section class="section"><h2>選一份合成公文</h2><p class="muted">下列範例使用固定內容，可在模型故障時切換預存結果。</p><div class="sample-list">${r.items.map(s=>`<button data-sample="${h(s.id)}">${h(s.label)}<span>↗</span></button>`).join('')}<button id="scan-sample">住宿變更 · 合成掃描範例<span>↗</span></button></div><label for="extract-mode">讀取方式</label><select id="extract-mode"><option value="live">即時模型擷取</option><option value="stored">預存示範結果（固定範例）</option></select></section><section class="section"><h2>或選取合成檔案</h2><form id="extract-form"><div class="upload"><label for="document-file">合成公文檔案</label><input id="document-file" type="file" accept=".txt,.pdf,.png,.jpg,.jpeg" required><p class="hint">JPG、PNG、PDF、TXT；上限15 MB，PDF最多10頁。圖片只接受系統提供的合成範例。</p></div><label class="check"><input id="synthetic-confirm" type="checkbox" required>我確認這是合成測試資料。</label><button type="submit">讀取文件欄位 →</button></form><div class="note">真實圖片／含圖 PDF 會停止處理。這個決賽版本不供正式收件。</div></section></div><div id="extract-status" role="status"></div>`;
+  wireCase();
+  main.querySelectorAll('[data-sample]').forEach(b=>b.onclick=async()=>{const s=r.items.find(s=>s.id===b.dataset.sample);await extractDocument(new File([s.text],s.id+'.txt',{type:'text/plain'}),$('#extract-mode').value);});
+  $('#scan-sample').onclick=async()=>{try{const response=await fetch('/samples/'+encodeURIComponent('住宿地點變更_掃描.png'),{cache:'no-store'});await extractDocument(new File([await response.blob()],'住宿地點變更_掃描.png',{type:'image/png'}),$('#extract-mode').value);}catch(e){error(e.message);}};
+  $('#extract-form').onsubmit=async e=>{e.preventDefault();if($('#synthetic-confirm').checked)await extractDocument($('#document-file').files[0],$('#extract-mode').value);};
 }
-$('manual-entry').addEventListener('click', () => {
-  lastExtract = { doc_type: $('doc-type').value, is_image: false, model: '', workers: [{ name: '', flags: {}, evidence: {} }] };
-  $('extract-blocked').hidden = true; $('worker-form').hidden = false;
-  $('uploaded-file').hidden = true;
-  renderWorkerTable();
-  $('flag-count').className = 'status neutral'; $('flag-count').textContent = '手動輸入';
-  $('model-note').textContent = '手動輸入：日期以您填寫的為準';
-  setStep(2);
-  document.querySelector('#worker-rows input[data-k=name]').focus();
-});
+async function extractDocument(file,mode){
+  if(busy)return;busy=true;const status=$('#extract-status');status.innerHTML='<div class="note">正在讀取欄位；模型可能需要約90秒。原始檔不保存。你仍需核對日期。</div>';
+  const fd=new FormData();fd.append('file',file);fd.append('mode',mode);
+  try{const draft=await api('/api/documents/extract',{method:'POST',body:fd});if(state.page!=='documents')return;state.draft=draft;confirmationPage();}
+  catch(e){error(e.message);status.innerHTML='<p>可在「讀取方式」切換為「預存示範結果」，再選擇合成範例。</p>';}
+  finally{busy=false;}
+}
+function confirmationBody(previewOnly=false){
+  const fields=state.draft.workers.map((w,i)=>{const item={...w};for(const k of Object.keys(fieldLabels)){const input=$(`#field-${i}-${k}`);if(input)item[k]=input.value||null;}return item;});
+  return {case_id:state.caseId,draft_id:state.draft.draft_id,document_kind:$('#document-kind').value,fields,confirmed:previewOnly?false:$('#confirm-fields').checked,preview_only:previewOnly};
+}
+function confirmationPage(){
+  const d=state.draft;
+  main.innerHTML=heading('文件邊註 / 02','請把日期，逐一核對。','原文留在邊註，日期可以修改。系統只依你確認的日期計算期限。')+
+    `<div class="step"><span>01 已選文件</span><span>→</span><span class="active">02 核對日期</span><span>→</span><span>03 新增待辦</span></div><div class="note"><strong>${h(d.mode)}</strong><br>${h(d.warning)}；10分鐘後確認頁失效。</div><form id="confirmation-form">${caseSelect()}<label for="document-kind">這是什麼文件</label><select id="document-kind">${['入國通報受理證明書','聘僱許可函','期滿續聘許可函','再檢查診斷證明書','住宿地點變更','家事移工預定入國','聘僱關係終止'].map(k=>`<option ${d.document_kind===k?'selected':''}>${h(k)}</option>`).join('')}</select><div class="two-column"><section><h2 class="section">逐欄確認</h2>${d.workers.map((w,i)=>`<fieldset class="section"><legend>移工代號 ${String(i+1).padStart(2,'0')} · 合成</legend>${Object.entries(fieldLabels).filter(([k])=>w[k]||['entry_date','event_date','permit_end'].includes(k)).map(([k,label])=>`<div class="field-block"><label for="field-${i}-${k}">${h(label)}</label><input id="field-${i}-${k}" type="date" value="${h(w[k]||'')}" data-original="${h(w[k]||'')}" aria-describedby="source-${i}-${k}"><p class="source" id="source-${i}-${k}">來源：${h(w.evidence?.[k]||'未讀到；請對照合成原件補充確認')}<span class="edited" hidden> · 已由你修改，將按新日期計算</span></p></div>`).join('')}</fieldset>`).join('')}</section><section class="section"><details open><summary>送出模型前的文字遮蔽預覽</summary><pre>${h(d.masked_preview||'合成掃描範例，無可本機遮蔽的文字；僅此固定範例可處理。')}</pre></details><div class="note" id="task-count" role="status">請核對文件日期後預覽待辦數量。</div><label class="check"><input id="confirm-fields" type="checkbox" required>我已逐欄核對文件種類與日期，同意以這些日期產生待辦。</label><div class="actions"><button type="submit" id="confirm-button">確認日期，新增待辦 →</button><button type="button" class="secondary" id="cancel-document">取消讀取</button></div></section></div></form>`;
+  wireCase();$('#case-select').onchange=()=>{state.caseId=$('#case-select').value;previewCount();};
+  let timer;main.querySelectorAll('input[type=date],#document-kind').forEach(input=>input.oninput=()=>{if(input.type==='date')$(`#source-${input.id.slice(6)} .edited`).hidden=input.value===input.dataset.original;$('#confirm-fields').checked=false;clearTimeout(timer);timer=setTimeout(previewCount,250);});
+  $('#cancel-document').onclick=async()=>{await api('/api/documents/drafts/'+d.draft_id,{method:'DELETE'});state.draft=null;await go('documents');};
+  $('#confirmation-form').onsubmit=async e=>{e.preventDefault();const b=$('#confirm-button');b.disabled=true;try{const r=await api('/api/documents/confirm',{method:'POST',body:confirmationBody()});state.draft=null;notice(r.duplicate?'這份文件已確認，沒有重複新增。':`已新增 ${r.task_ids.length} 項待辦；需核對的日期另有標示。`);await go('tasks');}catch(err){error(err.message);}finally{b.disabled=false;}};
+  previewCount();focusPage();
+}
+async function previewCount(){if(!state.draft||!$('#task-count'))return;try{const r=await api('/api/documents/confirm',{method:'POST',body:confirmationBody(true)});if($('#task-count'))$('#task-count').textContent=r.duplicate?'這份文件已在此案件中，將不重複新增。':`確認後將新增 ${r.task_count} 項待辦。日曆涵蓋2026／2027；範圍外顯示「需人工確認」。`;}catch(e){if($('#task-count'))$('#task-count').textContent=e.message;}}
 
-const FIELDS = {
-  '聘僱許可函': [['entry_date', '入國日'], ['permit_start', '許可起日'], ['permit_end', '許可迄日']],
-  '期滿續聘許可函': [['permit_start', '許可起日'], ['permit_end', '許可迄日']],
-  '入國通報受理證明書': [['entry_date', '入國日']],
-  '再檢查診斷證明書': [['event_date', '雇主收文日']],
-  '住宿地點變更': [['event_date', '遷入新住處日（變更日）']],
-  '聘僱關係終止': [['event_date', '聘僱關係終止日']],
-  '移工失聯': [['event_date', '連續曠職滿 3 日之日'], ['notify_date', '實際書面通報日（選填）'], ['permit_end', '聘僱許可迄日（選填）']],
-  '家事移工預定入國': [['entry_date', '預定入國日']],
-};
-
-/* 一站式服務：入國前尚無公文，直接開啟空白表單 */
-$('onestop-btn').addEventListener('click', () => {
-  discardExtract(); $('sent-preview').hidden = true; $('extract-blocked').hidden = true;
-  lastExtract = { doc_type: '家事移工預定入國', is_image: false, model: '', workers: [{ name: '', entry_date: '', flags: {}, evidence: {} }] };
-  $('uploaded-file').hidden = true;
-  $('extract-empty').hidden = true; $('extract-loading').hidden = true; $('result-card').hidden = true;
-  $('worker-form').hidden = false;
-  $('doc-type').value = '家事移工預定入國';
-  renderWorkerTable();
-  $('flag-count').className = 'status warning'; $('flag-count').textContent = '入國前期限';
-  $('model-note').textContent = '適用自國外新聘之家庭看護工／家庭幫傭；國內接續聘僱、期滿續聘不適用';
-  setStep(2);
-  document.querySelector('#worker-rows input[data-k=name]').focus();
-  $('worker-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
-});
-
-/* 失聯不是公文：直接開啟空白表單讓雇主填寫 */
-$('abscond-btn').addEventListener('click', () => {
-  discardExtract(); $('sent-preview').hidden = true; $('extract-blocked').hidden = true;
-  lastExtract = { doc_type: '移工失聯', is_image: false, model: '', workers: [{ name: '', event_date: '', job: '製造', flags: {}, evidence: {} }] };
-  $('uploaded-file').hidden = true;
-  $('extract-empty').hidden = true; $('extract-loading').hidden = true; $('result-card').hidden = true;
-  $('worker-form').hidden = false;
-  $('doc-type').value = '移工失聯';
-  renderWorkerTable();
-  $('flag-count').className = 'status warning'; $('flag-count').textContent = '失聯應變';
-  $('model-note').textContent = '失聯日＝連續曠職滿 3 日之日；通報須屬實';
-  setStep(2);
-  document.querySelector('#worker-rows input[data-k=name]').focus();
-  $('worker-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
-});
-
-function renderExtract(data) {
-  $('extract-loading').hidden = true;
-  $('worker-form').hidden = false;
-  const sel = $('doc-type');
-  if ([...sel.options].some(o => o.value === data.doc_type)) sel.value = data.doc_type;
-  renderWorkerTable();
-  const flags = (data.workers || []).reduce((n, w) => n + Object.keys(w.flags || {}).length, 0);
-  $('flag-count').className = 'status ' + (flags ? 'warning' : 'ok');
-  $('flag-count').textContent = flags ? `${flags} 項請再確認` : '辨識完成';
-  $('model-note').textContent = `${data.is_image ? '合成範例掃描圖' : '文字公文'}・Claude ${data.model === 'sonnet' ? 'Sonnet' : 'Haiku'} 判讀・有標示的日期請勾選「已核對原件」`;
-  $('sent-preview').hidden = !data.masked_preview;
-  $('sent-preview-text').textContent = data.masked_preview || '';
-  const btn = document.querySelector('#worker-form button[type=submit]');
-  btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  btn.classList.add('pulse');
-  setTimeout(() => btn.classList.remove('pulse'), 4000);
-  notify(flags ? `AI 已讀完公文。有 ${flags} 個日期需要對照原件，核對後請勾選「已核對原件」。` : 'AI 已讀完公文。請核對日期，再按「確認無誤，產生待辦」。');
+async function linePage(){
+  const r=await api('/api/line/preview',{method:'POST'});
+  main.innerHTML=heading('提醒索引 / 04','提醒，寄到你的 LINE。','每個 LINE 帳號只綁定一位雇主；訊息只含事項、日期與案件代號。')+
+    `<div class="two-column"><section class="section"><h2>01 先配對帳號</h2><p>綁定狀態：<strong>${r.bound?'已綁定此雇主帳號':'尚未綁定'}</strong></p><button id="pair-code">取得六位配對碼</button><div id="pair-result" aria-live="polite"></div><p class="hint">在指定的 LINE 官方帳號對話輸入配對碼，10分鐘內有效且僅能用一次。</p><div class="actions"><button id="refresh-line" class="secondary">已在 LINE 輸入，重新查詢</button>${r.bound?'<button class="danger" id="unbind">解除綁定</button>':''}</div><p class="hint">解除後不再發送提醒。在 LINE 也可輸入「取消綁定」。</p></section><section class="section"><h2>02 看看會收到什麼</h2><div class="message-preview">${h(r.text)}</div><div class="actions"><button id="send-demo" ${r.bound&&r.configured?'':'disabled'}>發送此帳號測試訊息</button></div><p class="hint">只發給本帳號綁定的收件人。相同待辦的當日測試只發一次。</p>${!r.configured?'<div class="note">LINE 服務尚未設定。此處為訊息預覽，尚未寄送；展示者可用預存展示頁說明。</div>':''}<div id="send-result" role="status"></div></section></div>`;
+  $('#pair-code').onclick=async()=>{try{const r=await api('/api/line/pair-code',{method:'POST'});$('#pair-result').innerHTML=`<div class="code">${h(r.code)}</div><p>有效至 ${h(new Date(r.expires_at).toLocaleTimeString('zh-TW'))}</p>`;}catch(e){error(e.message);}};
+  $('#refresh-line').onclick=()=>go('line');
+  if($('#unbind'))$('#unbind').onclick=async()=>{try{await api('/api/line/binding',{method:'DELETE'});notice('已解除綁定');await go('line');}catch(e){error(e.message);}};
+  $('#send-demo').onclick=async()=>{const b=$('#send-demo');b.disabled=true;try{const r=await api('/api/line/send-demo',{method:'POST'});$('#send-result').textContent=`實際收件人數：${r.recipients}。${r.status==='sent'?'LINE 已接受發送，請在手機確認。':r.status==='duplicate'?'今天已發送，不重複寄送。':'尚未確認發送成功，請檢查連線後重試。'}`;}catch(e){error(e.message);}finally{b.disabled=false;}};
 }
-
-function renderWorkerTable() {
-  const type = $('doc-type').value;
-  const fields = FIELDS[type] || [];
-  const isAbscond = type === '移工失聯';
-  const isManual = isAbscond || type === '家事移工預定入國';  /* 手動填寫，非 AI 判讀 */
-  $('worker-head').innerHTML = `<tr><th>移工姓名</th>${isAbscond ? '<th>工作類別</th>' : ''}${fields.map(([, l]) => `<th>${esc(l)}</th>`).join('')}</tr>`;
-  const workers = (lastExtract && lastExtract.workers) || [];
-  $('worker-rows').innerHTML = workers.map((w, i) => `<tr data-i="${i}">
-      <td><input type="text" data-k="name" value="${esc(w.name)}" required placeholder="移工姓名"><span class="worker-meta">移工 ${String(i + 1).padStart(2, '0')}</span></td>
-      ${isAbscond ? `<td><select data-k="job"><option value="製造" ${w.job !== '家庭看護' ? 'selected' : ''}>製造／營造等</option><option value="家庭看護" ${w.job === '家庭看護' ? 'selected' : ''}>家庭看護</option></select><small>家庭看護工遞補時程較短</small></td>` : ''}
-      ${fields.map(([k]) => {
-        const flag = (w.flags || {})[k];
-        const src = (w.evidence || {})[k];
-        return `<td class="${flag ? 'flagged' : ''}"><input type="date" data-k="${k}" value="${esc(w[k] || '')}">
-          ${src ? `<small>原文：「${esc(src)}」</small>` : (w[k] || isManual ? '' : '<small>文件中未找到</small>')}
-          ${flag ? `<span class="field-warning">需核對：${esc(flag)}</span>
-            <label class="check-original"><input type="checkbox" data-check="${i}:${k}"> 已核對原件</label>` : ''}</td>`;
-      }).join('')}</tr>`).join('');
+function qaPage(){
+  main.innerHTML=heading('法源索引 / 05','帶著已確認的日期問。','個案內容只取自你已確認的文件和待辦；沒有的日期會保留「尚未確認」。')+
+    `<form id="qa-form">${state.account.role==='employer'?caseSelect():''}<label for="question">想確認什麼</label><textarea id="question" required maxlength="2000" placeholder="例如：這個案件的住宿變更最晚何時通知？"></textarea><label for="qa-mode">回答方式</label><select id="qa-mode"><option value="text">條文文字模式（不需模型）</option><option value="live">即時模型協助白話說明</option></select><div class="actions"><button type="submit">查已確認資料與相關規定 →</button></div></form><div id="qa-result" aria-live="polite"></div>`;
+  wireCase();$('#qa-form').onsubmit=async e=>{e.preventDefault();const b=$('button[type=submit]',e.target);b.disabled=true;const output=$('#qa-result');output.innerHTML='<p class="loading">正在查詢已確認資料與條文…</p>';try{const r=await api('/api/qa',{method:'POST',body:{case_id:state.account.role==='employer'?state.caseId:null,question:$('#question').value,mode:$('#qa-mode').value}});output.innerHTML=`<div class="note">${h(r.mode)} · 合成示範 · 回答時間 ${h(r.answered_at)}</div>`+Object.entries(r.sections).map(([k,v])=>`<section class="qa-section"><h2>${h(k)}</h2><pre>${h(v)}</pre></section>`).join('')+`<details><summary>查到的條文與資料版本</summary>${r.citations.map(c=>`<p>${h(c.law+c.no)}</p>`).join('')}<pre>${h(JSON.stringify(r.data_version,null,2))}</pre></details>`;}catch(err){output.replaceChildren();error(err.message,output);}finally{b.disabled=false;}};
 }
-$('doc-type').addEventListener('change', renderWorkerTable);
-
-$('worker-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const type = $('doc-type').value;
-  const workers = all('#worker-rows tr').map(tr => {
-    const w = { name: '', entry_date: null, permit_start: null, permit_end: null, event_date: null };
-    tr.querySelectorAll('input[data-k], select[data-k]').forEach(inp => { w[inp.dataset.k] = inp.value || (inp.dataset.k === 'name' ? '' : null); });
-    return w;
-  });
-  if (type === '移工失聯' && workers.some(w => !w.name || !w.event_date)) { notify('請填寫移工姓名與失聯日（連續曠職滿 3 日之日）。'); return; }
-  if (workers.some(w => w.permit_start && w.permit_end && w.permit_start > w.permit_end)) { notify('聘僱許可迄日不得早於起日，請再次核對。'); return; }
-  if (workers.some(w => (FIELDS[type] || []).every(([k]) => !w[k]))) { notify('請至少填入一個日期。'); return; }
-  const btn = e.submitter || document.querySelector('#worker-form button[type=submit]');
-  const btnHtml = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner small-spinner"></span>產生中…';
-  try {
-    const checked = all('#worker-rows [data-check]').filter(c => c.checked).map(c => c.dataset.check);
-    const body = { document_kind: type, workers, checked };
-    if (lastExtract && lastExtract.extract_id) body.extract_id = lastExtract.extract_id;
-    const r = await api('/api/documents/confirm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (lastExtract) lastExtract.extract_id = null;  /* consumed on the server */
-    (r.warnings || []).forEach(w => notify(w));
-    const total = r.obligations.length;
-    const msg = r.added === total ? `已加入 ${total} 項待辦`
-      : r.added === 0 ? `這 ${total} 項待辦先前已加入過，未重複新增` : `已新增 ${r.added} 項待辦（${total - r.added} 項先前已加入過）`;
-    renderObligations(r.obligations, workers, msg, r.added > 0);
-    setStep(3);
-    refreshCount(true);
-    btn.classList.add('done');
-    btn.innerHTML = `✓ ${r.added > 0 ? `已加入 ${r.added} 項待辦` : '先前已加入過'}`;
-    notify(msg + '，可到「我的待辦」或「LINE 提醒」查看。');
-    setTimeout(() => { btn.classList.remove('done'); btn.innerHTML = btnHtml; btn.disabled = false; }, 3000);
-  } catch (err) {
-    btn.innerHTML = btnHtml; btn.disabled = false;
-    const missing = (err.data && err.data.unchecked) || [];
-    missing.forEach(key => {
-      const box = document.querySelector(`#worker-rows [data-check="${key}"]`);
-      if (box) box.closest('td').classList.add('needs-check');
-    });
-    if (missing.length) document.querySelector(`#worker-rows [data-check="${missing[0]}"]`).focus();
-    notify((missing.length ? '還沒核對：' : '產生待辦失敗：') + err.message);
-  }
-});
-
-function statusChip(o) {
-  const startLeft = o.start ? daysBetween(today(), o.start) : null;
-  if (o.days_left < 0) return ['danger', `已逾期 ${-o.days_left} 天`];
-  if (startLeft !== null && startLeft > 0) return [startLeft <= 30 ? 'warning' : 'neutral', `${startLeft} 天後開始`];
-  if (o.days_left === 0) return ['danger', '今天截止'];
-  if (o.days_left <= 7) return ['danger', `剩 ${o.days_left} 天`];
-  if (o.days_left <= 30) return ['warning', `剩 ${o.days_left} 天`];
-  return ['neutral', `剩 ${o.days_left} 天`];
+function missingPage(){
+  main.innerHTML=heading('聯絡確認 / 03','聯絡不上，先把事實理清。','請用實際應工作日及聯繫紀錄核對。這個流程不會自動宣告移工行蹤不明。')+
+    `<form id="missing-form"><div class="two-column"><section><label for="guide-today">今天的日期</label><input id="guide-today" type="date" required value="2026-11-15"><label class="check"><input id="today-scheduled" type="checkbox">今天原本應工作</label><label for="last-attendance">最後實際出勤日</label><input id="last-attendance" type="date" required value="2026-11-12"><button type="button" class="secondary" id="make-days">列出之後各日，逐日確認</button><div id="work-days"></div></section><section><label class="check"><input type="checkbox" id="contact-attempted" required>已嘗試聯絡本人或受委任機構，並保留紀錄</label><label for="contact-result">聯繫結果</label><select id="contact-result"><option value="unreachable">仍無法聯繫</option><option value="uncertain">有回覆，但本人或資訊尚未核實</option><option value="recovered">已確認本人，聯絡恢復</option></select><fieldset class="section"><legend>是否掌握可核實的資訊</legend><label class="check"><input type="checkbox" id="location-verified">住宿地點已查認屬實</label><label class="check"><input type="checkbox" id="period-verified">住宿期間已查認屬實</label><label class="check"><input type="checkbox" id="method-verified">聯絡方式已查認屬實</label><label class="check"><input type="checkbox" id="sought-1955">已向1955求助</label><label class="check"><input type="checkbox" id="relationship-active" checked>聘僱關係尚未終止</label><label class="check"><input type="checkbox" id="special-period">處於入國未滿三日、許可餘期不足三日、轉換、限期出國或合意暫停勞務等特殊期間</label></fieldset><div class="note">曾向1955求助仍須核實住宿與聯絡事實，不能自動排除失去聯繫。不得扣留護照或居留證。</div><button type="submit">依已確認事實，查看下一步 →</button></section></div></form><div id="guide-result" aria-live="polite"></div>`;
+  let days=[];
+  $('#make-days').onclick=()=>{
+    const start=$('#last-attendance').value,end=$('#guide-today').value;if(!start||!end)return;
+    const first=new Date(start+'T00:00:00Z'),last=new Date(end+'T00:00:00Z');
+    if(last<first||(last-first)/86400000>90){error('請選擇今天之前90日內的最後出勤日');return;}
+    days=[];for(let d=new Date(first.getTime()+86400000);d<=last;d=new Date(d.getTime()+86400000))days.push(d.toISOString().slice(0,10));
+    $('#work-days').innerHTML=days.map((day,i)=>`<fieldset class="section"><legend>${h(day)} · ${h(['日','一','二','三','四','五','六'][new Date(day).getUTCDay()])}</legend><label for="scheduled-${i}">當天是否應工作</label><select id="scheduled-${i}" required><option value="">請確認實際班表</option><option value="yes">應工作</option><option value="no">休息日</option></select><label for="absent-${i}">出勤狀況</label><select id="absent-${i}"><option value="unknown">尚未確認／不適用</option><option value="yes">沒有到工</option><option value="no">有到工</option></select><label for="justified-${i}">是否有正當理由</label><select id="justified-${i}"><option value="unknown">尚未確認／不適用</option><option value="yes">有，請保留紀錄供核對</option><option value="no">目前未查得正當理由</option></select></fieldset>`).join('');
+  };
+  $('#missing-form').onsubmit=async e=>{e.preventDefault();if(!days.length){error('請先列出之後各日並確認班表');return;}const nullable=v=>v==='unknown'?null:v==='yes';const body={today:$('#guide-today').value,today_scheduled:$('#today-scheduled').checked,last_attendance:$('#last-attendance').value,work_days:days.map((day,i)=>({day,scheduled:$('#scheduled-'+i).value==='yes',absent:nullable($('#absent-'+i).value),justified:nullable($('#justified-'+i).value)})),contact_attempted:$('#contact-attempted').checked,contact_result:$('#contact-result').value,location_verified:$('#location-verified').checked,accommodation_period_verified:$('#period-verified').checked,contact_method_verified:$('#method-verified').checked,sought_1955:$('#sought-1955').checked,relationship_active:$('#relationship-active').checked,special_period:$('#special-period').checked};
+    try{const r=await api('/api/missing/guide',{method:'POST',body});const result=$('#guide-result');result.innerHTML=`<div class="note"><h2>${h(r.status)}</h2><p>${h(r.explanation)}</p><p>已填紀錄中的連續應工作日不到工：${r.consecutive_work_days}日</p></div><h3>尚需核對</h3><ul>${r.missing_facts.length?r.missing_facts.map(f=>`<li>${h(f)}</li>`).join(''):'<li>請主管機關依卷證核對完整要件</li>'}</ul><p>${h(r.next_step)}</p><p>${h(r.law_ref)}</p><div class="actions"><a class="button secondary" href="${h(r.official_url)}" target="_blank" rel="noopener">閱讀官方認定基準 ↗</a><a class="button" href="${h(r.report_url)}" target="_blank" rel="noopener">官方申辦與通報資訊 ↗</a></div>`;result.scrollIntoView({block:'start'});}catch(err){error(err.message);}};
 }
-const today = () => new Date().toISOString().slice(0, 10);
-const daysBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000);
-
-/* 辦理窗口（許願卡 1：知道要做什麼、去哪裡辦） */
-function officeLine(o) {
-  if (!o.office) return '';
-  const link = o.online && /^https:\/\//.test(o.online.url)
-    ? ` ・<a href="${esc(o.online.url)}" target="_blank" rel="noopener">${esc(o.online.label)}</a>` : '';
-  return `<span class="office">辦理窗口：${esc(o.office)}${link}</span>`;
+function penaltyPage(){
+  main.innerHTML=heading('承辦人工作桌 / 01','把缺漏指出來，讓判斷更周全。','七項要件逐一核對。是否處分、如何裁量與送出，仍由承辦人決定。')+
+    `<div class="note"><strong>僅輔助檢核 · 合成示範</strong><br>本版本不供市府實際辦案，草稿處理後不保存原文。</div><div class="two-column"><section><button class="secondary" id="load-penalty">載入合成裁處書草稿</button><form id="penalty-form"><label for="penalty-text">合成裁處書草稿</label><textarea id="penalty-text" rows="19" required minlength="30" maxlength="50000"></textarea><label for="penalty-mode">檢核方式</label><select id="penalty-mode"><option value="live">即時模型檢核</option><option value="stored">預存示範結果（固定草稿）</option></select><div class="actions"><button type="submit">開始七項輔助檢核 →</button></div></form></section><section><div id="penalty-result" aria-live="polite"><div class="empty"><h2>逐條核對，留下補查方向。</h2><p>相對人、事實、違反條文、處罰條文、金額、陳述意見、救濟教示。</p></div></div></section></div>${state.account.is_admin?'<section class="reset-panel"><h2>合成展示資料重置</h2><p>清除案件、文件、證明判讀、LINE綁定、通知紀錄及暫存，重建固定合成案件。所有登入碼將重新啟用，Session失效。</p><label class="check"><input type="checkbox" id="reset-check">我確認要重置此展示機的合成資料。</label><button class="danger" id="reset-demo" disabled>清空並重建合成資料</button></section>':''}`;
+  $('#load-penalty').onclick=async()=>{try{const r=await api('/api/penalty/sample');$('#penalty-text').value=r.text;notice('合成草稿已載入');}catch(e){error(e.message);}};
+  $('#penalty-form').onsubmit=async e=>{e.preventDefault();const b=$('button[type=submit]',e.target);b.disabled=true;const output=$('#penalty-result');output.innerHTML='<div class="loading" role="status">七項檢核進行中…若模型失效可改選預存示範結果。</div>';try{const r=await api('/api/penalty/check',{method:'POST',body:{text:$('#penalty-text').value,mode:$('#penalty-mode').value}});$('#penalty-text').value='';output.innerHTML=`<div class="note">${h(r.mode)} · 耗時 ${r.elapsed_ms} ms<br>${h(r.notice)}</div><ol class="checklist">${r.items.map(i=>`<li><h3>${h(i.name)}<span class="status">${h(i.status)}</span></h3><p class="source">草稿：${h(i.source_excerpt)}</p><p>${h(i.reason)}</p><p class="muted">${h(i.law_ref)}</p><p>${h(i.next_step)}</p></li>`).join('')}</ol>`;}catch(err){output.replaceChildren();error(err.message,output);}finally{b.disabled=false;}};
+  if($('#reset-demo')){$('#reset-check').onchange=()=>$('#reset-demo').disabled=!$('#reset-check').checked;$('#reset-demo').onclick=async()=>{try{await api('/api/demo/reset',{method:'POST',body:{rebuild:true}});clearState();loginPage();notice('已清除並重建合成資料，請重新登入。');}catch(e){error(e.message);}};}
 }
-function renderObligations(list, workers, msg = '', added = true) {
-  $('result-card').hidden = false;
-  $('result-sub').textContent = workers.map(w => w.name).join('、');
-  const banner = msg ? `<div class="success-banner ${added ? '' : 'info'}"><span class="success-icon">${added ? '✓' : 'i'}</span>
-      <div><strong>${esc(msg)}</strong><small>${added ? '已存入「我的待辦」，期限快到時會透過 LINE 提醒' : '「我的待辦」中已有這些項目'}</small></div>
-      <div class="banner-actions"><button type="button" class="button secondary" data-goto="tasks">前往我的待辦</button><button type="button" class="button primary" data-goto="line">推播到 LINE</button></div></div>` : '';
-  $('obligation-list').innerHTML = banner + (list.length ? list.map(o => {
-    const [cls, txt] = statusChip(o);
-    const when = o.start ? `${o.start} ～ ${o.due}` : `${o.due} 前`;
-    return `<div class="obligation"><div class="task-icon"><svg><use href="#i-${o.key.startsWith('health') ? 'shield' : 'file'}"/></svg></div>
-      <div class="obligation-name"><strong>${esc(o.title)}</strong><small>${esc(o.worker)}・${esc(o.basis)}</small>${officeLine(o)}${o.note ? `<span class="note">${esc(o.note)}</span>` : ''}</div>
-      <div class="deadline"><strong>${esc(when)}</strong><small>${o.start ? '辦理期間' : '最後期限'}</small></div>
-      <span class="status ${cls}">${esc(txt)}</span></div>`;
-  }).join('') : '<p class="empty-state">這份文件沒有觸發需要追蹤的法定期限。</p>');
-  all('#obligation-list [data-goto]').forEach(b => b.addEventListener('click', () => showView(b.dataset.goto)));
-  $('abscond-guide').hidden = !list.some(o => o.key === 'abscond_notice');
-  $('result-card').classList.remove('flash'); void $('result-card').offsetWidth; $('result-card').classList.add('flash');
-  $('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-/* ---------------- todos ---------------- */
-let todoItems = [];
-async function refreshCount(bump = false) {
-  try {
-    const t = await api('/api/todos');
-    const el = $('nav-count');
-    el.textContent = t.items.length;
-    el.title = '待辦總數';
-    if (bump) { el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
-  } catch { /* ignore */ }
-}
-async function loadTodos() {
-  try {
-    const t = await api('/api/todos');
-    todoItems = t.items;
-    $('sum-workers').innerHTML = `${t.workers.length} <small>位</small>`;
-    const soon = t.items.filter(o => !o.done && o.days_left >= 0 && o.days_left <= 30).length;
-    const over = t.items.filter(o => !o.done && o.days_left < 0).length;
-    $('sum-soon').innerHTML = `${soon} <small>項</small>`;
-    $('sum-overdue').innerHTML = `${over} <small>項</small>`;
-    $('sum-overdue').className = over ? 'red' : 'green';
-    $('sum-overdue-note').textContent = over ? '請儘速辦理或確認是否已完成' : '目前沒有逾期待辦';
-    renderTodoRows(currentFilter);
-    $('nav-count').textContent = t.items.length;
-  } catch (err) { notify(err.message); }
-}
-let currentFilter = 'all';
-const VERDICT_CLS = { on_time: 'ok', late: 'danger', early: 'warning', mismatch: 'warning', unknown: 'warning', name_mismatch: 'warning' };
-function proofCell(o) {
-  const p = o.proof;
-  const assignBtn = `<button type="button" class="chip-btn ${o.assigned === '仲介' ? 'on' : ''}" data-assign="${o.id}">${o.assigned === '仲介' ? '✓ 已委任仲介' : '委任仲介'}</button>`;
-  if (o.key === 'permit_expiry') return `<span class="muted small">期滿出國或續聘後自動結案</span>`;
-  if (p) {
-    return `<div class="proof-box"><span class="status ${VERDICT_CLS[p.verdict] || 'neutral'}">${p.verdict === 'on_time' ? '✓ ' : ''}${esc(p.verdict_text)}</span>
-      <small>${esc(p.doc_kind || '證明文件')}・${esc(p.date_label || '完成日')} ${esc(p.completed_date || '—')}</small>
-      ${p.evidence ? `<small>原文：「${esc(p.evidence)}」</small>` : ''}
-      <small>${esc(p.uploaded_by)}上傳 ${esc((p.uploaded_at || '').replace('T', ' '))}</small>
-      <div class="proof-actions"><span class="muted">原件不保存</span><button type="button" class="text-button" data-unproof="${o.id}">移除</button></div></div>`;
-  }
-  return `<div class="proof-box"><span class="status neutral">尚未上傳</span>${assignBtn}
-    <div class="proof-actions"><button type="button" class="text-button" data-proof="${o.id}">上傳證明</button>
-    <button type="button" class="text-button muted" data-sample-proof="${o.id}" data-late="0">範例：準時</button>
-    <button type="button" class="text-button muted" data-sample-proof="${o.id}" data-late="1">範例：逾期</button></div></div>`;
-}
-function renderTodoRows(filter) {
-  currentFilter = filter;
-  const rows = todoItems.filter(o => filter === 'all' || (filter === 'open' && !o.done)
-    || (filter === 'soon' && !o.done && o.days_left >= 0 && o.days_left <= 30)
-    || (filter === 'overdue' && !o.done && o.days_left < 0) || (filter === 'done' && o.done));
-  $('task-rows').innerHTML = rows.map(o => {
-    const [cls, txt] = o.done ? (o.proof.verdict === 'late' ? ['danger', '逾期完成'] : ['ok', '已完成']) : statusChip(o);
-    return `<tr class="${o.done ? 'row-done' : ''}"><td><strong>${esc(o.title)}</strong><small>${esc(o.basis)}</small>${officeLine(o)}</td><td>${esc(o.worker)}</td><td>${esc(o.start ? `${o.start} ～ ${o.due}` : o.due)}</td><td><span class="status ${cls}">${esc(txt)}</span></td><td>${proofCell(o)}</td></tr>`;
-  }).join('');
-  $('empty-tasks').hidden = rows.length > 0;
-  all('[data-assign]').forEach(b => b.addEventListener('click', () => toggleAssign(b.dataset.assign)));
-  all('[data-proof]').forEach(b => b.addEventListener('click', () => { proofTarget = b.dataset.proof; $('proof-input').value = ''; $('proof-input').click(); }));
-  all('[data-unproof]').forEach(b => b.addEventListener('click', () => removeProof(b.dataset.unproof)));
-  all('[data-sample-proof]').forEach(b => b.addEventListener('click', () => sampleProof(b.dataset.sampleProof, b.dataset.late === '1')));
-}
-let proofTarget = null;
-async function toggleAssign(id) {
-  const o = todoItems.find(x => x.id === id);
-  await api(`/api/todos/${id}/assign`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ assignee: o.assigned === '仲介' ? null : '仲介' }) });
-  notify(o.assigned === '仲介' ? '已取消委任。' : '已標記為委任仲介辦理；仲介上傳證明後即可在此看到結果。');
-  loadTodos();
-}
-async function removeProof(id) {
-  await api(`/api/todos/${id}/proof`, { method: 'DELETE' });
-  loadTodos();
-}
-async function submitProof(id, file) {
-  const o = todoItems.find(x => x.id === id);
-  const fd = new FormData(); fd.append('file', file); fd.append('by', o.assigned === '仲介' ? '仲介' : '雇主');
-  const cell = document.querySelector(`[data-proof="${id}"]`)?.closest('td');
-  if (cell) cell.innerHTML = '<div class="proof-box"><span class="spinner small-spinner dark"></span><small>AI 正在讀取證明…</small></div>';
-  try {
-    const r = await api(`/api/todos/${id}/proof`, { method: 'POST', body: fd });
-    notify(`證明判定：${r.verdict_text}（${r.date_label || '完成日'} ${r.completed_date || '讀不到'}）`);
-  } catch (err) { notify('證明上傳失敗：' + err.message); }
-  loadTodos();
-}
-$('proof-input').addEventListener('change', e => { if (proofTarget && e.target.files[0]) submitProof(proofTarget, e.target.files[0]); });
-
-/* 範例證明：依待辦事項產生一份合成的完成證明（展示用） */
-const PROOF_KIND = {
-  health_entry: ['受聘僱外國人健康檢查報告', '檢查日期'], health_6m: ['受聘僱外國人定期健康檢查報告', '檢查日期'],
-  health_18m: ['受聘僱外國人定期健康檢查報告', '檢查日期'], health_30m: ['受聘僱外國人定期健康檢查報告', '檢查日期'],
-  apply_permit: ['勞動部聘僱許可申請收件回執', '收件日期'], renewal_window: ['勞動部期滿續聘許可申請收件回執', '收件日期'],
-  recheck_report: ['衛生局備查收件回執', '收件日期'], dorm_change: ['住宿地點變更通報收執聯', '收件日期'],
-  termination_notice: ['聘僱關係終止通報收執聯', '通報日期'], abscond_notice: ['外國人連續曠職三日失去聯繫通報收執聯', '通報日期'],
-  replacement_window: ['勞動部遞補申請收件回執', '收件日期'],
-  onestop_register: ['移工一站式服務網入國講習申請完成畫面', '申請日期'],
-};
-function sampleProof(id, late) {
-  const o = todoItems.find(x => x.id === id);
-  const [kind, label] = PROOF_KIND[o.key] || ['辦理收件回執', '收件日期'];
-  const due = new Date(o.due);
-  let d;
-  if (late) { d = new Date(due); d.setDate(d.getDate() + 5); }
-  else { const start = o.start ? new Date(o.start) : null; d = new Date(Math.min(Date.now(), due.getTime())); if (start && d < start) d = start; }
-  const text = ['【合成測試文件・非真實公文・僅供竹聘安 AI 驗證使用】', kind, '',
-    `外國人姓名：${o.worker}`, '雇主：（展示用）', `${label}：${rocDate(d)}`,
-    `列印日期：${rocDate(new Date())}`, '', '上述事項已受理完成。'].join('\n');
-  submitProof(id, new File([text], `${kind}.txt`, { type: 'text/plain' }));
-}
-all('[data-filter]').forEach(b => b.addEventListener('click', () => {
-  all('[data-filter]').forEach(x => { const on = x === b; x.classList.toggle('active', on); x.setAttribute('aria-pressed', String(on)); });
-  renderTodoRows(b.dataset.filter);
-}));
-$('clear-todos').addEventListener('click', async () => {
-  if (!confirm('確定清除所有展示用待辦資料？')) return;
-  await api('/api/todos', { method: 'DELETE' }); loadTodos(); notify('已清除展示資料。');
-});
-
-/* ---------------- chat ---------------- */
-function mdLite(s) {
-  return esc(s).replace(/^#+\s*(.*)$/gm, '<strong>$1</strong>').replace(/\*\*(.+?)\*\*/g, '<strong class="answer-highlight">$1</strong>').replace(/^---$/gm, '');
-}
-all('[data-question]').forEach(b => b.addEventListener('click', () => { $('question').value = b.dataset.question; $('chat-form').requestSubmit(); }));
-$('chat-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const q = $('question').value.trim(); if (!q) return;
-  const box = $('messages');
-  box.insertAdjacentHTML('beforeend', `<div class="message user"><span class="message-label">您</span><div>${esc(q)}</div></div>`);
-  const pending = document.createElement('div');
-  pending.className = 'message assistant';
-  pending.innerHTML = '<span class="message-label">竹聘安 AI</span><div class="assistant-bubble"><span class="spinner" style="width:20px;height:20px"></span> 正在查找相關條文…</div>';
-  box.append(pending); box.scrollTop = box.scrollHeight;
-  $('question').value = ''; $('ask-btn').disabled = true;
-  try {
-    const r = await api('/api/ask', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: q }) });
-    const cites = r.citations.map((c, i) => `<details class="citation" ${i === 0 ? 'open' : ''}><summary>引用條文 <span>${esc(c.law)}${esc(c.no)}</span></summary><div><strong>${esc(c.law)} ${esc(c.no)}</strong><blockquote>${esc(c.text)}</blockquote></div></details>`).join('');
-    pending.querySelector('.assistant-bubble').innerHTML = `<div class="answer-text">${mdLite(r.answer)}</div>${cites}<small class="disclaimer">本回答依法條原文產生，非正式法律意見</small>`;
-  } catch (err) {
-    pending.querySelector('.assistant-bubble').textContent = '抱歉，查詢失敗：' + err.message;
-  }
-  $('ask-btn').disabled = false; box.scrollTop = box.scrollHeight;
-});
-
-/* ---------------- LINE ---------------- */
-const lineDays = () => Number((document.querySelector('input[name=days]:checked') || {}).value || 30);
-const lineLang = () => (document.querySelector('input[name=language]:checked') || {}).value || 'zh';
-async function loadLine() {
-  try {
-    const s = await api('/api/line/status');
-    $('line-status-tag').textContent = s.configured ? `已連接 LINE 官方帳號・好友 ${s.followers} 人` : '尚未連接 LINE（預覽模式）';
-    $('line-send').textContent = s.configured ? '產生提醒並推播到 LINE' : '產生提醒預覽';
-    $('phone-note').textContent = s.configured ? '實際推播內容預覽' : 'LINE 對話預覽・設定 Messaging API 後即可實際推播';
-  } catch { /* ignore */ }
-  renderPhone();
-}
-async function renderPhone() {
-  try {
-    const p = await api(`/api/line/preview?days=${lineDays()}&lang=${lineLang()}`);
-    const d = new Date();
-    $('phone-chat').innerHTML = `<div class="phone-date">${d.getMonth() + 1} 月 ${d.getDate()} 日</div>` + (p.count ? `<div class="line-message"><span class="line-avatar">竹</span><div class="line-bubble"><p>${esc(p.text)}</p><div class="line-buttons"><button type="button" class="mark-done">已讀</button><button type="button" data-goto-tasks>查看全部</button></div></div></div>` : '<p class="line-detail">目前範圍內沒有需要提醒的待辦。請先到「上傳公文」產生待辦，或放寬提醒範圍。</p>');
-    all('[data-goto-tasks]').forEach(b => b.addEventListener('click', () => showView('tasks')));
-    all('.mark-done').forEach(b => b.addEventListener('click', () => { b.textContent = '已標記完成'; b.disabled = true; }));
-  } catch (err) { notify(err.message); }
-}
-all('input[name=days], input[name=language]').forEach(i => i.addEventListener('change', renderPhone));
-$('settings-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  try {
-    const r = await api('/api/line/send', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ days: lineDays(), lang: lineLang() }) });
-    $('line-result').textContent = r.note || '';
-    loadLine();
-    renderPhone();
-  } catch (err) { notify(err.message); }
-});
-
-/* ---------------- penalty review ---------------- */
-$('load-draft').addEventListener('click', async () => {
-  const t = await (await fetch('samples/' + encodeURIComponent('裁處書草稿_範例.txt'))).text();
-  $('draft').value = t; notify('已載入範例草稿（合成資料）。');
-});
-const CIRCLED = ['①', '②', '③', '④', '⑤', '⑥', '⑦'];
-$('check-draft').addEventListener('click', async () => {
-  const text = $('draft').value.trim();
-  if (text.length < 30) { notify('請先貼上裁處書草稿，或載入範例草稿。'); return; }
-  $('check-loading').hidden = false; $('checklist').innerHTML = ''; $('suggestion-card').hidden = true;
-  $('check-summary').className = 'status neutral'; $('check-summary').textContent = '檢核中'; $('check-draft').disabled = true;
-  try {
-    const r = await api('/api/check-penalty', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
-    const fails = r.items.filter(i => i.ok === false);
-    if (r.masked_preview) {
-      $('masked-card').hidden = false;
-      $('masked-text').textContent = r.masked_preview;
-    }
-    $('checklist').innerHTML = r.items.map((it, i) => `<li class="check-item ${it.ok === false ? 'check-fail' : ''}">
-      <div class="check-row"><span>${CIRCLED[i]}</span><strong>${esc(it.name)}</strong>
-      ${it.ok === true ? '<span class="check-state check-pass">✓ 符合</span>' : it.ok === false ? '<span class="check-state">✕ 需修正</span>' : '<span class="check-state check-unknown">？未判定</span>'}</div>
-      <p class="reason">${esc(it.reason || '')}</p></li>`).join('');
-    $('check-progress').style.width = `${Math.round(100 * (7 - fails.length) / 7)}%`;
-    $('check-summary').className = 'status ' + (fails.length ? 'danger' : 'ok');
-    $('check-summary').textContent = fails.length ? `${fails.length} 項需修正` : '7 項皆符合';
-    const fixes = fails.filter(f => f.fix);
-    if (fixes.length) {
-      $('suggestion-card').hidden = false;
-      $('suggestions').innerHTML = fixes.map(f => `<div class="fix-item"><strong>${esc(f.name)}</strong><p>${esc(f.fix)}</p><button class="text-button" type="button" data-copy="${esc(f.fix)}">複製文字</button></div>`).join('');
-      all('[data-copy]').forEach(b => b.addEventListener('click', async () => {
-        try { await navigator.clipboard.writeText(b.dataset.copy); notify('已複製，請依個案確認後採用。'); } catch { notify('無法自動複製，請手動選取文字。'); }
-      }));
-    }
-  } catch (err) {
-    $('check-summary').className = 'status danger'; $('check-summary').textContent = '檢核失敗'; notify(err.message);
-  }
-  $('check-loading').hidden = true; $('check-draft').disabled = false;
-});
+window.addEventListener('offline',()=>{state.draft=null;state.tasks=[];state.selected=null;state.proof=null;main.innerHTML=heading('目前離線','目前無法讀取個案資料。','請恢復網路後重新讀取。公開資訊與固定預存範例仍可開啟。')+'<div class="actions"><a class="button" href="/offline.html">公開離線說明</a><a class="button secondary" href="/local-demo.html">預存展示頁</a></div>';});
+window.addEventListener('online',()=>{if(state.account)go(state.page);else loginPage();});
+window.addEventListener('pagehide',()=>{state.tasks=[];state.selected=null;state.proof=null;state.draft=null;main.replaceChildren();});
+window.addEventListener('pageshow',e=>{if(e.persisted)boot();});
+async function boot(){clearState();try{const r=await api('/api/session');state.account=r.account;await enter();}catch{loginPage();}}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+boot();

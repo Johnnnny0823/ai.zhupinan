@@ -1,0 +1,18 @@
+[
+  {
+    "year": 2026,
+    "source": "https://www.dgpa.gov.tw/FileConversion?filename=dgpa%2Ffiles%2F202506%2Fa52331bd-a189-466b-b0f0-cae3062bbf74.csv&name=calendar.csv&nfix=",
+    "sha256": "0edd80d368626eb73caa05b6c33400ec9d87691b46834d03936efb91e6a0f00d",
+    "off_days": 120,
+    "matches": true,
+    "difference": []
+  },
+  {
+    "year": 2027,
+    "source": "https://www.dgpa.gov.tw/FileConversion?filename=dgpa%2Ffiles%2F202607%2Ff538b1ff-ba60-4c63-9477-10db8e6612d1.csv&name=calendar.csv&nfix=",
+    "sha256": "e30df188649bf5347db3ec43fa989af2cc8d93d793fbe5c9891601e6cce4acf3",
+    "off_days": 121,
+    "matches": true,
+    "difference": []
+  }
+]
