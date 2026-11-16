@@ -7,7 +7,7 @@
 
 > ⚠️ 本系統為競賽原型。所有測試文件均為**合成資料**（標註「非真實公文」，人名、文號、地址皆虛構）；系統輸出**不構成法律意見**，個案請洽主管機關或 1955 專線。
 
-> 🛠 **決賽開發（2026-11-15 起）**：決賽協作庫為 [RoyLin0905/ai.zhupinan](https://github.com/RoyLin0905/ai.zhupinan)，與原始程式庫 [Johnnnny0823/ai.zhupinan](https://github.com/Johnnnny0823/ai.zhupinan) 共用完整提交歷史。開發範圍見 [`docs/竹聘安_決賽系統開發_130人時.md`](docs/竹聘安_決賽系統開發_130人時.md)，協作規則見 [`CONTRIBUTING.md`](CONTRIBUTING.md)，啟動、測試與資料重置見 [`demo/DEVELOPMENT.md`](demo/DEVELOPMENT.md)，API 見 [`demo/API.md`](demo/API.md)。`design/concept/` 是**靜態介面草稿**，不是已實作功能。
+> 🛠 **決賽開發（2026-11-15 起）**：決賽協作庫為 [z1nnz/zhupinan](https://github.com/z1nnz/zhupinan)，與原始程式庫 [Johnnnny0823/ai.zhupinan](https://github.com/Johnnnny0823/ai.zhupinan) 共用完整提交歷史。開發範圍見 [`docs/竹聘安_決賽系統開發_130人時.md`](docs/竹聘安_決賽系統開發_130人時.md)，協作規則見 [`CONTRIBUTING.md`](CONTRIBUTING.md)，啟動、測試與資料重置見 [`demo/DEVELOPMENT.md`](demo/DEVELOPMENT.md)，API 見 [`demo/API.md`](demo/API.md)。`design/concept/` 是**靜態介面草稿**，不是已實作功能。
 
 ---
 
@@ -178,8 +178,8 @@
 ### 安裝
 
 ```bash
-git clone https://github.com/Johnnnny0823/ai.zhupinan.git
-cd ai.zhupinan
+git clone https://github.com/z1nnz/zhupinan.git
+cd zhupinan
 pip install -r demo/requirements.txt
 claude auth login
 ```
