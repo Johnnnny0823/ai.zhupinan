@@ -466,7 +466,7 @@ def penalty(body:Penalty,a=Depends(auth.officer)):
         digest=storage.text_digest(body.text)
         source=next((p for p in (config.ROOT/'validation'/'penalty').glob('p*.txt') if storage.text_digest(p.read_text(encoding='utf-8'))==digest),None)
         if source is None: raise HTTPException(422,'只有固定合成草稿可使用預存結果；修改後請重新即時檢核')
-        data=json.loads((config.ROOT/'validation'/'runs'/'penalty'/'haiku'/f'{source.stem}.json').read_text())['parsed']
+        data=json.loads((config.ROOT/'validation'/'runs'/'penalty'/'haiku'/f'{source.stem}.json').read_text(encoding='utf-8'))['parsed']
     else:
         try:
             # Preserve the validated baseline model and seven checks.

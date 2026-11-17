@@ -52,3 +52,29 @@ def test_stored_penalty_ignores_only_line_ending(clients, tmp_path, monkeypatch,
     assert len(result.json()['items']) == 7
     changed = client.post('/api/penalty/check', json={'text': original + ' altered', 'mode': 'stored'})
     assert changed.status_code == 422
+
+
+def test_all_demo_text_reads_choose_encoding():
+    """Default Windows encodings must not control source/fixture interpretation."""
+    import ast
+    missing = []
+    for path in (config.ROOT / 'demo').rglob('*.py'):
+        tree = ast.parse(path.read_text(encoding='utf-8'))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute) and node.func.attr == 'read_text':
+                if not node.args and not any(k.arg == 'encoding' for k in node.keywords):
+                    missing.append(f'{path.relative_to(config.ROOT)}:{node.lineno}')
+    assert not missing, missing
+
+
+def test_baseline_with_windows_cp950_default(monkeypatch, capsys):
+    import io
+    from demo import verify_baseline
+    original = io.open
+
+    def windows_open(file, mode='r', buffering=-1, encoding=None, errors=None, newline=None, closefd=True, opener=None):
+        return original(file, mode, buffering, encoding if 'b' in mode or encoding not in (None, 'locale') else 'cp950', errors, newline, closefd, opener)
+
+    monkeypatch.setattr(io, 'open', windows_open)
+    verify_baseline.main()
+    assert json.loads(capsys.readouterr().out)['legacy_holiday']['passed'] == 33
