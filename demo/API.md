@@ -135,3 +135,5 @@ calc_trace含event、event_date、start_date、rule、original_due_date、holida
 登入來源使用X-Forwarded-For第一個有效IP，沒有可用值時使用連線來源。來源可偽造，因此仍以帳號總上限限制猜碼；不把其他帳號或其他來源一起鎖住。既有login_attempts表存雜湊鍵，帳號總計的updated_at用作10分鐘視窗起點，未新增資料表。
 
 文件確認新增`checked: ["0:entry_date"]`，鍵為「移工索引:欄位」。擷取的`fields[].warning`依個別日期的掃描／國字／民國年／缺原文狀態回傳string或null。需核對且維持擷取原值的日期未列入checked時，正式確認回422及`unchecked`清單，不寫案件；自行修改日期視為人工確認。preview_only只預覽數量，不要求checked，也不寫入。`confirmed=true`仍為整份確認的必要條件。
+
+TXT在MIME與實際內容檢查後，依UTF-8（含BOM）、具BOM的UTF-16、CP950解碼；可列印字元（含換行／Tab）須超過97%，含NUL或不符則415並提示另存UTF-8。固定文字預存結果及證明按解碼文字統一CRLF後比對，不以編碼差異拒絕同一合成內容；圖片白名單仍使用原始bytes的digest。

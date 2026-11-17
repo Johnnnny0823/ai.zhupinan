@@ -7,6 +7,27 @@ from . import config
 
 MAX_BYTES = 15 * 1024 * 1024
 
+TEXT_ENCODING_ERROR = '文字檔無法辨識：請另存為 UTF-8 編碼的純文字檔'
+
+
+def decode_text(raw: bytes) -> str | None:
+    encodings = ['utf-8-sig']
+    if raw.startswith((b'\xff\xfe', b'\xfe\xff')):
+        encodings.append('utf-16')
+    encodings.append('cp950')
+    for encoding in encodings:
+        try:
+            text = raw.decode(encoding)
+        except UnicodeDecodeError:
+            continue
+        if not text or '\0' in text:
+            continue
+        printable = sum(ch.isprintable() or ch in '\r\n\t' for ch in text)
+        if printable / len(text) > 0.97:
+            return text
+    return None
+
+
 def inspect(raw, filename, content_type):
     if not raw:
         raise HTTPException(400, '檔案沒有內容')
@@ -15,7 +36,7 @@ def inspect(raw, filename, content_type):
     suffix = Path(filename or '').suffix.lower()
     allowed = {'.txt':('text/plain',),'.pdf':('application/pdf',),'.png':('image/png',),'.jpg':('image/jpeg',),'.jpeg':('image/jpeg',)}
     if suffix not in allowed or content_type not in allowed[suffix]:
-        raise HTTPException(415, '檔案格式不符：只接受 MIME 與內容相符的 JPG、PNG、PDF、UTF-8 TXT')
+        raise HTTPException(415, '檔案格式不符：只接受 MIME 與內容相符的 JPG、PNG、PDF、TXT（UTF-8、具BOM的UTF-16、Big5）')
     text, scanned = None, False
     try:
         if suffix == '.pdf':
@@ -34,9 +55,10 @@ def inspect(raw, filename, content_type):
                 im.verify()
             scanned = True
         else:
-            if raw.startswith((b'%PDF-', b'\x89PNG', b'\xff\xd8')) or b'\0' in raw: raise ValueError()
-            text = raw.decode('utf-8-sig')
-            if any(ord(ch)<32 and ch not in '\r\n\t' for ch in text): raise ValueError()
+            if raw.startswith((b'%PDF-', b'\x89PNG', b'\xff\xd8')): raise ValueError()
+            text = decode_text(raw)
+            if text is None:
+                raise HTTPException(415, TEXT_ENCODING_ERROR)
     except HTTPException:
         raise
     except Exception:

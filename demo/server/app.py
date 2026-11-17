@@ -233,7 +233,7 @@ async def extract(file:UploadFile=File(...),mode:Literal['live','stored']=Form('
     raw=await storage.read_upload(file)
     text,scanned=storage.inspect(raw,filename,mime)
     key=hashlib.sha256(raw).hexdigest()
-    sample=next((v for v in SAMPLES.values() if hashlib.sha256(v['text'].encode()).hexdigest()==key),None)
+    sample=next((v for v in SAMPLES.values() if text is not None and storage.text_digest(v['text'])==storage.text_digest(text)),None)
     scan=next((v for name,v in SCAN_SAMPLES.items() if hashlib.sha256((config.WEB/'samples'/name).read_bytes()).hexdigest()==key),None)
     preview=mask(text or '')[0]
     if mode=='stored':
@@ -329,7 +329,7 @@ async def proof(tid:str,file:UploadFile=File(...),mode:Literal['live','stored']=
     masked=mask(text)[0]
     expected=f'【合成示範證明】\n待辦代號：{tid}\n辦理日期：{task["due_date"]}\n'
     if mode=='stored':
-        if raw.decode('utf-8-sig')!=expected: raise HTTPException(422,'預存證明只支援此待辦提供的固定合成範例')
+        if storage.text_digest(text)!=storage.text_digest(expected): raise HTTPException(422,'預存證明只支援此待辦提供的固定合成範例')
         data={'completed_date':task['due_date'],'relevant':True,'evidence':'辦理日期：'+task['due_date']}
     else:
         try: data=await run_in_threadpool(lambda:llm.parse_json(llm.call(PROOF_SYSTEM+PROMPT_NOTE,'待辦：'+task['title']+'\n證明資料：\n'+masked)))
