@@ -18,7 +18,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.concurrency import run_in_threadpool
-from . import config, db, auth, storage, llm, notifications, missing
+from . import config, db, auth, storage, llm, notifications, missing, documents
 from .domain import owned_case, owned_task, serialize_task, save_document, calculations, RULES_VERSION, law_versions, uid
 from .samples import SAMPLES, SCAN_SAMPLES, penalty_sample
 from demo.reset import reset
@@ -173,6 +173,7 @@ class Confirmation(Model):
     document_kind: str=Field(max_length=40)
     fields: list[Worker]=Field(min_length=1,max_length=20)
     confirmed: bool
+    checked: list[str] = Field(default_factory=list, max_length=100)
     preview_only: bool=False
 
 def clean_workers(fields):
@@ -185,20 +186,42 @@ def clean_workers(fields):
         result.append(item)
     return result
 
-async def make_draft(aid,raw,filename,kind,fields,preview,mode,warning):
-    fields=clean_workers(fields)
-    token=secrets.token_urlsafe(24)
+async def make_draft(aid, raw, filename, kind, fields, preview, mode, is_image=False):
+    fields = clean_workers(fields)
+    token = secrets.token_urlsafe(24)
+    display = []
+    flagged = {}
+    for index, worker in enumerate(fields):
+        for field in documents.DATE_FIELDS:
+            if not worker.get(field):
+                continue
+            excerpt = worker['evidence'].get(field, '')
+            warning = documents.field_warning(excerpt, is_image)
+            key = f'{index}:{field}'
+            display.append({
+                'worker_index': index, 'field': field, 'value': worker[field],
+                'source_excerpt': excerpt, 'warning': warning,
+            })
+            if warning:
+                flagged[key] = worker[field]
     async with DRAFT_LOCK:
-        for k in [k for k,v in DRAFTS.items() if v['expires_at']<time.monotonic()]: DRAFTS.pop(k,None)
-        for k in [k for k,v in DRAFTS.items() if v['account_id']==aid]: DRAFTS.pop(k,None)
-        DRAFTS[token]={'account_id':aid,'expires_at':time.monotonic()+600,'source_digest':hashlib.sha256(raw).hexdigest(),
-                       'source_filename':'合成文件'+Path(filename).suffix.lower(),'document_kind':kind,'fields':fields}
-    display=[]
-    for index,w in enumerate(fields):
-        for k in ('entry_date','permit_start','permit_end','event_date','notify_date'):
-            if w.get(k): display.append({'worker_index':index,'field':k,'value':w[k],'source_excerpt':w['evidence'].get(k,''),'warning':'需核對：'+warning})
-    return {'draft_id':token,'expires_in':600,'document_kind':kind,'workers':fields,'fields':display,
-            'masked_preview':preview,'mode':mode,'warning':warning,'synthetic':True}
+        for key in [key for key, value in DRAFTS.items() if value['expires_at'] < time.monotonic()]:
+            DRAFTS.pop(key, None)
+        for key in [key for key, value in DRAFTS.items() if value['account_id'] == aid]:
+            DRAFTS.pop(key, None)
+        DRAFTS[token] = {
+            'account_id': aid, 'expires_at': time.monotonic() + 600,
+            'source_digest': hashlib.sha256(raw).hexdigest(),
+            'source_filename': '合成文件' + Path(filename).suffix.lower(),
+            'document_kind': kind, 'fields': fields, 'flagged': flagged,
+        }
+    return {
+        'draft_id': token, 'expires_in': 600, 'document_kind': kind,
+        'workers': fields, 'fields': display, 'masked_preview': preview,
+        'mode': mode, 'warning': ('合成掃描文件；' if is_image else '') + '有提示的日期需逐欄核對原件，或修改為你已確認的日期',
+        'synthetic': True,
+    }
+
 
 @app.get('/api/demo/samples')
 def samples(a=Depends(auth.employer)):
@@ -213,7 +236,6 @@ async def extract(file:UploadFile=File(...),mode:Literal['live','stored']=Form('
     sample=next((v for v in SAMPLES.values() if hashlib.sha256(v['text'].encode()).hexdigest()==key),None)
     scan=next((v for name,v in SCAN_SAMPLES.items() if hashlib.sha256((config.WEB/'samples'/name).read_bytes()).hexdigest()==key),None)
     preview=mask(text or '')[0]
-    warning='掃描／民國或國字日期需對照原件核對' if scanned or re.search('[一二三四五六七八九〇年]',text or '') else '日期與文件種類均須人工確認'
     if mode=='stored':
         chosen=sample or scan
         if not chosen: raise HTTPException(422,'此檔案沒有預存結果，請使用系統提供的合成範例')
@@ -237,7 +259,7 @@ async def extract(file:UploadFile=File(...),mode:Literal['live','stored']=Form('
             fields=[Worker.model_validate(w) for w in fields]
         except llm.LLMError as e: raise HTTPException(502,str(e)) from None
         except ValueError: raise HTTPException(502,'模型日期格式不符，請使用範例重新核對') from None
-    return await make_draft(a['id'],raw,filename,kind,fields,preview,'預存示範結果' if mode=='stored' else '即時模型擷取',warning)
+    return await make_draft(a['id'],raw,filename,kind,fields,preview,'預存示範結果' if mode=='stored' else '即時模型擷取',is_image=scanned)
 
 @app.delete('/api/documents/drafts/{draft_id}')
 def cancel_draft(draft_id:str,a=Depends(auth.employer)):
@@ -253,6 +275,18 @@ def confirm(body:Confirmation,a=Depends(auth.employer)):
     if body.document_kind not in KINDS: raise HTTPException(422,'文件類型需人工確認；聯絡不上移工請使用專用流程')
     if not body.preview_only and not body.confirmed: raise HTTPException(422,'請先逐欄確認日期')
     fields=clean_workers(body.fields)
+    if not body.preview_only:
+        unchecked = []
+        for key, extracted in draft['flagged'].items():
+            index, field = key.split(':', 1)
+            current = fields[int(index)].get(field) if int(index) < len(fields) else None
+            if current and current == extracted and key not in body.checked:
+                unchecked.append(key)
+        if unchecked:
+            return JSONResponse({
+                'detail': '有日期尚未核對原件，請逐欄勾選「已核對原件」或修改日期後再確認',
+                'unchecked': unchecked,
+            }, status_code=422)
     required={'入國通報受理證明書':'entry_date','聘僱許可函':'permit_end','期滿續聘許可函':'permit_end','再檢查診斷證明書':'event_date','住宿地點變更':'event_date','家事移工預定入國':'entry_date','聘僱關係終止':'event_date'}[body.document_kind]
     if any(not w.get(required) for w in fields): raise HTTPException(422,'請先確認必要日期：'+required)
     for index,w in enumerate(fields):
