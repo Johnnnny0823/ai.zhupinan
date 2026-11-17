@@ -64,3 +64,8 @@ def clean_runtime():
             for p in path.iterdir():
                 if p.is_dir(): shutil.rmtree(p)
                 else: p.unlink()
+
+
+def text_digest(text: str) -> str:
+    """Match synthetic text across LF/CRLF checkouts without ignoring content changes."""
+    return hashlib.sha256(text.replace("\r\n", "\n").encode("utf-8")).hexdigest()

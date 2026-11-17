@@ -463,8 +463,8 @@ def penalty_items(data,masked):
 def penalty(body:Penalty,a=Depends(auth.officer)):
     start=time.monotonic();masked=mask(body.text)[0]
     if body.mode=='stored':
-        digest=hashlib.sha256(body.text.encode()).hexdigest()
-        source=next((p for p in (config.ROOT/'validation'/'penalty').glob('p*.txt') if hashlib.sha256(p.read_bytes()).hexdigest()==digest),None)
+        digest=storage.text_digest(body.text)
+        source=next((p for p in (config.ROOT/'validation'/'penalty').glob('p*.txt') if storage.text_digest(p.read_text(encoding='utf-8'))==digest),None)
         if source is None: raise HTTPException(422,'只有固定合成草稿可使用預存結果；修改後請重新即時檢核')
         data=json.loads((config.ROOT/'validation'/'runs'/'penalty'/'haiku'/f'{source.stem}.json').read_text())['parsed']
     else:

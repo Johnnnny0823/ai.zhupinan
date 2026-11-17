@@ -23,3 +23,32 @@ def test_today_without_system_iana_database():
 
 def test_reviewed_tzdata_version_is_installed():
     assert version('tzdata') == '2026.6'
+
+
+import json
+from pathlib import Path
+import pytest
+
+
+@pytest.mark.parametrize('checkout_newline,request_newline', [
+    ('\r\n', '\n'), ('\n', '\r\n'), ('\r\n', '\r\n'), ('\n', '\n'),
+])
+def test_stored_penalty_ignores_only_line_ending(clients, tmp_path, monkeypatch, checkout_newline, request_newline):
+    root = config.ROOT
+    original = (root / 'validation/penalty/p01.txt').read_text(encoding='utf-8')
+    target = tmp_path / 'reference'
+    drafts = target / 'validation/penalty'
+    saved = target / 'validation/runs/penalty/haiku'
+    drafts.mkdir(parents=True)
+    saved.mkdir(parents=True)
+    (drafts / 'p01.txt').write_bytes(original.replace('\n', checkout_newline).encode('utf-8'))
+    (saved / 'p01.json').write_bytes((root / 'validation/runs/penalty/haiku/p01.json').read_bytes())
+    monkeypatch.setattr(config, 'ROOT', target)
+    client = clients['officer']
+    result = client.post('/api/penalty/check', json={
+        'text': original.replace('\n', request_newline), 'mode': 'stored',
+    })
+    assert result.status_code == 200, result.text
+    assert len(result.json()['items']) == 7
+    changed = client.post('/api/penalty/check', json={'text': original + ' altered', 'mode': 'stored'})
+    assert changed.status_code == 422
