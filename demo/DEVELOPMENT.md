@@ -132,7 +132,8 @@ python -m demo.migrate_state demo/server/data/state.json --owner employer-a --ca
 ## 版本與日曆
 
 日期一律在`validation/scripts/rules.py`；release API使用`compute_traced`。
-`compute`保留既有歷史驗證輸出；新API對範圍外期限回needs_review及null，不顯示週末推測。
+`compute`保留既有歷史驗證輸出；計算說明以另一套日期算法獨立重算比對。只有實際檢查假日／工作日且所檢查日期超出官方日曆時，期限才回needs_review及null；公文載明的屆滿日及不順延的健檢／續聘期間仍顯示日期。
+升級本輪版本後執行`python -m demo.run reset`重建合成種子，既有資料庫保存的舊計算說明不會自動變更。
 2026／2027 CSV已與官方資料逐日比對，休假日120／121日全部一致，見evidence/calendar-check.json。
 條文版本及hash由health回傳。來源連結與核對限制見[LEGAL_SOURCES.md](LEGAL_SOURCES.md)。
 
