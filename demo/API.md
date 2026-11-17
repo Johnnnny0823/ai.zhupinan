@@ -1,6 +1,6 @@
 # 決賽API契約
 
-版本 `hackathon-2026.11.15`。Base URL同站；Swagger `/docs`、機器契約 `/openapi.json`。
+版本 `hackathon-2026.11.17`。Base URL同站；Swagger `/docs`、機器契約 `/openapi.json`。
 僅合成示範，所有JSON個案回應 `Cache-Control: no-store`。沒有舊版`/api/todos`、`/api/line/send`等無權限相容入口。
 
 ## 共通規則
@@ -18,7 +18,7 @@
 | 方法／路徑 | 權限 | 請求／回應重點 |
 |---|---|---|
 | GET `/api/health` | 公開 | service、rules_version、calendar_years、demo_data、law_versions；不含金鑰 |
-| POST `/api/session` | 公開＋Origin | account_id、code；成功回account並設cookie；401錯碼／過期／已用、連續五次失敗後429鎖五分鐘 |
+| POST `/api/session` | 公開＋Origin | account_id、code；成功回account並設cookie；401錯碼／過期／已用、相同帳號＋來源五次失敗後429鎖五分鐘；另有帳號跨來源10分鐘50次總上限 |
 | GET `/api/session` | 已登入 | account、synthetic |
 | DELETE `/api/session` | 已登入＋Origin | Session即失效；清除cookie及記憶體草稿 |
 | GET `/api/cases` | employer | items，僅owner本人 |
@@ -131,3 +131,5 @@ calc_trace含event、event_date、start_date、rule、original_due_date、holida
 模型不得補日期，條文文字模式不作模型推論；audit僅保存條文ID、版本與時間。
 處分書每項回name、status、reason、source_excerpt、law_ref、next_step；狀態只為「已找到／可能缺漏／需人工判斷」。
 草稿明顯標示僅輔助，不送出處分。
+
+登入來源使用X-Forwarded-For第一個有效IP，沒有可用值時使用連線來源。來源可偽造，因此仍以帳號總上限限制猜碼；不把其他帳號或其他來源一起鎖住。既有login_attempts表存雜湊鍵，帳號總計的updated_at用作10分鐘視窗起點，未新增資料表。
