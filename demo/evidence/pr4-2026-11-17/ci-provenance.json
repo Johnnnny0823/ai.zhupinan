@@ -1,0 +1,33 @@
+{
+  "run_id": 44085938666,
+  "run_url": "https://github.com/z1nnz/zhupinan/actions/runs/44085938666",
+  "source_commit": "3a0428e474b184867a0859e4353d53611047c07e",
+  "artifacts": {
+    "windows": 14328324738,
+    "ubuntu": 14330160128
+  },
+  "sha256": {
+    "windows/baseline.json": "abe06560bffa2701596549d984f6a8b5c294bc134629884499870298e4066e81",
+    "windows/browser-report.json": "1715904e36c9c459cd6dbefd7bcfd8a99fec28117649b976dca17407a57354ff",
+    "windows/browser-smoke.txt": "a865ab6320fe790b8e3d84b4ea653d38497df23b06ca22ac11b2eba25f219511",
+    "windows/edited-and-checked-dates-1280.png": "4431e446cc352d8cd2500311ff3a4d8ab64f518b3773818cd8b37a8727311331",
+    "windows/edited-and-checked-dates-320.png": "cf0893eb5b4cc1c27b3c0574a6ef33ee0db4779817b13a5e4727512e6fc215e9",
+    "windows/edited-and-checked-dates-390.png": "570d07ebcd434ff860a50eb298f119fe34e4a37efafd57762e6109b361baa088",
+    "windows/employer-tasks-1280.png": "966eed5300317a91b8ed3645d37050882dd0260c84f2d8206d57009f3e7e9503",
+    "windows/environment.json": "100b4021f08f5a0a35018e04587cea35974b8adc4165053f03a6669d1e861253",
+    "windows/officer-stored-penalty-1280.png": "fdff252235bd310630d15bbf29ccd68dacf8424855d9f1f987f3b1df882cfb48",
+    "windows/officer-stored-penalty-320.png": "efc6529e1ba396a0793eb6144546dcfe943dc92b2ccca31f94532829273ea664",
+    "windows/officer-stored-penalty-390.png": "a4cc025b81ab6e6e685eb572172db027d21a12dd7633d55f55aeb15e80d42188",
+    "windows/pytest.txt": "406e7ebb96b2069baa771089fc0d842244a94b27c2e2056544619c8b5a7fe269",
+    "windows/server.txt": "1d01a1186888cc4eedd6fd8e8a03463796180c98cc51214a87f39a38017b607d",
+    "windows/service-worker.txt": "58a266a22231064a3d58d02a9c0d9144018916d654d559c11fd7114f1dd3b7b6",
+    "windows/task-detail-1280.png": "8103f2a47b8d516f299c37e3e5328f4922541817ffbca7ad44b23980fb2d9486",
+    "windows/unchecked-date-errors-1280.png": "f3cf2b35136b6c58c35fa67e37f85c7089407fa4f7fbf87a076f9c0a9a716caa",
+    "windows/unchecked-date-errors-320.png": "0f6c399ff577a6a0f1249ca2e93bb78d8b8e9b197c59aeb1e069c4f784c3d32c",
+    "windows/unchecked-date-errors-390.png": "3218a5d6d2561db307c27fa27efe0693fedb3adf63223eaa9f6a317ef64e8794",
+    "ubuntu/baseline.json": "a83ff11b3a428ffbbc42f7e7cb96c6e80856fe0f0645ef35eeb3141e40c25403",
+    "ubuntu/environment.json": "86ce59ba4e3626754609428d4ff1c0a54597172638b0b161b5de354e37fbe9bc",
+    "ubuntu/pytest.txt": "74b3b4660eab0b01cf82ba8e733a27aa61b99d09e2112f1a23dd81d62415ac6b",
+    "ubuntu/service-worker.txt": "1b76afb1b62f285ec94fac7e5974464558a5124bdd3785d9637bd442f5e53b7b"
+  }
+}

@@ -1,0 +1,79 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+___________________ test_today_without_system_iana_database ____________________
+demo/tests/test_pr4_windows.py:19: in test_today_without_system_iana_database
+    assert result.returncode == 0, result.stderr
+E   AssertionError: Traceback (most recent call last):
+E       File "/Users/roylin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/zoneinfo/_common.py", line 12, in load_tzdata
+E         return resources.files(package_name).joinpath(resource_name).open("rb")
+E                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       File "/Users/roylin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/resources/_common.py", line 46, in wrapper
+E         return func(anchor)
+E                ^^^^^^^^^^^^
+E       File "/Users/roylin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/resources/_common.py", line 56, in files
+E         return from_package(resolve(anchor))
+E                             ^^^^^^^^^^^^^^^
+E       File "/Users/roylin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/functools.py", line 912, in wrapper
+E         return dispatch(args[0].__class__)(*args, **kw)
+E                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       File "/Users/roylin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/resources/_common.py", line 82, in _
+E         return importlib.import_module(cand)
+E                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       File "/Users/roylin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/__init__.py", line 90, in import_module
+E         return _bootstrap._gcd_import(name[level:], package, level)
+E                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+E       File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+E       File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+E       File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+E       File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+E       File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+E       File "<frozen importlib._bootstrap>", line 1310, in _find_and_load_unlocked
+E       File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+E       File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+E       File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+E       File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
+E     ModuleNotFoundError: No module named 'tzdata'
+E     
+E     During handling of the above exception, another exception occurred:
+E     
+E     Traceback (most recent call last):
+E       File "<string>", line 1, in <module>
+E       File "/Users/roylin/Desktop/竹娉安/demo/server/config.py", line 24, in today
+E         return datetime.now(ZoneInfo('Asia/Taipei')).date()
+E                             ^^^^^^^^^^^^^^^^^^^^^^^
+E       File "/Users/roylin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/zoneinfo/_common.py", line 24, in load_tzdata
+E         raise ZoneInfoNotFoundError(f"No time zone found with key {key}")
+E     zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key Asia/Taipei'
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/Users/roylin/Desktop/竹娉安/.venv/bin/python', '-c', 'from demo.server.config import today; prin...me zone found with key {key}")\nzoneinfo._common.ZoneInfoNotFoundError: \'No time zone found with key Asia/Taipei\'\n').returncode
+__________________ test_reviewed_tzdata_version_is_installed ___________________
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/metadata/__init__.py:397: in from_name
+    return next(cls.discover(name=name))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   StopIteration
+
+During handling of the above exception, another exception occurred:
+demo/tests/test_pr4_windows.py:25: in test_reviewed_tzdata_version_is_installed
+    assert version('tzdata') == '2026.6'
+           ^^^^^^^^^^^^^^^^^
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/metadata/__init__.py:889: in version
+    return distribution(distribution_name).version
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/metadata/__init__.py:862: in distribution
+    return Distribution.from_name(distribution_name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/importlib/metadata/__init__.py:399: in from_name
+    raise PackageNotFoundError(name)
+E   importlib.metadata.PackageNotFoundError: No package metadata was found for tzdata
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/roylin/Desktop/竹娉安/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED demo/tests/test_pr4_windows.py::test_today_without_system_iana_database
+FAILED demo/tests/test_pr4_windows.py::test_reviewed_tzdata_version_is_installed
+2 failed, 1 warning in 0.05s

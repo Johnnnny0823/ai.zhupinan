@@ -1,0 +1,17 @@
+✔ precache is public and fetched without cookies (20.012583ms)
+✔ never intercepts /api/cases (0.656125ms)
+✔ never intercepts /api/qa (0.218834ms)
+✔ never intercepts /api/tasks/1/proof (0.214458ms)
+✔ never intercepts /line/webhook (0.221875ms)
+✔ never intercepts /samples/test.png (0.201917ms)
+✔ never intercepts /unknown.txt (0.207625ms)
+✔ offline navigation uses public page, not case shell (1.16075ms)
+✔ offline local demo remains explicitly separate (0.644042ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 64.795334

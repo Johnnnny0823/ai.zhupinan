@@ -1,0 +1,23 @@
+{
+  "compute_ast_unchanged_from": "71de6bcc9849bc0b74799f2b97f55d290631760a",
+  "future_tasks": [
+    {
+      "key": "health_30m",
+      "due": "2028-10-05",
+      "status": "todo",
+      "calendar_examined": []
+    },
+    {
+      "key": "renewal_window",
+      "due": "2029-01-04",
+      "status": "todo",
+      "calendar_examined": []
+    },
+    {
+      "key": "permit_expiry",
+      "due": "2029-03-04",
+      "status": "todo",
+      "calendar_examined": []
+    }
+  ]
+}

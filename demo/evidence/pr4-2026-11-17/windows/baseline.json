@@ -1,0 +1,75 @@
+{
+  "mode": "historical_output_replay_not_live",
+  "legacy_holiday": {
+    "passed": 33,
+    "total": 33
+  },
+  "qa_holdout": {
+    "passed": 10,
+    "total": 10,
+    "items": [
+      {
+        "id": 1,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 2,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 3,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 4,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 5,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 6,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 7,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 8,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 9,
+        "facts": true,
+        "citation": true
+      },
+      {
+        "id": 10,
+        "facts": true,
+        "citation": true
+      }
+    ]
+  },
+  "penalty": {
+    "detected": 29,
+    "total_defects": 30,
+    "drafts": 30
+  },
+  "privacy": {
+    "checked": 266,
+    "leaks": 0,
+    "damaged_lines": 0
+  },
+  "live_model_verified": false,
+  "privacy_scope": "pure text only; excludes scanned images"
+}

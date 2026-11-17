@@ -1,0 +1,33 @@
+FFF.                                                                     [100%]
+=================================== FAILURES ===================================
+______________ test_proxy_client_lock_does_not_lock_other_sources ______________
+demo/tests/test_pr4_auth.py:22: in test_proxy_client_lock_does_not_lock_other_sources
+    assert login(client(), 'test-code-A', '198.51.100.9').status_code == 200
+E   AssertionError: assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +    where <Response [429 Too Many Requests]> = login(<starlette.testclient.TestClient object at 0x10c61dfa0>, 'test-code-A', '198.51.100.9')
+E    +      where <starlette.testclient.TestClient object at 0x10c61dfa0> = client()
+_______________ test_account_limit_blocks_sixty_rotating_sources _______________
+demo/tests/test_pr4_auth.py:28: in test_account_limit_blocks_sixty_rotating_sources
+    assert statuses[:50] == [401] * 50
+E   assert [401, 401, 40...401, 429, ...] == [401, 401, 40...401, 401, ...]
+E     
+E     At index 5 diff: 429 != 401
+E     Use -v to get more diff
+________________ test_same_source_only_locks_attempted_account _________________
+demo/tests/test_pr4_auth.py:38: in test_same_source_only_locks_attempted_account
+    assert login(c, 'test-code-B', '203.0.113.7', 'employer-b').status_code == 200
+E   AssertionError: assert 429 == 200
+E    +  where 429 = <Response [429 Too Many Requests]>.status_code
+E    +    where <Response [429 Too Many Requests]> = login(<starlette.testclient.TestClient object at 0x10ca5e360>, 'test-code-B', '203.0.113.7', 'employer-b')
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/roylin/Desktop/竹娉安/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED demo/tests/test_pr4_auth.py::test_proxy_client_lock_does_not_lock_other_sources
+FAILED demo/tests/test_pr4_auth.py::test_account_limit_blocks_sixty_rotating_sources
+FAILED demo/tests/test_pr4_auth.py::test_same_source_only_locks_attempted_account
+3 failed, 1 passed, 1 warning in 0.28s

@@ -1,0 +1,90 @@
+完成。登入碼不會列在輸出。
+{
+  "platform": "Windows-2025Server-10.0.26100-SP0",
+  "python": "3.12.10",
+  "preferred_encoding": "cp1252",
+  "pythonutf8_set": false,
+  "utf8_mode": 0,
+  "synthetic": true,
+  "model_mode": "stored synthetic fixtures only",
+  "checks": [
+    "login, case API, task-detail API return 200",
+    "task detail visibly renders without 500",
+    "unchanged unchecked scan dates are refused and highlighted",
+    "edited date needs no tick; other unchanged date is ticked; due recomputed",
+    "officer stored penalty visibly renders seven checks"
+  ],
+  "layouts": [
+    {
+      "screen": "employer-tasks",
+      "width": 1280,
+      "documentWidth": 1280
+    },
+    {
+      "screen": "task-detail",
+      "width": 1280,
+      "documentWidth": 1280
+    },
+    {
+      "screen": "unchecked-date-errors",
+      "width": 320,
+      "documentWidth": 320
+    },
+    {
+      "screen": "unchecked-date-errors",
+      "width": 390,
+      "documentWidth": 390
+    },
+    {
+      "screen": "unchecked-date-errors",
+      "width": 1280,
+      "documentWidth": 1280
+    },
+    {
+      "screen": "edited-and-checked-dates",
+      "width": 320,
+      "documentWidth": 320
+    },
+    {
+      "screen": "edited-and-checked-dates",
+      "width": 390,
+      "documentWidth": 390
+    },
+    {
+      "screen": "edited-and-checked-dates",
+      "width": 1280,
+      "documentWidth": 1280
+    },
+    {
+      "screen": "officer-stored-penalty",
+      "width": 320,
+      "documentWidth": 320
+    },
+    {
+      "screen": "officer-stored-penalty",
+      "width": 390,
+      "documentWidth": 390
+    },
+    {
+      "screen": "officer-stored-penalty",
+      "width": 1280,
+      "documentWidth": 1280
+    }
+  ],
+  "screenshots": [
+    "employer-tasks-1280.png",
+    "task-detail-1280.png",
+    "unchecked-date-errors-320.png",
+    "unchecked-date-errors-390.png",
+    "unchecked-date-errors-1280.png",
+    "edited-and-checked-dates-320.png",
+    "edited-and-checked-dates-390.png",
+    "edited-and-checked-dates-1280.png",
+    "officer-stored-penalty-320.png",
+    "officer-stored-penalty-390.png",
+    "officer-stored-penalty-1280.png"
+  ],
+  "browser_errors": [],
+  "http_5xx": [],
+  "passed": true
+}

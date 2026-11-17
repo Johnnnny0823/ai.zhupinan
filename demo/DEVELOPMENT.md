@@ -1,6 +1,7 @@
 # 竹聘安決賽示範系統
 
-基線：`dc6e636cf74c70d633b54fdbf23aaa63ead044ba`，分支 `release/hackathon-2026`。
+原始基線：`dc6e636cf74c70d633b54fdbf23aaa63ead044ba`；整合後 main 基線：`71de6bc`。
+本輪修正分支 `fix/c-final-windows-and-ports`，交付與雙平台證據見 [PR4_DELIVERY.md](PR4_DELIVERY.md)。原 `release/hackathon-2026` 已合併，不再推送。
 本版本只處理合成示範。沿用 FastAPI、原生 HTML/CSS/JS、既有 validation 規則／檢索，不需要 Node 打包。
 法規與資安正式審查、真實資料處理及市府正式介接均不在本次範圍。
 
@@ -140,7 +141,7 @@ python -m demo.migrate_state demo/server/data/state.json --owner employer-a --ca
 
 ## 版本與日曆
 
-日期一律在`validation/scripts/rules.py`；release API使用`compute_traced`。
+日期一律在`validation/scripts/rules.py`；決賽API使用`compute_traced`。
 `compute`保留既有歷史驗證輸出；計算說明以另一套日期算法獨立重算比對。只有實際檢查假日／工作日且所檢查日期超出官方日曆時，期限才回needs_review及null；公文載明的屆滿日及不順延的健檢／續聘期間仍顯示日期。
 升級本輪版本後執行`python -m demo.run reset`重建合成種子，既有資料庫保存的舊計算說明不會自動變更。
 2026／2027 CSV已與官方資料逐日比對，休假日120／121日全部一致，見evidence/calendar-check.json。

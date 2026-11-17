@@ -1,5 +1,7 @@
 # 已完成任務與本輪交付
 
+> 2026-11-17 補充：本檔保留 11/15 原交付的驗收紀錄。新一輪「Roy PR4 整合修正工作包」的已完成任務、雙平台 CI 與 Windows 畫面證據見 [PR4_DELIVERY.md](PR4_DELIVERY.md)；本輪依新工作包開 PR 並驗 CI。下列實機、即時模型與人工簽核待驗項目仍有效。
+
 整理日期：2026-11-15（Asia/Taipei）。分支：`release/hackathon-2026`。
 本輪依使用者確認交付程式與證據，實機驗收稍後補。此處列已實作及已有證據的子項目，**不表示S00–S10整包最終驗收完成**。
 待驗項目另列於[PENDING_VALIDATION.md](PENDING_VALIDATION.md)；完整對照見[ACCEPTANCE.md](ACCEPTANCE.md)。
