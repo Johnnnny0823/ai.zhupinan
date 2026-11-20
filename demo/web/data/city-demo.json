@@ -1,0 +1,9 @@
+{
+  "synthetic": true,
+  "label": "合成示範數據，不是新竹市的實際統計",
+  "districts": {
+    "O01": {"soon": 46, "week": 12, "overdue": 3, "top": "定期健康檢查"},
+    "O02": {"soon": 38, "week": 9, "overdue": 2, "top": "住宿地點變更通報"},
+    "O03": {"soon": 19, "week": 4, "overdue": 1, "top": "定期健康檢查"}
+  }
+}

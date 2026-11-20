@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1c2822"><title>竹聘安｜市府視角地圖</title><meta name="description" content="新竹市東區、北區、香山區的期限分布示意（合成示範數據）。"><link rel="icon" href="/icons/icon-192.png"><link rel="stylesheet" href="/app.css"><script src="/city.js" type="module"></script></head>
+<body class="city-page">
+<a class="skip" href="#main">跳到主要內容</a>
+<div class="demo-bar">市府視角示意 · 區界為內政部公開資料 · 件數為合成示範數據，不是實際統計</div>
+<header class="masthead city-head"><a class="brand" href="/" aria-label="竹聘安首頁"><span class="brand-mark" aria-hidden="true">竹</span><span>竹聘安<span class="brand-sub">市府視角 ／ 新竹市</span></span></a><a href="/">回到案件手帖 ↗</a></header>
+<main id="main" class="city" tabindex="-1">
+  <section class="city-panel">
+    <div class="eyebrow">市府視角 · 試辦儀表板示意</div>
+    <h1>新竹市哪一區的期限快到了</h1>
+    <p class="city-lead">每一區的高度跟顏色深淺，代表下面選的那個數字。承辦人可以先看哪一區比較急，再決定訪查或宣導要從哪裡開始。</p>
+    <div class="city-switch" role="group" aria-label="要看的數字">
+      <button data-metric="soon" aria-pressed="true">30 天內到期</button>
+      <button data-metric="week" aria-pressed="false">本週到期</button>
+      <button data-metric="overdue" aria-pressed="false">已逾期</button>
+    </div>
+    <table class="city-table" id="city-table"><caption class="visually-hidden">各區件數</caption></table>
+    <p class="city-note">區界：內政部國土測繪中心鄉鎮市區界線（政府資料開放授權）。件數：合成示範數據，只用來展示畫面，不是新竹市的實際統計；試辦後會換成竹聘安實際累積的匿名彙總數字。</p>
+  </section>
+  <section class="city-stage" aria-label="新竹市三區立體地圖，可拖曳旋轉">
+    <div id="city-canvas" class="city-canvas"></div>
+    <div id="city-labels" class="city-labels" aria-hidden="true"></div>
+    <p class="city-hint">拖曳可以轉動地圖</p>
+  </section>
+</main>
+</body></html>

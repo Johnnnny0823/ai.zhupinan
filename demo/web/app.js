@@ -54,14 +54,14 @@ function navigation() {
   const officer=state.account.role==='officer';
   const items=officer?[['penalty','草稿檢核'],['qa','法規問答']]:[['tasks','今日待辦'],['documents','讀取文件'],['missing','聯絡確認'],['line','LINE提醒'],['qa','法規問答']];
   const nav=$('#navigation');nav.hidden=false;
-  nav.innerHTML=`<div class="nav-eyebrow">${officer?'承辦人工作桌':'雇主的辦理索引'}</div><nav aria-label="主要功能">${items.map(([id,title],i)=>`<button data-page="${id}" aria-current="${state.page===id?'page':'false'}"><span class="nav-index">0${i+1}</span>${title}</button>`).join('')}</nav>`;
+  nav.innerHTML=`<div class="nav-eyebrow">${officer?'承辦人工作桌':'雇主的辦理索引'}</div><nav aria-label="主要功能">${items.map(([id,title],i)=>`<button data-page="${id}" aria-current="${state.page===id?'page':'false'}"><span class="nav-index">0${i+1}</span>${title}</button>`).join('')}${officer?'<a class="nav-link" href="/city.html">市府視角地圖 ↗</a>':''}</nav>`;
   nav.querySelectorAll('[data-page]').forEach(el=>el.onclick=async()=>{
     if(state.draft) { await api('/api/documents/drafts/'+encodeURIComponent(state.draft.draft_id),{method:'DELETE'}).catch(()=>{}); state.draft=null; }
     await go(el.dataset.page);
   });
 }
 function loginPage() {
-  main.innerHTML=`<section class="login"><div class="eyebrow">一本手帖，安心辦妥</div><h1>把期限理清楚，<br>下一步就有方向。</h1><p class="muted">以合成文件走一遍辦理流程。沒有真實個資，也不作正式辦案使用。</p><form id="login-form"><label for="account">示範帳號</label><select id="account" name="account"><option value="employer-a">家庭看護雇主 A</option><option value="employer-b">產業雇主 B</option><option value="officer">市府承辦人／示範管理員</option></select><label for="code">一次性登入碼</label><input id="code" name="code" type="password" autocomplete="one-time-code" required aria-describedby="code-hint"><p id="code-hint" class="hint">請使用展示者提供的登入碼；有效24小時，使用一次後失效。</p><button type="submit">打開我的案件手帖 →</button></form><div class="note">網路或模型無法使用時，可開啟明確標示的<a href="/local-demo.html">預存展示頁</a>。</div><a class="login-replay" href="/replay.html">不用登入也能看：新竹一件裁罰案的重播 →</a></section>`;
+  main.innerHTML=`<section class="login"><div class="eyebrow">一本手帖，安心辦妥</div><h1>把期限理清楚，<br>下一步就有方向。</h1><p class="muted">以合成文件走一遍辦理流程。沒有真實個資，也不作正式辦案使用。</p><form id="login-form"><label for="account">示範帳號</label><select id="account" name="account"><option value="employer-a">家庭看護雇主 A</option><option value="employer-b">產業雇主 B</option><option value="officer">市府承辦人／示範管理員</option></select><label for="code">一次性登入碼</label><input id="code" name="code" type="password" autocomplete="one-time-code" required aria-describedby="code-hint"><p id="code-hint" class="hint">請使用展示者提供的登入碼；有效24小時，使用一次後失效。</p><button type="submit">打開我的案件手帖 →</button></form><div class="note">網路或模型無法使用時，可開啟明確標示的<a href="/local-demo.html">預存展示頁</a>。</div><a class="login-replay" href="/replay.html">不用登入也能看：新竹一件裁罰案的重播 →</a><a class="login-replay" href="/city.html">市府視角：新竹市三區的期限分布（合成數據）→</a></section>`;
   $('#login-form').onsubmit=async e=>{
     e.preventDefault();const button=$('button[type=submit]',e.target);button.disabled=true;
     try { const r=await api('/api/session',{method:'POST',body:{account_id:$('#account').value,code:$('#code').value}});$('#code').value='';state.account=r.account;await enter(); }
@@ -134,7 +134,7 @@ const WORKER_TOPICS=/^(health_|recheck_report|dorm_change|renewal_window|permit_
 function workerNotice(t){
   if(!t.due_date||t.status==='needs_review'||!WORKER_TOPICS.test(t.rule_key))return;
   const s=document.createElement('section');s.className='section worker-notice';
-  s.innerHTML=`<div class="eyebrow">給看護的母語提醒</div><h2>用看護看得懂的語言，告訴她什麼時候要去辦</h2><p class="muted">內容只有事項跟日期，不會放姓名、證號或地址。</p><div class="wn-controls"><div><label for="wn-lang">語言</label><select id="wn-lang"><option value="id">印尼語</option><option value="vi">越南語</option><option value="en">英語（菲律賓）</option></select></div><div><label for="wn-mode">產生方式</label><select id="wn-mode"><option value="stored">預存句型</option><option value="live">即時 AI 翻譯</option></select></div><button id="wn-make" class="secondary">產生提醒</button></div><div id="wn-result" aria-live="polite"></div>`;
+  s.innerHTML=`<div class="eyebrow">給看護的母語提醒</div><h2>用看護看得懂的語言，提醒什麼時候要去辦</h2><p class="muted">內容只有事項跟日期，不會放姓名、證號或地址。</p><div class="wn-controls"><div><label for="wn-lang">語言</label><select id="wn-lang"><option value="id">印尼語</option><option value="vi">越南語</option><option value="en">英語（菲律賓）</option></select></div><div><label for="wn-mode">產生方式</label><select id="wn-mode"><option value="stored">預存句型</option><option value="live">即時 AI 翻譯</option></select></div><button id="wn-make" class="secondary">產生提醒</button></div><div id="wn-result" aria-live="polite"></div>`;
   main.append(s);
   $('#wn-make').onclick=async()=>{const b=$('#wn-make');b.disabled=true;const out=$('#wn-result');out.innerHTML='<p class="muted">產生中，AI 翻譯可能要等一下…</p>';
     try{const r=await api('/api/tasks/'+encodeURIComponent(t.id)+'/worker-notice',{method:'POST',body:{lang:$('#wn-lang').value,mode:$('#wn-mode').value}});

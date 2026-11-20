@@ -139,3 +139,9 @@ calc_trace含event、event_date、start_date、rule、original_due_date、holida
 文件確認新增`checked: ["0:entry_date"]`，鍵為「移工索引:欄位」。擷取的`fields[].warning`依個別日期的掃描／國字／民國年／缺原文狀態回傳string或null。需核對且維持擷取原值的日期未列入checked時，正式確認回422及`unchecked`清單，不寫案件；自行修改日期視為人工確認。preview_only只預覽數量，不要求checked，也不寫入。`confirmed=true`仍為整份確認的必要條件。
 
 TXT在MIME與實際內容檢查後，依UTF-8（含BOM）、具BOM的UTF-16、CP950解碼；可列印字元（含換行／Tab）須超過97%，含NUL或不符則415並提示另存UTF-8。固定文字預存結果及證明按解碼文字統一CRLF後比對，不以編碼差異拒絕同一合成內容；圖片白名單仍使用原始bytes的digest。
+
+## 靜態資料（市府視角地圖）
+
+- `/city.html`：公開頁，three.js（`/vendor/three.module.min.js`，0.160.0，MIT）畫新竹市三區立體地圖。
+- `/data/hsinchu-districts.json`：東區、北區、香山區界線，取自內政部國土測繪中心鄉鎮市區界線（經 taiwan-atlas 2021.9.20 轉檔，政府資料開放授權）。
+- `/data/city-demo.json`：各區件數，**合成示範數據**（`synthetic: true`），不是實際統計；試辦後改為竹聘安實際累積的匿名彙總。
