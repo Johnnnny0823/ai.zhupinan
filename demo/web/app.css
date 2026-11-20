@@ -91,3 +91,58 @@
 .city-table tbody tr{cursor:pointer}.city-table tbody tr.on{background:#2c3d34}.city-table tbody tr:hover{background:#26362e}
 .city h1{font-size:clamp(28px,2.8vw,40px)}
 @media(max-width:600px){.city-labels .city-label span{display:none}.city-labels .city-label{padding:4px 8px}}
+
+/* ===== 配色：60% 主色（米白紙色）／30% 輔色（深綠）／10% 跳色（柿橘，只給想讓人按的按鈕） ===== */
+:root{--paper:#f6f4ee;--accent:#2f5b4a;--second-deep:#1f3a30;--wash:#e4ece6;--cta:#ff7a2f;--cta-hover:#ff914f;--cta-ink:#1e1a16}
+body{background:var(--paper)}
+button,.button{background:var(--cta);border-color:var(--cta);color:var(--cta-ink);border-radius:10px;font-weight:700;transition:background-color .15s,box-shadow .15s,transform .15s}
+:where(button:hover:not(:disabled),.button:hover){background:var(--cta-hover);border-color:var(--cta-hover);box-shadow:0 6px 16px #ff7a2f40}
+:where(button:active:not(:disabled),.button:active){transform:translateY(1px)}
+button.secondary,.button.secondary{background:transparent;border:2px solid var(--accent);color:var(--accent);border-radius:10px}
+button.secondary:hover:not(:disabled),.button.secondary:hover{background:var(--wash);border-color:var(--accent);box-shadow:none}
+button.quiet{background:transparent;border-color:transparent;color:var(--accent)}
+button.quiet:hover:not(:disabled){background:var(--wash);border-color:transparent;box-shadow:none}
+button.danger{background:transparent;border:2px solid var(--error);color:var(--error)}button.danger:hover:not(:disabled){background:#f8e6e1;border-color:var(--error);box-shadow:none}
+.hero button{background:var(--cta);border-color:var(--cta);color:var(--cta-ink)}
+/* 輔色：頁首、導覽 */
+.demo-bar{background:var(--second-deep);color:#e9efe9}
+.masthead{background:var(--accent);border-bottom:0;max-width:none;padding-inline:max(40px,calc((100vw - 1360px)/2 + 40px))}
+.masthead .brand,.masthead a{color:#f6f4ee}.masthead .brand-mark{border-color:#f6f4ee;color:#f6f4ee}.masthead .brand-sub{color:#c9d8cf}
+#identity span{color:#e4ece6}#identity button.quiet{color:#f6f4ee;border:1px solid #ffffff55}#identity button.quiet:hover{background:#ffffff1a}
+aside{background:var(--wash);border-right:0}
+nav button[aria-current=page]{background:var(--accent);color:#f6f4ee}nav button[aria-current=page]:before{display:none}
+nav button:hover{background:#d3e0d7}
+.footer{max-width:none;background:var(--second-deep);color:#c9d8cf;border:0;padding-inline:max(40px,calc((100vw - 1360px)/2 + 40px))}.footer a{color:#f6f4ee}
+.note{border-left-color:var(--accent);background:var(--wash);border-radius:0 8px 8px 0}
+.replay-card{background:var(--accent);border-radius:14px}.replay-card:hover{background:var(--second-deep)}
+@media(max-width:700px){.masthead{padding:18px 16px}.footer{padding:22px 18px}aside{background:var(--paper)}nav button[aria-current=page]{background:var(--wash);color:var(--accent)}nav button[aria-current=page]:before{display:block;background:var(--accent)}}
+
+/* ===== 登入頁：入口做成卡片 ===== */
+.landing{max-width:1180px;margin:8px auto 0}
+.landing-intro{max-width:760px;margin-bottom:32px}.landing-intro h1{margin-bottom:12px}.landing-intro p{color:var(--muted);font-size:18px;margin:0}
+.landing-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:28px;align-items:start}
+.landing .login{margin:0;max-width:none;border-radius:16px;border:1px solid var(--line);box-shadow:0 10px 30px #26352e14}
+.landing .login h2{font-family:Georgia,"Noto Serif TC",serif;font-weight:500;font-size:28px;margin-bottom:4px}
+.feature-head{font-weight:700;color:var(--accent);letter-spacing:.08em;margin:0 0 12px;display:flex;align-items:center;gap:12px}.feature-head:before{content:"";width:32px;height:1px;background:var(--accent)}
+.features{display:flex;flex-direction:column;gap:16px}
+.feature{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 24px;border-radius:16px;background:var(--accent);color:#f6f4ee;text-decoration:none;transition:transform .15s,box-shadow .15s,background-color .15s}
+.feature:hover{transform:translateY(-2px);box-shadow:0 12px 28px #1f3a3040;background:var(--second-deep)}
+.feature:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+.feature-icon{width:64px;height:64px;border-radius:14px;background:#ffffff1a;display:grid;place-items:center}.feature-icon svg{width:40px;height:40px}
+.feature-kicker{display:block;font-size:14px;letter-spacing:.08em;color:#c9d8cf;margin-bottom:2px}
+.feature strong{display:block;font-family:Georgia,"Noto Serif TC",serif;font-weight:500;font-size:24px;line-height:1.35}
+.feature-desc{display:block;color:#d7e3db;font-size:15px;margin-top:4px}
+.feature-go{width:44px;height:44px;border-radius:50%;border:1px solid #ffffff66;display:grid;place-items:center;font-size:20px}
+.feature.light{background:var(--wash);color:var(--ink)}.feature.light .feature-kicker,.feature.light .feature-desc{color:var(--muted)}.feature.light .feature-icon{background:#fff}.feature.light .feature-go{border-color:var(--line)}.feature.light:hover{background:#d8e4dc}
+@media(max-width:900px){.landing-grid{grid-template-columns:1fr}.feature{grid-template-columns:auto minmax(0,1fr);padding:18px}.feature-go{display:none}.feature-icon{width:52px;height:52px}.feature strong{font-size:20px}}
+
+/* ===== 承辦人導覽列的地圖入口 ===== */
+.nav-link{gap:10px;margin-top:10px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--accent);font-weight:600}.nav-link svg{width:22px;height:22px;flex-shrink:0}.nav-link:hover{background:#fff}
+@media(max-width:700px){.nav-link{margin:0;border:0;border-radius:0;background:transparent;flex-direction:column;gap:2px;font-size:14px}}
+
+/* ===== 重播頁、地圖頁頁首 ===== */
+.replay-controls{border-radius:14px}.replay-date{color:var(--accent)}
+.city-page .masthead{background:transparent;border-bottom:1px solid #33443b}
+main:focus,main:focus-visible{outline:none}
+nav button[aria-current=page] .nav-index{color:#c9d8cf}
+@media(max-width:700px){nav button[aria-current=page] .nav-index{color:var(--muted)}}
