@@ -18,6 +18,9 @@ TITLE = {
  'termination_notice':'辦理聘僱終止通知','abscond_notice':'向主管機關核對通知事項','replacement_window':'核對遞補申請',
 }
 
+# Days before the due date on which a LINE reminder is pushed (0 = the due date itself).
+REMINDER_DAYS = (7, 3, 1, 0)
+
 def text_for(task):
     # Only server-owned task titles/code/date, never worker names or document fields.
     title=TITLE.get(task['rule_key'].split(':')[0],'查看待辦')
@@ -98,7 +101,7 @@ def run_schedule(on=None):
     results=[]
     for row in rows:
         days=(date.fromisoformat(row['due_date'])-on).days
-        if days in (7,3,1,0): results.append(send_task(row['owner_id'],row['id'],f'due-{days}',on.isoformat()))
+        if days in REMINDER_DAYS: results.append(send_task(row['owner_id'],row['id'],f'due-{days}',on.isoformat()))
     return results
 
 def event(event):

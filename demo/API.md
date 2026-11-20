@@ -24,12 +24,14 @@
 | GET `/api/cases` | employer | items，僅owner本人 |
 | GET `/api/cases/{id}` | employer owner | case、tasks、documents、synthetic |
 | GET `/api/demo/samples` | employer | 三份固定合成文字及label；供選樣及明示備援 |
+| GET `/api/demo/replay` | 公開，唯讀 | 開場案例重播：依公開訴願決定日期，以`compute_traced`重算第18個月健檢期間、依`REMINDER_DAYS`列LINE提醒時點、以`proof_verdict`判讀實際日期；不讀資料庫，不含任何帳號或案件資料 |
 | POST `/api/documents/extract` | employer＋Origin | multipart file、mode=live或stored；回draft_id、document_kind、workers、fields、masked_preview、mode、warning；不寫案件 |
 | DELETE `/api/documents/drafts/{id}` | employer＋Origin | 取消記憶體草稿；相同呼叫可重跑 |
 | POST `/api/documents/confirm` | employer owner＋Origin | 見下例；回task_ids、duplicate、warnings；preview_only不寫入 |
 | DELETE `/api/documents/{id}` | employer owner＋Origin | 刪文件、相關待辦／證明／通知，清除草稿；不保存原件 |
 | GET `/api/tasks/{id}` | employer owner | task、proofs、document、audit_events；含calc_trace及依今天推導的overdue |
 | PATCH `/api/tasks/{id}` | employer owner＋Origin | 僅`{"status":"delegated"}`，其他轉移用證明／確認端點；不合法409 |
+| POST `/api/tasks/{id}/worker-notice` | employer owner＋Origin | lang=id／vi／en、mode=stored或live；回lang_name、text、zh（中文對照）、mode、notice。只含事項種類與日期、1955專線，不含姓名、證號、地址；純雇主手續（如申請聘僱許可）或期限未確認回409；live模式由模型翻譯，日期與1955缺漏或多出日期即回422，模型失效回502 |
 | GET `/api/tasks/{id}/proof-sample` | employer owner | 此待辦固定合成證明text；不適用未確認期限409 |
 | POST `/api/tasks/{id}/proof` | employer owner＋Origin | multipart file、mode；回proof、status=proof_submitted及mode；不自動done |
 | POST `/api/tasks/{id}/confirm` | employer owner＋Origin | proof_id、confirmed=true、matches_task=true、observed_date；早於期間需明示outside_window_acknowledged；回status=done及verdict |
@@ -137,3 +139,9 @@ calc_trace含event、event_date、start_date、rule、original_due_date、holida
 文件確認新增`checked: ["0:entry_date"]`，鍵為「移工索引:欄位」。擷取的`fields[].warning`依個別日期的掃描／國字／民國年／缺原文狀態回傳string或null。需核對且維持擷取原值的日期未列入checked時，正式確認回422及`unchecked`清單，不寫案件；自行修改日期視為人工確認。preview_only只預覽數量，不要求checked，也不寫入。`confirmed=true`仍為整份確認的必要條件。
 
 TXT在MIME與實際內容檢查後，依UTF-8（含BOM）、具BOM的UTF-16、CP950解碼；可列印字元（含換行／Tab）須超過97%，含NUL或不符則415並提示另存UTF-8。固定文字預存結果及證明按解碼文字統一CRLF後比對，不以編碼差異拒絕同一合成內容；圖片白名單仍使用原始bytes的digest。
+
+## 靜態資料（市府視角地圖）
+
+- `/city.html`：公開頁，three.js（`/vendor/three.module.min.js`，0.160.0，MIT）畫新竹市三區立體地圖。
+- `/data/hsinchu-districts.json`：東區、北區、香山區界線，取自內政部國土測繪中心鄉鎮市區界線（經 taiwan-atlas 2021.9.20 轉檔，政府資料開放授權）。
+- `/data/hsinchu-age.json`：各區總人口、65 歲以上、80 歲以上人口與里數，取自內政部戶政司開放資料 ODRP052（113 年 12 月底），由各里加總為區；全市合計 457,242 人，與新竹市民政處簡表一致。

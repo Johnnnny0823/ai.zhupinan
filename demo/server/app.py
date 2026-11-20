@@ -18,8 +18,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.concurrency import run_in_threadpool
-from . import config, db, auth, storage, llm, notifications, missing, documents
-from .domain import owned_case, owned_task, serialize_task, save_document, calculations, RULES_VERSION, law_versions, uid
+from . import config, db, auth, storage, llm, notifications, missing, documents, replay, worker_notice
+from .domain import owned_case, owned_task, serialize_task, save_document, calculations, proof_verdict, RULES_VERSION, law_versions, uid
 from .samples import SAMPLES, SCAN_SAMPLES, penalty_sample
 from demo.reset import reset
 # domain adds the validation path. These are the shared, unchanged retrieval/checker modules.
@@ -227,6 +227,11 @@ async def make_draft(aid, raw, filename, kind, fields, preview, mode, is_image=F
 def samples(a=Depends(auth.employer)):
     return {'items':[{'id':k,'label':v['label'],'text':v['text']} for k,v in SAMPLES.items()]}
 
+@app.get('/api/demo/replay')
+def demo_replay():
+    # Public and read-only: fixed dates from a published appeal decision, no account data.
+    return replay.build()
+
 @app.post('/api/documents/extract')
 async def extract(file:UploadFile=File(...),mode:Literal['live','stored']=Form('live'),a=Depends(auth.employer)):
     filename=file.filename or 'upload.txt';mime=file.content_type
@@ -340,7 +345,7 @@ async def proof(tid:str,file:UploadFile=File(...),mode:Literal['live','stored']=
     verdict='unknown'
     if data.get('relevant') is False: verdict='mismatch'
     elif observed:
-        verdict='early' if task['start_date'] and observed<task['start_date'] else 'late' if observed>task['due_date'] else 'on_time'
+        verdict=proof_verdict(task['start_date'],task['due_date'],observed)
     excerpt=mask(str(data.get('evidence','')))[0][:300]
     if excerpt not in masked: excerpt='未取得可核對的日期原文';verdict='unknown'
     source_digest=hashlib.sha256(raw).hexdigest()
@@ -373,7 +378,7 @@ def complete(tid:str,body:Complete,a=Depends(auth.employer)):
         observed=body.observed_date.isoformat()
         if task['start_date'] and observed<task['start_date'] and not body.outside_window_acknowledged:
             raise HTTPException(422,'辦理日早於期間，需再核對並明確確認例外')
-        verdict='late' if observed>task['due_date'] else 'early' if task['start_date'] and observed<task['start_date'] else 'on_time'
+        verdict=proof_verdict(task['start_date'],task['due_date'],observed)
         c.execute('UPDATE proofs SET confirmed_at=?,observed_date=?,verdict=? WHERE id=?',(config.stamp(),observed,verdict,body.proof_id))
         c.execute("UPDATE tasks SET status='done' WHERE id=?",(tid,))
         db.audit(c,a['id'],task['case_id'],'task',tid,'confirm_done')
@@ -388,6 +393,29 @@ def delete_proof(tid:str,pid:str,a=Depends(auth.employer)):
         if not c.execute('SELECT 1 FROM proofs WHERE task_id=?',(tid,)).fetchone(): c.execute("UPDATE tasks SET status='todo' WHERE id=?",(tid,))
         db.audit(c,a['id'],task['case_id'],'task',tid,'delete_proof')
     return {'ok':True}
+
+class WorkerNotice(Model):
+    lang: Literal['id','vi','en']
+    mode: Literal['live','stored']='stored'
+
+@app.post('/api/tasks/{tid}/worker-notice')
+async def worker_notice_text(tid:str,body:WorkerNotice,a=Depends(auth.employer)):
+    with db.transaction() as c: task=owned_task(c,tid,a['id'])
+    zh=worker_notice.compose(task,'zh')
+    if body.mode=='stored':
+        text=worker_notice.compose(task,body.lang);mode='預存句型'
+    else:
+        prompt=f"翻成 {worker_notice.LANG_NAMES[body.lang]}：\n{zh}"
+        try: data=await run_in_threadpool(lambda:llm.parse_json(llm.call(worker_notice.SYSTEM,prompt)))
+        except llm.LLMError as e: raise HTTPException(502,str(e)) from None
+        text=str(data.get('text','')).strip()[:1500]
+        missing,extra=worker_notice.check_translation(text,task)
+        if not text or missing or extra:
+            raise HTTPException(422,'翻譯結果的日期或專線號碼跟原文對不上，已擋下來；請改用預存句型。')
+        mode='即時翻譯 · 日期已核對'
+    with db.transaction() as c: db.audit(c,a['id'],task['case_id'],'task',tid,'worker_notice')
+    return {'lang':body.lang,'lang_name':worker_notice.LANGS[body.lang],'zh':zh,'text':text,'mode':mode,
+            'notice':'只含事項與日期，不含姓名、證號、地址。正式發出前，建議請通譯或懂這個語言的人看過。','synthetic':True}
 
 @app.get('/api/tasks/{tid}/proof-sample')
 def proof_sample(tid:str,a=Depends(auth.employer)):

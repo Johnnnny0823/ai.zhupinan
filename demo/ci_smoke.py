@@ -74,7 +74,7 @@ def main():
                     page.goto(ORIGIN)
                     page.get_by_label('一次性登入碼', exact=True).fill(codes['A'])
                     page.get_by_role('button', name='打開我的案件手帖 →', exact=True).click()
-                    expect(page.get_by_role('heading', name='今天，先辦這幾件。', exact=True)).to_be_visible()
+                    expect(page.get_by_role('heading', name='今天要辦的事', exact=True)).to_be_visible()
                     case = context.request.get(ORIGIN + '/api/cases/case-a')
                     assert case.status == 200
                     task_id = case.json()['tasks'][0]['id']
@@ -115,7 +115,7 @@ def main():
                     page.locator('#confirm-fields').check()
                     capture('edited-and-checked-dates', all_sizes=True)
                     page.get_by_role('button', name='確認日期，新增待辦 →', exact=True).click()
-                    expect(page.get_by_role('heading', name='今天，先辦這幾件。', exact=True)).to_be_visible()
+                    expect(page.get_by_role('heading', name='今天要辦的事', exact=True)).to_be_visible()
                     case = context.request.get(ORIGIN + '/api/cases/case-a').json()
                     assert any(task['event_date'] == '2026-03-21' and task['due_date'] == '2026-03-30' for task in case['tasks'])
                     report['checks'].append('edited date needs no tick; other unchanged date is ticked; due recomputed')

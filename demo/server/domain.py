@@ -35,6 +35,12 @@ def serialize_task(row):
     data['synthetic']=True
     return data
 
+def proof_verdict(start, due, observed):
+    """Rule-only judgement of a confirmed completion date against the task window (ISO strings)."""
+    if observed > due: return 'late'
+    if start and observed < start: return 'early'
+    return 'on_time'
+
 def calculations(kind, fields):
     result=[]
     for idx,w in enumerate(fields):
