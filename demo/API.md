@@ -31,6 +31,7 @@
 | DELETE `/api/documents/{id}` | employer owner＋Origin | 刪文件、相關待辦／證明／通知，清除草稿；不保存原件 |
 | GET `/api/tasks/{id}` | employer owner | task、proofs、document、audit_events；含calc_trace及依今天推導的overdue |
 | PATCH `/api/tasks/{id}` | employer owner＋Origin | 僅`{"status":"delegated"}`，其他轉移用證明／確認端點；不合法409 |
+| POST `/api/tasks/{id}/worker-notice` | employer owner＋Origin | lang=id／vi／en、mode=stored或live；回lang_name、text、zh（中文對照）、mode、notice。只含事項種類與日期、1955專線，不含姓名、證號、地址；純雇主手續（如申請聘僱許可）或期限未確認回409；live模式由模型翻譯，日期與1955缺漏或多出日期即回422，模型失效回502 |
 | GET `/api/tasks/{id}/proof-sample` | employer owner | 此待辦固定合成證明text；不適用未確認期限409 |
 | POST `/api/tasks/{id}/proof` | employer owner＋Origin | multipart file、mode；回proof、status=proof_submitted及mode；不自動done |
 | POST `/api/tasks/{id}/confirm` | employer owner＋Origin | proof_id、confirmed=true、matches_task=true、observed_date；早於期間需明示outside_window_acknowledged；回status=done及verdict |

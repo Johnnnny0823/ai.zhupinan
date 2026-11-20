@@ -130,6 +130,18 @@ function tasksPage() {
   main.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{state.filter=b.dataset.filter;tasksPage();});
   main.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>detailPage(b.dataset.task));
 }
+const WORKER_TOPICS=/^(health_|recheck_report|dorm_change|renewal_window|permit_expiry)/;
+function workerNotice(t){
+  if(!t.due_date||t.status==='needs_review'||!WORKER_TOPICS.test(t.rule_key))return;
+  const s=document.createElement('section');s.className='section worker-notice';
+  s.innerHTML=`<div class="eyebrow">給看護的母語提醒</div><h2>用看護看得懂的語言，告訴她什麼時候要去辦</h2><p class="muted">內容只有事項跟日期，不會放姓名、證號或地址。</p><div class="wn-controls"><div><label for="wn-lang">語言</label><select id="wn-lang"><option value="id">印尼語</option><option value="vi">越南語</option><option value="en">英語（菲律賓）</option></select></div><div><label for="wn-mode">產生方式</label><select id="wn-mode"><option value="stored">預存句型</option><option value="live">即時 AI 翻譯</option></select></div><button id="wn-make" class="secondary">產生提醒</button></div><div id="wn-result" aria-live="polite"></div>`;
+  main.append(s);
+  $('#wn-make').onclick=async()=>{const b=$('#wn-make');b.disabled=true;const out=$('#wn-result');out.innerHTML='<p class="muted">產生中，AI 翻譯可能要等一下…</p>';
+    try{const r=await api('/api/tasks/'+encodeURIComponent(t.id)+'/worker-notice',{method:'POST',body:{lang:$('#wn-lang').value,mode:$('#wn-mode').value}});
+      out.innerHTML=`<div class="wn-pair"><div><div class="wn-label">${h(r.lang_name)}</div><pre class="message-preview">${h(r.text)}</pre></div><div><div class="wn-label">中文對照</div><pre class="message-preview">${h(r.zh)}</pre></div></div><p class="muted">${h(r.mode)}。${h(r.notice)}</p><button class="quiet" id="wn-copy">複製${h(r.lang_name)}內容</button>`;
+      $('#wn-copy').onclick=async()=>{try{await navigator.clipboard.writeText(r.text);notice('已複製，可以貼到 LINE 傳給看護');}catch{notice('沒辦法自動複製，請手動選取文字');}};}
+    catch(e){out.innerHTML='';error(e.message,out);}finally{b.disabled=false;}};
+}
 async function detailPage(id) {
   try {
     const r=await api('/api/tasks/'+encodeURIComponent(id));state.selected=r;state.proof=r.proofs[0]||null;
@@ -139,7 +151,7 @@ async function detailPage(id) {
     $('#back').onclick=()=>go('tasks');
     if($('#delegate'))$('#delegate').onclick=async()=>{try{await api('/api/tasks/'+id,{method:'PATCH',body:{status:'delegated'}});notice('已委任；仍需證明與雇主確認。');await detailPage(id);}catch(e){error(e.message);}};
     $('#delete-document').onclick=async()=>{try{await api('/api/documents/'+r.document.id,{method:'DELETE'});notice('合成文件與相關資料已刪除');await go('tasks');}catch(e){error(e.message);}};
-    renderProof();focusPage();
+    workerNotice(t);renderProof();focusPage();
   } catch(e){error(e.message);}
 }
 function renderProof() {
