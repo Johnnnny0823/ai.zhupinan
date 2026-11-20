@@ -86,3 +86,8 @@
 .nav-link{display:flex;align-items:center;padding:14px 16px;color:var(--accent);text-decoration:none;min-height:48px}
 @media(max-width:700px){.nav-link{flex:1;justify-content:center;padding:9px 2px;font-size:16px;text-align:center}}
 @media(max-width:600px){.city-label{font-size:12px;padding:4px 7px}.city-label b{font-size:13px}}
+.city-labels .city-label{pointer-events:auto;cursor:pointer;border:2px solid transparent;min-height:0;display:block;text-align:left;font-weight:400}.city-label span{display:block}.city-label.on{border-color:#e7b48a;background:#fff7ea}
+.city-detail{margin:4px 0 18px;padding:16px 18px;border:1px solid #33443b;border-radius:6px;background:#22302a;min-height:72px}.city-detail h2{color:#f2efe4;font-size:24px;margin-bottom:8px}.city-detail dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0}.city-detail dt{color:#a9bdb2}.city-detail dd{margin:0;font-weight:700}.city-tip{margin:0;color:#bfd0c6}.city-flag{margin:10px 0 0;color:#e7b48a;font-weight:700}
+.city-table tbody tr{cursor:pointer}.city-table tbody tr.on{background:#2c3d34}.city-table tbody tr:hover{background:#26362e}
+.city h1{font-size:clamp(28px,2.8vw,40px)}
+@media(max-width:600px){.city-labels .city-label span{display:none}.city-labels .city-label{padding:4px 8px}}

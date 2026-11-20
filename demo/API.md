@@ -144,4 +144,4 @@ TXT在MIME與實際內容檢查後，依UTF-8（含BOM）、具BOM的UTF-16、CP
 
 - `/city.html`：公開頁，three.js（`/vendor/three.module.min.js`，0.160.0，MIT）畫新竹市三區立體地圖。
 - `/data/hsinchu-districts.json`：東區、北區、香山區界線，取自內政部國土測繪中心鄉鎮市區界線（經 taiwan-atlas 2021.9.20 轉檔，政府資料開放授權）。
-- `/data/city-demo.json`：各區件數，**合成示範數據**（`synthetic: true`），不是實際統計；試辦後改為竹聘安實際累積的匿名彙總。
+- `/data/hsinchu-age.json`：各區總人口、65 歲以上、80 歲以上人口與里數，取自內政部戶政司開放資料 ODRP052（113 年 12 月底），由各里加總為區；全市合計 457,242 人，與新竹市民政處簡表一致。
