@@ -25,12 +25,12 @@ function strip(r) {
 function steps(r) {
   const fine = r.actual.fine.toLocaleString('zh-TW');
   return [
-    `<div class="replay-date">${h(r.permit_start.roc)}</div><div><h2>聘僱許可生效</h2><p>雇主上傳聘僱許可函，竹聘安讀出生效日，<strong>由雇主核對確認</strong>後才寫入案件。</p></div>`,
-    `<div class="replay-date">規則計算</div><div><h2>${h(r.task.title)}：${h(r.task.start_roc)} 至 ${h(r.task.due_roc)}</h2><ol class="replay-calc">${r.task.steps.map(s => `<li>${h(s)}</li>`).join('')}</ol><p class="replay-law">依據：${h(r.task.basis)}</p><p class="replay-tag">期限由規則引擎依條文計算，不是 AI 猜的 · 規則版本 ${h(r.task.rules_version)}</p></div>`,
-    `<div class="replay-date">${h(r.task.start_roc)}</div><div><h2>首頁出現待辦：可以開始安排健檢</h2><div class="hero hero-calm replay-mini"><div class="hero-count"><span>還有</span><strong>${Math.round((ms(r.task.due) - ms(r.task.start)) / DAY)}</strong><span>天</span></div><div class="hero-body"><div class="hero-kicker">還有時間，先排進行事曆</div><h3>${h(r.task.title)}</h3><p>期限 <strong>${h(r.task.due_roc)}</strong></p></div></div></div>`,
-    `<div class="replay-date">${h(r.reminders[0].roc)}–${h(r.reminders.at(-1).roc)}</div><div><h2>期限前，LINE 提醒 ${r.reminders.length} 次</h2><div class="phone"><div class="phone-bar">竹聘安 AI</div>${r.reminders.map(x => `<div class="bubble"><time>${h(x.roc)}</time>${h(x.text).replace('\n', '<br>')}</div>`).join('')}</div><p class="muted">到期前 7、3、1 天與當天各推播一次（雇主需先完成 LINE 帳號配對）。</p></div>`,
-    `<div class="replay-date late">${h(r.actual.roc)}</div><div><h2>實際上：這一天才去健檢</h2><p>雇主以為看護會自己去做。辦完上傳收據，竹聘安用同一套規則判讀：</p><p class="verdict">逾期 <strong>${h(r.actual.late_days)}</strong> 天</p></div>`,
-    `<div class="replay-date">結果</div><div class="replay-compare"><section class="was"><h3>當時沒有人提醒</h3><p class="big">罰 ${fine} 元</p><p>新竹市政府裁罰；雇主提起訴願，被駁回：雇主「應善盡雇主之注意義務」。</p></section><section class="could"><h3>如果有竹聘安</h3><p class="big">${h(r.task.due_roc)} 前</p><p>${h(r.task.start_roc)} 起首頁就出現待辦，期限前收到 ${r.reminders.length} 次 LINE 提醒。在期限內完成，就不會因逾期受罰。</p></section></div>`,
+    `<div class="replay-date">${h(r.permit_start.roc)}</div><div><h2>聘僱許可生效</h2><p>雇主上傳聘僱許可函，竹聘安把生效日讀出來，<strong>雇主核對過</strong>才會存進案件。</p></div>`,
+    `<div class="replay-date">規則計算</div><div><h2>${h(r.task.title)}：${h(r.task.start_roc)} 至 ${h(r.task.due_roc)}</h2><ol class="replay-calc">${r.task.steps.map(s => `<li>${h(s)}</li>`).join('')}</ol><p class="replay-law">依據：${h(r.task.basis)}</p><p class="replay-tag">期限是規則引擎照法條算的，不是 AI 猜的 · 規則版本 ${h(r.task.rules_version)}</p></div>`,
+    `<div class="replay-date">${h(r.task.start_roc)}</div><div><h2>首頁出現待辦：可以開始排健檢了</h2><div class="hero hero-calm replay-mini"><div class="hero-count"><span>還有</span><strong>${Math.round((ms(r.task.due) - ms(r.task.start)) / DAY)}</strong><span>天</span></div><div class="hero-body"><div class="hero-kicker">還有時間，先排進行事曆</div><h3>${h(r.task.title)}</h3><p>期限 <strong>${h(r.task.due_roc)}</strong></p></div></div></div>`,
+    `<div class="replay-date">${h(r.reminders[0].roc)}–${h(r.reminders.at(-1).roc)}</div><div><h2>期限前，LINE 會提醒 ${r.reminders.length} 次</h2><div class="phone"><div class="phone-bar">竹聘安 AI</div>${r.reminders.map(x => `<div class="bubble"><time>${h(x.roc)}</time>${h(x.text).replace('\n', '<br>')}</div>`).join('')}</div><p class="muted">到期前 7 天、3 天、1 天跟當天各傳一次（雇主要先完成 LINE 帳號配對）。</p></div>`,
+    `<div class="replay-date late">${h(r.actual.roc)}</div><div><h2>實際上，這天才去做健檢</h2><p>雇主原本以為看護會自己去。辦完上傳收據後，竹聘安用同一套規則判斷：</p><p class="verdict">逾期 <strong>${h(r.actual.late_days)}</strong> 天</p></div>`,
+    `<div class="replay-date">結果</div><div class="replay-compare"><section class="was"><h3>當時沒人提醒</h3><p class="big">罰 ${fine} 元</p><p>新竹市政府開罰，雇主提訴願也被駁回，理由是雇主「應善盡雇主之注意義務」。</p></section><section class="could"><h3>如果當時有用竹聘安</h3><p class="big">${h(r.task.due_roc)} 前</p><p>${h(r.task.start_roc)} 起首頁就會出現這件待辦，期限前會收到 ${r.reminders.length} 次 LINE 提醒。只要在期限內做完，就不會因為逾期被罰。</p></section></div>`,
   ];
 }
 
@@ -51,7 +51,7 @@ async function boot() {
     if (!response.ok) throw new Error();
     r = await response.json();
   } catch {
-    $('#steps').innerHTML = '<li class="error" role="alert">目前無法連到規則引擎，請確認示範伺服器已啟動。</li>';
+    $('#steps').innerHTML = '<li class="error" role="alert">現在連不到規則引擎，請確認示範伺服器有沒有開。</li>';
     return;
   }
   $('#strip').innerHTML = strip(r);

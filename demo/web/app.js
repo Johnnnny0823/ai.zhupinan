@@ -61,7 +61,7 @@ function navigation() {
   });
 }
 function loginPage() {
-  main.innerHTML=`<section class="login"><div class="eyebrow">一本手帖，安心辦妥</div><h1>把期限理清楚，<br>下一步就有方向。</h1><p class="muted">以合成文件走一遍辦理流程。沒有真實個資，也不作正式辦案使用。</p><form id="login-form"><label for="account">示範帳號</label><select id="account" name="account"><option value="employer-a">家庭看護雇主 A</option><option value="employer-b">產業雇主 B</option><option value="officer">市府承辦人／示範管理員</option></select><label for="code">一次性登入碼</label><input id="code" name="code" type="password" autocomplete="one-time-code" required aria-describedby="code-hint"><p id="code-hint" class="hint">請使用展示者提供的登入碼；有效24小時，使用一次後失效。</p><button type="submit">打開我的案件手帖 →</button></form><div class="note">網路或模型無法使用時，可開啟明確標示的<a href="/local-demo.html">預存展示頁</a>。</div><a class="login-replay" href="/replay.html">不用登入：看一件新竹裁罰案的重播 →</a></section>`;
+  main.innerHTML=`<section class="login"><div class="eyebrow">一本手帖，安心辦妥</div><h1>把期限理清楚，<br>下一步就有方向。</h1><p class="muted">以合成文件走一遍辦理流程。沒有真實個資，也不作正式辦案使用。</p><form id="login-form"><label for="account">示範帳號</label><select id="account" name="account"><option value="employer-a">家庭看護雇主 A</option><option value="employer-b">產業雇主 B</option><option value="officer">市府承辦人／示範管理員</option></select><label for="code">一次性登入碼</label><input id="code" name="code" type="password" autocomplete="one-time-code" required aria-describedby="code-hint"><p id="code-hint" class="hint">請使用展示者提供的登入碼；有效24小時，使用一次後失效。</p><button type="submit">打開我的案件手帖 →</button></form><div class="note">網路或模型無法使用時，可開啟明確標示的<a href="/local-demo.html">預存展示頁</a>。</div><a class="login-replay" href="/replay.html">不用登入也能看：新竹一件裁罰案的重播 →</a></section>`;
   $('#login-form').onsubmit=async e=>{
     e.preventDefault();const button=$('button[type=submit]',e.target);button.disabled=true;
     try { const r=await api('/api/session',{method:'POST',body:{account_id:$('#account').value,code:$('#code').value}});$('#code').value='';state.account=r.account;await enter(); }
@@ -100,9 +100,9 @@ function heroCard(){
   const t=state.tasks.filter(x=>x.status!=='done'&&x.status!=='needs_review'&&x.days_left!==null).sort((a,b)=>a.days_left-b.days_left)[0];
   if(!t)return '';
   const u=urgency(t),n=Math.abs(t.days_left);
-  const kicker={overdue:'已超過期限，請儘快向辦理窗口補辦',urgent:'這幾天就要辦',soon:'兩週內到期，現在就可以安排',calm:'還有時間，先排進行事曆'}[u];
+  const kicker={overdue:'已經過了期限，請盡快到辦理窗口補辦',urgent:'這幾天就要辦好',soon:'兩週內到期，現在就可以先安排',calm:'還有時間，可以先記在行事曆上'}[u];
   const opens=t.start_date?Math.round((Date.parse(t.start_date+'T00:00:00Z')-todayOf(t))/DAY):null;
-  const windowText=opens!==null&&opens>0?`${h(t.start_date)} 起可以辦理（${opens} 天後）`:t.start_date?`辦理期間 ${h(t.start_date)} 至 ${h(t.due_date)}，現在就可以辦`:'期限前完成即可';
+  const windowText=opens!==null&&opens>0?`${h(t.start_date)} 起就可以辦（${opens} 天後）`:t.start_date?`辦理期間 ${h(t.start_date)} 至 ${h(t.due_date)}，現在就可以去辦`:'在期限前辦完就可以';
   return `<section class="hero hero-${u}" aria-label="最近的期限"><div class="hero-count" aria-hidden="true"><span>${t.overdue?'已逾期':t.days_left===0?'今天':'還有'}</span><strong>${t.days_left===0?'到期':n}</strong>${t.days_left===0?'':'<span>天</span>'}</div><div class="hero-body"><div class="hero-kicker">${h(kicker)}</div><h2>${h(t.title)}</h2><p class="visually-hidden">${h(countdown(t))}</p><p>期限 <strong>${h(t.due_date)}</strong> · ${h(t.display_code)}<br>${windowText}</p><button data-task="${h(t.id)}">查看怎麼辦 →</button></div></section>`;
 }
 function timelines(){
@@ -114,11 +114,11 @@ function timelines(){
     const pad=(hi-lo)*.04||30*DAY;lo-=pad;hi+=pad;
     const pct=ms=>((ms-lo)/(hi-lo)*100).toFixed(2);
     const years=[];for(let y=new Date(lo).getUTCFullYear()+1;Date.UTC(y,0,1)<=hi;y++)if(Math.abs(Date.UTC(y,0,1)-today)/(hi-lo)>.07)years.push(y);
-    return `<section class="atlas" aria-label="${h(c.display_code)} 期限地圖"><div class="eyebrow">期限地圖 · ${h(c.display_code)}</div><h2>這份聘僱，接下來要辦的事</h2><p class="muted">每一列是一項法定義務；色帶是可以辦理的期間，圓點是單一期限。直線是今天。</p><div class="atlas-axis" aria-hidden="true">${years.map(y=>`<span class="atlas-year" data-left="${pct(Date.UTC(y,0,1))}">${y}</span>`).join('')}<span class="atlas-today-label" data-left="${pct(today)}">今天</span></div><ol class="atlas-rows">${tasks.map(t=>{const s=Date.parse((t.start_date||t.due_date)+'T00:00:00Z'),e=Date.parse(t.due_date+'T00:00:00Z');return `<li class="atlas-row atlas-${urgency(t)}"><button class="atlas-label" data-task="${h(t.id)}"><span>${h(t.title)}</span><small>${t.start_date?h(t.start_date)+' 至 ':''}${h(t.due_date)} · ${h(t.status==='done'?'已完成':countdown(t))}</small></button><div class="atlas-track" aria-hidden="true"><span class="atlas-today" data-left="${pct(today)}"></span>${t.start_date?`<span class="atlas-bar" data-left="${pct(s)}" data-width="${(pct(e)-pct(s)).toFixed(2)}"></span>`:''}<span class="atlas-dot" data-left="${pct(e)}"></span></div></li>`;}).join('')}</ol></section>`;
+    return `<section class="atlas" aria-label="${h(c.display_code)} 期限地圖"><div class="eyebrow">期限地圖 · ${h(c.display_code)}</div><h2>這份聘僱接下來要辦的事</h2><p class="muted">每一列是一項法定義務。色帶是可以去辦的期間，圓點是期限，虛線是今天。</p><div class="atlas-axis" aria-hidden="true">${years.map(y=>`<span class="atlas-year" data-left="${pct(Date.UTC(y,0,1))}">${y}</span>`).join('')}<span class="atlas-today-label" data-left="${pct(today)}">今天</span></div><ol class="atlas-rows">${tasks.map(t=>{const s=Date.parse((t.start_date||t.due_date)+'T00:00:00Z'),e=Date.parse(t.due_date+'T00:00:00Z');return `<li class="atlas-row atlas-${urgency(t)}"><button class="atlas-label" data-task="${h(t.id)}"><span>${h(t.title)}</span><small>${t.start_date?h(t.start_date)+' 至 ':''}${h(t.due_date)} · ${h(t.status==='done'?'已完成':countdown(t))}</small></button><div class="atlas-track" aria-hidden="true"><span class="atlas-today" data-left="${pct(today)}"></span>${t.start_date?`<span class="atlas-bar" data-left="${pct(s)}" data-width="${(pct(e)-pct(s)).toFixed(2)}"></span>`:''}<span class="atlas-dot" data-left="${pct(e)}"></span></div></li>`;}).join('')}</ol></section>`;
   }).join('');
 }
 function placeAtlas(){main.querySelectorAll('.atlas [data-left]').forEach(el=>{el.style.left=el.dataset.left+'%';if(el.dataset.width)el.style.width=Math.max(.8,+el.dataset.width)+'%';});}
-const replayCard=`<a class="replay-card" href="/replay.html"><span class="replay-card-kicker">案例重播 · 新竹市真實裁罰</span><strong>晚了 19 天，罰 6 萬元。</strong><span>如果那一家有竹聘安，會在哪幾天收到提醒？ →</span></a>`;
+const replayCard=`<a class="replay-card" href="/replay.html"><span class="replay-card-kicker">案例重播 · 新竹市真實裁罰案</span><strong>晚了 19 天，罰 6 萬元。</strong><span>如果那一家當時有用竹聘安，會在哪幾天收到提醒？ →</span></a>`;
 function tasksPage() {
   let tasks=[...state.tasks].sort((a,b)=>a.status==='done'&&b.status!=='done'?1:b.status==='done'&&a.status!=='done'?-1:(a.due_date||'9999').localeCompare(b.due_date||'9999'));
   if(state.filter==='week')tasks=tasks.filter(t=>t.days_left!==null&&t.days_left>=0&&t.days_left<=7&&t.status!=='done');
