@@ -1,5 +1,6 @@
 @echo off
 chcp 65001 >nul
+set PYTHONUTF8=1
 cd /d "%~dp0"
 if not exist ".venv\Scripts\python.exe" (
   echo 請先依 demo\DEVELOPMENT.md 建立 Python 3.12 虛擬環境。

@@ -1,0 +1,64 @@
+TAP version 13
+# Subtest: precache is public and fetched without cookies
+ok 1 - precache is public and fetched without cookies
+  ---
+  duration_ms: 19.358644
+  type: 'test'
+  ...
+# Subtest: never intercepts /api/cases
+ok 2 - never intercepts /api/cases
+  ---
+  duration_ms: 0.584096
+  type: 'test'
+  ...
+# Subtest: never intercepts /api/qa
+ok 3 - never intercepts /api/qa
+  ---
+  duration_ms: 0.420308
+  type: 'test'
+  ...
+# Subtest: never intercepts /api/tasks/1/proof
+ok 4 - never intercepts /api/tasks/1/proof
+  ---
+  duration_ms: 0.394077
+  type: 'test'
+  ...
+# Subtest: never intercepts /line/webhook
+ok 5 - never intercepts /line/webhook
+  ---
+  duration_ms: 0.374849
+  type: 'test'
+  ...
+# Subtest: never intercepts /samples/test.png
+ok 6 - never intercepts /samples/test.png
+  ---
+  duration_ms: 0.343672
+  type: 'test'
+  ...
+# Subtest: never intercepts /unknown.txt
+ok 7 - never intercepts /unknown.txt
+  ---
+  duration_ms: 0.394319
+  type: 'test'
+  ...
+# Subtest: offline navigation uses public page, not case shell
+ok 8 - offline navigation uses public page, not case shell
+  ---
+  duration_ms: 1.33146
+  type: 'test'
+  ...
+# Subtest: offline local demo remains explicitly separate
+ok 9 - offline local demo remains explicitly separate
+  ---
+  duration_ms: 1.029582
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 72.218246

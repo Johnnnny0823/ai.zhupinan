@@ -1,0 +1,71 @@
+FFFFFFFFFF.FF                                                            [100%]
+=================================== FAILURES ===================================
+_________ test_non_gregorian_dates_have_individual_warning[115/03/05] __________
+demo/tests/test_pr4_field_checks.py:11: in test_non_gregorian_dates_have_individual_warning
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+__________ test_non_gregorian_dates_have_individual_warning[115.3.5] ___________
+demo/tests/test_pr4_field_checks.py:11: in test_non_gregorian_dates_have_individual_warning
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+_________ test_non_gregorian_dates_have_individual_warning[115-03-05] __________
+demo/tests/test_pr4_field_checks.py:11: in test_non_gregorian_dates_have_individual_warning
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+_ test_non_gregorian_dates_have_individual_warning[\u6c11\u570b115\u5e743\u67085\u65e5] _
+demo/tests/test_pr4_field_checks.py:11: in test_non_gregorian_dates_have_individual_warning
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+_ test_non_gregorian_dates_have_individual_warning[\u4e00\u4e00\u4e94\u5e74\u4e09\u6708\u4e94\u65e5] _
+demo/tests/test_pr4_field_checks.py:11: in test_non_gregorian_dates_have_individual_warning
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+_____________ test_plain_gregorian_date_is_not_flagged[2026/03/05] _____________
+demo/tests/test_pr4_field_checks.py:17: in test_plain_gregorian_date_is_not_flagged
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+_____________ test_plain_gregorian_date_is_not_flagged[2026-03-05] _____________
+demo/tests/test_pr4_field_checks.py:17: in test_plain_gregorian_date_is_not_flagged
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+_____ test_plain_gregorian_date_is_not_flagged[2026\u5e7403\u670805\u65e5] _____
+demo/tests/test_pr4_field_checks.py:17: in test_plain_gregorian_date_is_not_flagged
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+__________________ test_scan_and_missing_excerpt_are_flagged ___________________
+demo/tests/test_pr4_field_checks.py:22: in test_scan_and_missing_excerpt_are_flagged
+    from demo.server.documents import field_warning
+E   ModuleNotFoundError: No module named 'demo.server.documents'
+_____________ test_unchanged_flagged_field_requires_its_own_check ______________
+demo/tests/test_pr4_field_checks.py:45: in test_unchanged_flagged_field_requires_its_own_check
+    assert warnings['entry_date'] and warnings['permit_end'] is None
+E   AssertionError: assert ('需核對：日期與文件種類均須人工確認' and '需核對：日期與文件種類均須人工確認' is None)
+______________ test_each_worker_requires_the_matching_checked_key ______________
+demo/tests/test_pr4_field_checks.py:73: in test_each_worker_requires_the_matching_checked_key
+    assert refused.status_code == 422 and refused.json()['unchecked'] == ['0:entry_date']
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'unchecked'
+____________ test_fabricated_excerpt_is_removed_and_requires_review ____________
+demo/tests/test_pr4_field_checks.py:81: in test_fabricated_excerpt_is_removed_and_requires_review
+    assert '原文' in draft['fields'][0]['warning']
+E   AssertionError: assert '原文' in '需核對：日期與文件種類均須人工確認'
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/roylin/Desktop/竹娉安/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED demo/tests/test_pr4_field_checks.py::test_non_gregorian_dates_have_individual_warning[115/03/05]
+FAILED demo/tests/test_pr4_field_checks.py::test_non_gregorian_dates_have_individual_warning[115.3.5]
+FAILED demo/tests/test_pr4_field_checks.py::test_non_gregorian_dates_have_individual_warning[115-03-05]
+FAILED demo/tests/test_pr4_field_checks.py::test_non_gregorian_dates_have_individual_warning[\u6c11\u570b115\u5e743\u67085\u65e5]
+FAILED demo/tests/test_pr4_field_checks.py::test_non_gregorian_dates_have_individual_warning[\u4e00\u4e00\u4e94\u5e74\u4e09\u6708\u4e94\u65e5]
+FAILED demo/tests/test_pr4_field_checks.py::test_plain_gregorian_date_is_not_flagged[2026/03/05]
+FAILED demo/tests/test_pr4_field_checks.py::test_plain_gregorian_date_is_not_flagged[2026-03-05]
+FAILED demo/tests/test_pr4_field_checks.py::test_plain_gregorian_date_is_not_flagged[2026\u5e7403\u670805\u65e5]
+FAILED demo/tests/test_pr4_field_checks.py::test_scan_and_missing_excerpt_are_flagged
+FAILED demo/tests/test_pr4_field_checks.py::test_unchanged_flagged_field_requires_its_own_check
+FAILED demo/tests/test_pr4_field_checks.py::test_each_worker_requires_the_matching_checked_key
+FAILED demo/tests/test_pr4_field_checks.py::test_fabricated_excerpt_is_removed_and_requires_review
+12 failed, 1 passed, 1 warning in 0.13s

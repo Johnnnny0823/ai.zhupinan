@@ -17,7 +17,10 @@ async function api(path, options = {}) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     if (response.status === 401 && state.account) { clearState(); loginPage(); }
-    throw new Error(typeof data.detail === 'string' ? data.detail : '欄位格式有誤，請核對後再試。');
+    const failure = new Error(typeof data.detail === 'string' ? data.detail : '欄位格式有誤，請核對後再試。');
+    failure.status = response.status;
+    failure.unchecked = Array.isArray(data.unchecked) ? data.unchecked : [];
+    throw failure;
   }
   return data;
 }
@@ -142,21 +145,108 @@ async function extractDocument(file,mode){
   catch(e){error(e.message);status.innerHTML='<p>可在「讀取方式」切換為「預存示範結果」，再選擇合成範例。</p>';}
   finally{busy=false;}
 }
-function confirmationBody(previewOnly=false){
-  const fields=state.draft.workers.map((w,i)=>{const item={...w};for(const k of Object.keys(fieldLabels)){const input=$(`#field-${i}-${k}`);if(input)item[k]=input.value||null;}return item;});
-  return {case_id:state.caseId,draft_id:state.draft.draft_id,document_kind:$('#document-kind').value,fields,confirmed:previewOnly?false:$('#confirm-fields').checked,preview_only:previewOnly};
+function confirmationBody(previewOnly = false) {
+  const fields = state.draft.workers.map((worker, index) => {
+    const item = {...worker};
+    for (const field of Object.keys(fieldLabels)) {
+      const input = $(`#field-${index}-${field}`);
+      if (input) item[field] = input.value || null;
+    }
+    return item;
+  });
+  const checked = [...main.querySelectorAll('[data-check-key]:checked')].map(input => input.dataset.checkKey);
+  return {
+    case_id: state.caseId, draft_id: state.draft.draft_id,
+    document_kind: $('#document-kind').value, fields, checked,
+    confirmed: previewOnly ? false : $('#confirm-fields').checked, preview_only: previewOnly,
+  };
 }
-function confirmationPage(){
-  const d=state.draft;
-  main.innerHTML=heading('文件邊註 / 02','請把日期，逐一核對。','原文留在邊註，日期可以修改。系統只依你確認的日期計算期限。')+
-    `<div class="step"><span>01 已選文件</span><span>→</span><span class="active">02 核對日期</span><span>→</span><span>03 新增待辦</span></div><div class="note"><strong>${h(d.mode)}</strong><br>${h(d.warning)}；10分鐘後確認頁失效。</div><form id="confirmation-form">${caseSelect()}<label for="document-kind">這是什麼文件</label><select id="document-kind">${['入國通報受理證明書','聘僱許可函','期滿續聘許可函','再檢查診斷證明書','住宿地點變更','家事移工預定入國','聘僱關係終止'].map(k=>`<option ${d.document_kind===k?'selected':''}>${h(k)}</option>`).join('')}</select><div class="two-column"><section><h2 class="section">逐欄確認</h2>${d.workers.map((w,i)=>`<fieldset class="section"><legend>移工代號 ${String(i+1).padStart(2,'0')} · 合成</legend>${Object.entries(fieldLabels).filter(([k])=>w[k]||['entry_date','event_date','permit_end'].includes(k)).map(([k,label])=>`<div class="field-block"><label for="field-${i}-${k}">${h(label)}</label><input id="field-${i}-${k}" type="date" value="${h(w[k]||'')}" data-original="${h(w[k]||'')}" aria-describedby="source-${i}-${k}"><p class="source" id="source-${i}-${k}">來源：${h(w.evidence?.[k]||'未讀到；請對照合成原件補充確認')}<span class="edited" hidden> · 已由你修改，將按新日期計算</span></p></div>`).join('')}</fieldset>`).join('')}</section><section class="section"><details open><summary>送出模型前的文字遮蔽預覽</summary><pre>${h(d.masked_preview||'合成掃描範例，無可本機遮蔽的文字；僅此固定範例可處理。')}</pre></details><div class="note" id="task-count" role="status">請核對文件日期後預覽待辦數量。</div><label class="check"><input id="confirm-fields" type="checkbox" required>我已逐欄核對文件種類與日期，同意以這些日期產生待辦。</label><div class="actions"><button type="submit" id="confirm-button">確認日期，新增待辦 →</button><button type="button" class="secondary" id="cancel-document">取消讀取</button></div></section></div></form>`;
-  wireCase();$('#case-select').onchange=()=>{state.caseId=$('#case-select').value;previewCount();};
-  let timer;main.querySelectorAll('input[type=date],#document-kind').forEach(input=>input.oninput=()=>{if(input.type==='date')$(`#source-${input.id.slice(6)} .edited`).hidden=input.value===input.dataset.original;$('#confirm-fields').checked=false;clearTimeout(timer);timer=setTimeout(previewCount,250);});
-  $('#cancel-document').onclick=async()=>{await api('/api/documents/drafts/'+d.draft_id,{method:'DELETE'});state.draft=null;await go('documents');};
-  $('#confirmation-form').onsubmit=async e=>{e.preventDefault();const b=$('#confirm-button');b.disabled=true;try{const r=await api('/api/documents/confirm',{method:'POST',body:confirmationBody()});state.draft=null;notice(r.duplicate?'這份文件已確認，沒有重複新增。':`已新增 ${r.task_ids.length} 項待辦；需核對的日期另有標示。`);await go('tasks');}catch(err){error(err.message);}finally{b.disabled=false;}};
-  previewCount();focusPage();
+
+function dateField(worker, index, field, label) {
+  const source = state.draft.fields.find(item => item.worker_index === index && item.field === field);
+  const warning = source?.warning;
+  return `<div class="field-block" id="date-block-${index}-${field}">
+    <label for="field-${index}-${field}">${h(label)}</label>
+    <input id="field-${index}-${field}" type="date" value="${h(worker[field] || '')}" data-original="${h(worker[field] || '')}" aria-describedby="source-${index}-${field}">
+    <p class="source" id="source-${index}-${field}">來源：${h(worker.evidence?.[field] || '未讀到；請對照合成原件補充確認')}<span class="edited" hidden> · 已由你修改，將按新日期計算</span></p>
+    ${warning ? `<p class="review-note">需核對：${h(warning)}</p><label class="check"><input type="checkbox" id="checked-${index}-${field}" data-check-key="${index}:${field}">已核對原件（${h(label)}，移工${index + 1}）</label>` : ''}
+  </div>`;
 }
-async function previewCount(){if(!state.draft||!$('#task-count'))return;try{const r=await api('/api/documents/confirm',{method:'POST',body:confirmationBody(true)});if($('#task-count'))$('#task-count').textContent=r.duplicate?'這份文件已在此案件中，將不重複新增。':`確認後將新增 ${r.task_count} 項待辦。日曆涵蓋2026／2027；範圍外顯示「需人工確認」。`;}catch(e){if($('#task-count'))$('#task-count').textContent=e.message;}}
+
+function clearDateError(input) {
+  const block = input.closest('.field-block');
+  if (!block) return;
+  block.classList.remove('field-error');
+  block.querySelectorAll('[aria-invalid]').forEach(el => el.removeAttribute('aria-invalid'));
+}
+
+function markUnchecked(keys) {
+  for (const key of keys) {
+    const [index, field] = key.split(':');
+    if (!/^\d+$/.test(index) || !Object.hasOwn(fieldLabels, field)) continue;
+    const block = $(`#date-block-${index}-${field}`);
+    if (!block) continue;
+    block.classList.add('field-error');
+    block.querySelectorAll('input').forEach(input => input.setAttribute('aria-invalid', 'true'));
+  }
+}
+
+function confirmationPage() {
+  const draft = state.draft;
+  main.innerHTML = heading('文件邊註 / 02', '請把日期，逐一核對。', '原文留在邊註，日期可以修改。有提示的日期請逐欄勾選，或改成你已確認的日期。') +
+    `<div class="step"><span>01 已選文件</span><span>→</span><span class="active">02 核對日期</span><span>→</span><span>03 新增待辦</span></div>
+    <div class="note"><strong>${h(draft.mode)}</strong><br>${h(draft.warning)}；10分鐘後確認頁失效。</div>
+    <form id="confirmation-form">${caseSelect()}
+      <label for="document-kind">這是什麼文件</label><select id="document-kind">${['入國通報受理證明書','聘僱許可函','期滿續聘許可函','再檢查診斷證明書','住宿地點變更','家事移工預定入國','聘僱關係終止'].map(kind => `<option ${draft.document_kind === kind ? 'selected' : ''}>${h(kind)}</option>`).join('')}</select>
+      <div class="two-column"><section><h2 class="section">逐欄確認</h2>${draft.workers.map((worker, index) => `<fieldset class="section"><legend>移工代號 ${String(index + 1).padStart(2, '0')} · 合成</legend>${Object.entries(fieldLabels).filter(([field]) => worker[field] || ['entry_date','event_date','permit_end'].includes(field)).map(([field, label]) => dateField(worker, index, field, label)).join('')}</fieldset>`).join('')}</section>
+      <section class="section"><details open><summary>送出模型前的文字遮蔽預覽</summary><pre>${h(draft.masked_preview || '合成掃描範例，無可本機遮蔽的文字；僅此固定範例可處理。')}</pre></details>
+        <div class="note" id="task-count" role="status">請核對文件日期後預覽待辦數量。</div>
+        <label class="check"><input id="confirm-fields" type="checkbox" required>我已逐欄核對文件種類與日期，同意以這些日期產生待辦。</label>
+        <div class="actions"><button type="submit" id="confirm-button">確認日期，新增待辦 →</button><button type="button" class="secondary" id="cancel-document">取消讀取</button></div>
+      </section></div>
+    </form>`;
+  wireCase();
+  $('#case-select').onchange = () => { state.caseId = $('#case-select').value; previewCount(); };
+  let timer;
+  main.querySelectorAll('input[type=date],#document-kind').forEach(input => input.oninput = () => {
+    if (input.type === 'date') {
+      const changed = input.value !== input.dataset.original;
+      $(`#source-${input.id.slice(6)} .edited`).hidden = !changed;
+      const check = input.closest('.field-block').querySelector('[data-check-key]');
+      if (check) { check.checked = false; check.disabled = changed; }
+      clearDateError(input);
+    }
+    $('#confirm-fields').checked = false;
+    clearTimeout(timer);
+    timer = setTimeout(previewCount, 250);
+  });
+  main.querySelectorAll('[data-check-key]').forEach(input => input.onchange = () => clearDateError(input));
+  $('#cancel-document').onclick = async () => {
+    await api('/api/documents/drafts/' + draft.draft_id, {method:'DELETE'});
+    state.draft = null;
+    await go('documents');
+  };
+  $('#confirmation-form').onsubmit = async event => {
+    event.preventDefault();
+    const button = $('#confirm-button');
+    button.disabled = true;
+    try {
+      const result = await api('/api/documents/confirm', {method:'POST', body:confirmationBody()});
+      state.draft = null;
+      notice(result.duplicate ? '這份文件已確認，沒有重複新增。' : `已新增 ${result.task_ids.length} 項待辦；需核對的日期另有標示。`);
+      await go('tasks');
+    } catch (err) {
+      error(err.message);
+      markUnchecked(err.unchecked || []);
+    } finally {
+      button.disabled = false;
+    }
+  };
+  previewCount();
+  focusPage();
+}
+
+async function previewCount(){if(!state.draft||!$('#task-count'))return;try{const r=await api('/api/documents/confirm',{method:'POST',body:confirmationBody(true)});if($('#task-count'))$('#task-count').textContent=r.duplicate?'這份文件已在此案件中，將不重複新增。':`確認後將新增 ${r.task_count} 項待辦。僅需查辦公日曆且檢查日期超出2026／2027時，顯示「需人工確認」。`;}catch(e){if($('#task-count'))$('#task-count').textContent=e.message;}}
 
 async function linePage(){
   const r=await api('/api/line/preview',{method:'POST'});

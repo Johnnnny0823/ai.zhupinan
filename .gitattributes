@@ -1,2 +1,8 @@
-# Windows batch files are Big5 (cp950) + CRLF so 中文 prints correctly in cmd — keep bytes as-is
+# Launcher selects UTF-8 with chcp 65001; preserve its bytes.
 *.bat -text
+
+# Synthetic text used for hashes and reproducible validation.
+validation/penalty/*.txt text eol=lf
+validation/docs/*.txt text eol=lf
+validation/docs_holiday/*.txt text eol=lf
+demo/web/samples/*.txt text eol=lf

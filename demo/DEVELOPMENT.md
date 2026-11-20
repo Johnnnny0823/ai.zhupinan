@@ -1,6 +1,7 @@
 # 竹聘安決賽示範系統
 
-基線：`dc6e636cf74c70d633b54fdbf23aaa63ead044ba`，分支 `release/hackathon-2026`。
+原始基線：`dc6e636cf74c70d633b54fdbf23aaa63ead044ba`；整合後 main 基線：`71de6bc`。
+本輪修正分支 `fix/c-final-windows-and-ports`，交付與雙平台證據見 [PR4_DELIVERY.md](PR4_DELIVERY.md)。原 `release/hackathon-2026` 已合併，不再推送。
 本版本只處理合成示範。沿用 FastAPI、原生 HTML/CSS/JS、既有 validation 規則／檢索，不需要 Node 打包。
 法規與資安正式審查、真實資料處理及市府正式介接均不在本次範圍。
 
@@ -32,7 +33,16 @@ A是家庭看護雇主、B是產業雇主；officer同時是合成示範管理�
 .venv\Scripts\python -m demo.run codes
 ```
 
-`codes` 只重新啟用環境中的登入碼，不輸出碼。展示者另外交付登入碼，避免截入畫面。
+### 團隊練習與評審登入碼：採方案(a)，維持一次性
+
+每次重新登入前，由展示操作員在倉庫根目錄執行 `python -m demo.run codes`，重新啟用本機 `.env` 的三個示範登入碼；首次seed後的首輪登入已有可用碼，可略過這一步。成功登入後該碼立即失效，登出、Session過期或改用另一台裝置再次登入時，需要先重發。現有Session仍可使用到8小時到期，不必為切換功能反覆登入。
+
+Windows操作員命令：`.venv\Scripts\python -m demo.run codes`。指令不輸出碼；操作員從展示機本機 `demo/.env` 讀取已設定的碼，確認選對帳號，於當次登入前以紙條或當面方式交給評審。不要將碼放入公開QR網址、截圖、錄影、PR、終端輸出或Git。評審在瀏覽器輸入，程式不自動登入。
+
+團隊練習採同一流程，沒有另外新增可重複使用的團隊碼或共用免登入入口。選擇(a)是為了維持原工作包的一次性契約、不增加資料表或另一套認證路徑。若多人同時需要同一雇主帳號，操作員須為每一個新Session重發後再交付下一位，不能把一次性碼同時發給多人期待都能登入。
+
+同帳號同來源連錯5次暫鎖5分鐘，不會把其他帳號／來源一起鎖住；帳號跨來源10分鐘最多50次錯誤。`codes`不會清除限流，不要以reset清除正式展示中的案件來解鎖。
+
 API修改請求必須帶正確Origin；命令列呼叫也一樣。所有個案回應no-store。
 
 ## macOS／Linux
@@ -131,8 +141,9 @@ python -m demo.migrate_state demo/server/data/state.json --owner employer-a --ca
 
 ## 版本與日曆
 
-日期一律在`validation/scripts/rules.py`；release API使用`compute_traced`。
-`compute`保留既有歷史驗證輸出；新API對範圍外期限回needs_review及null，不顯示週末推測。
+日期一律在`validation/scripts/rules.py`；決賽API使用`compute_traced`。
+`compute`保留既有歷史驗證輸出；計算說明以另一套日期算法獨立重算比對。只有實際檢查假日／工作日且所檢查日期超出官方日曆時，期限才回needs_review及null；公文載明的屆滿日及不順延的健檢／續聘期間仍顯示日期。
+升級本輪版本後執行`python -m demo.run reset`重建合成種子，既有資料庫保存的舊計算說明不會自動變更。
 2026／2027 CSV已與官方資料逐日比對，休假日120／121日全部一致，見evidence/calendar-check.json。
 條文版本及hash由health回傳。來源連結與核對限制見[LEGAL_SOURCES.md](LEGAL_SOURCES.md)。
 

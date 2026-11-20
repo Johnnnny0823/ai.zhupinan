@@ -234,7 +234,7 @@ def compute(doc_type: str, w: dict) -> list[Obligation]:
 
 # Release API trace mapping. Legacy compute() stays stable for historical scoring.
 # No unverified date from the legacy weekend fallback is exposed by this adapter.
-RULES_VERSION = 'hackathon-2026.11.15'
+RULES_VERSION = 'hackathon-2026.11.17'
 
 def law_versions():
     import hashlib
@@ -245,64 +245,65 @@ def law_versions():
 
 
 def compute_traced(doc_type: str, w: dict) -> list[dict]:
-    """All date arithmetic and its explanation live alongside compute, never in the model."""
+    """Compare independent arithmetic; only calendar dates actually examined need coverage."""
     import hashlib
+    from deadline_trace import rebuild
+
     results = []
     versions = law_versions()
-    calendar_hash = hashlib.sha256((Path(__file__).resolve().parent.parent/'laws'/'calendar.json').read_bytes()).hexdigest()
-    for o in compute(doc_type, w):
-        key = o.key
-        anchor_key = 'entry_date' if w.get('entry_date') else 'permit_start'
-        if doc_type == '期滿續聘許可函':
-            anchor_key = 'permit_start'
-        event = _p(w.get(anchor_key))
-        raw = _p(o.due)
-        rule = o.note or '依條文所定期間'
-        if key == 'apply_permit':
-            event = _p(w.get('entry_date')); raw = event + timedelta(days=15)
-            rule = '始日不計，入國日加15日；末日依行政程序法第48條第4項順延'
-        elif key == 'health_entry':
-            event = _p(w.get('entry_date'))
-            cur, count = event, 0
-            while count < 3:
-                cur += timedelta(days=1)
-                if not is_off(cur): count += 1
-            raw = cur
-            rule = '入國翌日起，依政府辦公日曆累計3個工作日；休息日不計'
-        elif key.startswith('health_'):
-            month = int(key.removeprefix('health_').removesuffix('m'))
-            raw = add_months(event, month) + timedelta(days=30)
-            rule = f'起算日滿{month}個月之日前後30日（健檢期間；不另作末日順延）'
-        elif key in ('renewal_window','permit_expiry'):
-            event = _p(w.get('permit_end'))
-            raw = add_months(event,-2) if key == 'renewal_window' else event
-            rule = '許可屆滿日前4個月至2個月（不另作末日順延）' if key == 'renewal_window' else '許可屆滿日期（不另作末日順延）'
-        elif key == 'onestop_register':
-            event = _p(w.get('entry_date')); raw = event - timedelta(days=5)
-            rule = '預定入國日減5日；一站式作業規定，線上系統不作假日順延'
-        elif key in ('recheck_report','dorm_change','termination_notice','abscond_notice'):
-            event = _p(w.get('event_date'))
-            n = {'recheck_report':15,'dorm_change':7,'termination_notice':3,'abscond_notice':3}[key]
-            raw = event + timedelta(days=n)
-            rule = f'始日不計，事件日加{n}日；末日依行政程序法第48條第4項順延'
-        elif key == 'replacement_window':
-            event = _p(w.get('event_date'))
-            rule = o.note
-        dates = [d for d in (event, raw, _p(o.due), _p(o.start)) if d]
-        covered = bool(dates) and all(str(d.year) in CAL_YEARS for d in dates)
-        if key == 'replacement_window' and not w.get('notify_date'):
-            covered = False
-            rule += '；實際通報日尚未確認，禁止以推算日期當成事實'
-        law_ids = [code for code, name in [('N0090001','就業服務法'),('N0090027','雇主聘僱外國人許可及管理辦法'),('A0030055','行政程序法'),('L0050018','受聘僱外國人健康檢查管理辦法')] if name in o.basis]
-        if key in ('apply_permit','recheck_report','dorm_change','termination_notice','abscond_notice'):
+    calendar_path = Path(__file__).resolve().parent.parent / 'laws' / 'calendar.json'
+    calendar_hash = hashlib.sha256(calendar_path.read_bytes()).hexdigest()
+    for obligation in compute(doc_type, w):
+        reasons = []
+        rebuilt = None
+        verified = False
+        try:
+            rebuilt = rebuild(doc_type, w, obligation.key, OFF_DAYS, HOLIDAY_NOTES, CAL_YEARS)
+            same_due = rebuilt['due'].isoformat() == obligation.due
+            same_start = (rebuilt['window_start'].isoformat() if rebuilt['window_start'] else None) == obligation.start
+            verified = same_due and same_start
+            if not verified:
+                reasons.append('獨立重算結果與規則引擎不一致，需人工確認')
+            missing_years = sorted({str(day.year) for day in rebuilt['examined'] if str(day.year) not in CAL_YEARS})
+            if missing_years:
+                reasons.append('計算實際用到' + '、'.join(missing_years) + '年，官方辦公日曆尚未納入')
+        except (KeyError, ValueError, TypeError, OverflowError):
+            reasons.append('無法獨立重建計算過程，需人工確認')
+        if obligation.key == 'replacement_window' and not w.get('notify_date'):
+            reasons.append('實際通報日尚未確認，禁止以推算日期當成事實')
+        safe = verified and not reasons
+        law_ids = [code for code, name in [
+            ('N0090001', '就業服務法'), ('N0090027', '雇主聘僱外國人許可及管理辦法'),
+            ('A0030055', '行政程序法'), ('L0050018', '受聘僱外國人健康檢查管理辦法'),
+        ] if name in obligation.basis]
+        if rebuilt and rebuilt['examined']:
             law_ids.append('A0030055')
-        trace = {'event': doc_type, 'event_date': event.isoformat() if event else None,
-                 'start_date': (event + timedelta(days=1)).isoformat() if event and key in ('apply_permit','health_entry','recheck_report','dorm_change','termination_notice','abscond_notice') else (event.isoformat() if event else None),
-                 'rule':rule, 'original_due_date':raw.isoformat() if covered else None,
-                 'holiday_adjustment': (o.note if raw and raw.isoformat()!=o.due else '未順延；依上列規則') if covered else '日曆範圍或起算事實不足，需人工確認',
-                 'final_due_date':o.due if covered else None,
-                 'law_versions': {i:versions[i] for i in set(law_ids)},
-                 'calendar_version':calendar_hash, 'calendar_years':sorted(CAL_YEARS), 'rules_version':RULES_VERSION}
-        results.append({**o.to_dict(), 'due':o.due if covered else None, 'start':o.start if covered else None,
-                        'status':'todo' if covered else 'needs_review', 'calc_trace':trace})
+        skipped = rebuilt['skipped'] if rebuilt else []
+        adjustment = '未順延；依上列規則'
+        if skipped:
+            adjustment = '略過：' + '、'.join(item['date'] + '（' + item['reason'] + '）' for item in skipped)
+        if not safe:
+            adjustment = '；'.join(reasons)
+        trace = {
+            'event': doc_type,
+            'event_date': rebuilt['event'].isoformat() if rebuilt else None,
+            'start_date': rebuilt['counting_start'].isoformat() if rebuilt else None,
+            'rule': rebuilt['rule'] if rebuilt else obligation.basis,
+            'original_due_date': rebuilt['raw_due'].isoformat() if safe else None,
+            'holiday_adjustment': adjustment,
+            'final_due_date': obligation.due if safe else None,
+            'law_versions': {code: versions[code] for code in sorted(set(law_ids))},
+            'calendar_version': calendar_hash,
+            'calendar_years': sorted(CAL_YEARS),
+            'calendar_examined': [day.isoformat() for day in rebuilt['examined']] if rebuilt else [],
+            'independent_verified': verified,
+            'review_reasons': reasons,
+            'steps': rebuilt['steps'] if safe else ['需人工確認：' + '；'.join(reasons)],
+            'rules_version': RULES_VERSION,
+        }
+        results.append({
+            **obligation.to_dict(), 'due': obligation.due if safe else None,
+            'start': obligation.start if safe else None,
+            'status': 'todo' if safe else 'needs_review', 'calc_trace': trace,
+        })
     return results

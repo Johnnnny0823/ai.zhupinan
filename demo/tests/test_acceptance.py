@@ -247,12 +247,12 @@ def test_qa_rejects_invented_model_dates(clients,monkeypatch):
 
 @pytest.mark.parametrize('idx',range(30))
 def test_penalty_stored_regression_is_exact_and_7_items(clients,idx):
-    truth=json.loads((config.ROOT/'validation'/'penalty'/'truth.json').read_text())[idx]
-    text=(config.ROOT/'validation'/'penalty'/f"{truth['id']}.txt").read_text()
+    truth=json.loads((config.ROOT/'validation'/'penalty'/'truth.json').read_text(encoding='utf-8'))[idx]
+    text=(config.ROOT/'validation'/'penalty'/f"{truth['id']}.txt").read_text(encoding='utf-8')
     r=clients['officer'].post('/api/penalty/check',json={'text':text,'mode':'stored'})
     assert r.status_code==200,r.text
     items=r.json()['items'];assert len(items)==7
-    original=json.loads((config.ROOT/'validation'/'runs'/'penalty'/'haiku'/f"{truth['id']}.json").read_text())['parsed']
+    original=json.loads((config.ROOT/'validation'/'runs'/'penalty'/'haiku'/f"{truth['id']}.json").read_text(encoding='utf-8'))['parsed']
     for item in items:
         assert item['status']==('已找到' if original[item['id']]['ok'] else '可能缺漏')
         assert item['law_ref'] and item['source_excerpt']
@@ -266,7 +266,7 @@ def test_penalty_arbitrary_stored_rejected(clients):
 
 
 def test_calendar_legacy_33_and_release_outside_range():
-    truth=json.loads((config.ROOT/'validation'/'docs_holiday'/'ground_truth.json').read_text())
+    truth=json.loads((config.ROOT/'validation'/'docs_holiday'/'ground_truth.json').read_text(encoding='utf-8'))
     count=0
     for d in truth:
         actual=[o.to_dict() for w in d['workers'] for o in compute(d['doc_type'],w)]
@@ -279,10 +279,10 @@ def test_calendar_legacy_33_and_release_outside_range():
 
 
 def test_sw_is_explicit_public_allowlist_and_no_runtime_data():
-    sw=(config.WEB/'sw.js').read_text()
+    sw=(config.WEB/'sw.js').read_text(encoding='utf-8')
     assert "credentials:'omit'" in sw and '!PUBLIC.includes(url.pathname)' in sw
     assert "'/api/" not in sw and "'/line/" not in sw and 'samples/' not in sw
-    data=json.loads((config.WEB/'local-demo-data.json').read_text())
+    data=json.loads((config.WEB/'local-demo-data.json').read_text(encoding='utf-8'))
     assert data['synthetic'] and data['mode']=='預存示範結果'
 
 

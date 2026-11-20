@@ -9,8 +9,16 @@ permissions:
   contents: read
 
 jobs:
-  tests:
-    runs-on: ubuntu-latest
+  acceptance:
+    name: tests (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
     env:
       DEMO_DATA: "true"
       PYTHONIOENCODING: utf-8
@@ -22,11 +30,55 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Create a fresh virtual environment
+        run: |
+          python -m venv .venv
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            echo "$PWD/.venv/Scripts" >> "$GITHUB_PATH"
+          else
+            echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+          fi
+      - name: Prepare evidence and record real encoding settings
+        run: |
+          mkdir -p artifacts/pr4
+          python -c "import json,os,platform,sys,locale; assert 'PYTHONUTF8' not in os.environ; assert sys.prefix != sys.base_prefix; print(json.dumps(dict(platform=platform.platform(),python=platform.python_version(),encoding=locale.getpreferredencoding(False),utf8_mode=sys.flags.utf8_mode,PYTHONUTF8_set='PYTHONUTF8' in os.environ,fresh_venv=sys.prefix != sys.base_prefix)))" | tee artifacts/pr4/environment.json
       - name: Install
         run: python -m pip install -r demo/requirements-dev.txt
       - name: Acceptance tests (no model calls)
-        run: python -m pytest demo/tests -q
+        run: |
+          set -o pipefail
+          python -m pytest demo/tests -q | tee artifacts/pr4/pytest.txt
       - name: Offline baseline replay
-        run: python -m demo.verify_baseline
+        run: |
+          set -o pipefail
+          python -m demo.verify_baseline | tee artifacts/pr4/baseline.json
       - name: Service Worker boundary tests
-        run: node --test demo/tests/sw_test.cjs
+        run: |
+          set -o pipefail
+          node --test demo/tests/sw_test.cjs | tee artifacts/pr4/service-worker.txt
+      - name: Install Windows browser evidence dependencies
+        if: runner.os == 'Windows'
+        run: |
+          python -m pip install -r demo/requirements-browser.txt
+          python -m playwright install chromium
+      - name: Windows seed, serve, login and visible browser flow
+        if: runner.os == 'Windows'
+        run: |
+          set -o pipefail
+          python -m demo.ci_smoke | tee artifacts/pr4/browser-smoke.txt
+      - name: Preserve actual platform logs and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr4-${{ matrix.os }}
+          path: artifacts/pr4/
+          retention-days: 14
+
+  tests:
+    name: tests
+    if: always()
+    needs: acceptance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require both platform results
+        run: test "${{ needs.acceptance.result }}" = "success"

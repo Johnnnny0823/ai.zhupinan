@@ -13,7 +13,7 @@ def main():
     with contextlib.redirect_stdout(io.StringIO()):
         privacy=runpy.run_path(str(ROOT/'validation'/'scripts'/'test_privacy.py'))
     assert privacy['n_secrets']==266 and not privacy['leaks'] and not privacy['damaged']
-    holiday=json.loads((ROOT/'validation/docs_holiday/ground_truth.json').read_text())
+    holiday=json.loads((ROOT/'validation/docs_holiday/ground_truth.json').read_text(encoding='utf-8'))
     rule_count=0
     for d in holiday:
         actual=[o.to_dict() for w in d['workers'] for o in rules.compute(d['doc_type'],w)]
@@ -21,15 +21,15 @@ def main():
         rule_count+=len(actual)
     questions=[]
     for i,(question,facts,cite) in enumerate(qa.QH,1):
-        saved=json.loads((ROOT/f'validation/runs/qa_holdout/rag2s_haiku/q{i:02d}.json').read_text())
+        saved=json.loads((ROOT/f'validation/runs/qa_holdout/rag2s_haiku/q{i:02d}.json').read_text(encoding='utf-8'))
         answer=saved['answer']
         hit=all(any(v in answer for v in alternatives) for alternatives in facts)
         cited=any(v in answer for v in (f"第{cite['no']}條",f"第 {cite['no']} 條"))
         questions.append({'id':i,'facts':hit,'citation':cited})
-    truth=json.loads((ROOT/'validation/penalty/truth.json').read_text())
+    truth=json.loads((ROOT/'validation/penalty/truth.json').read_text(encoding='utf-8'))
     detected=total=0
     for row in truth:
-        saved=json.loads((ROOT/f"validation/runs/penalty/haiku/{row['id']}.json").read_text())['parsed']
+        saved=json.loads((ROOT/f"validation/runs/penalty/haiku/{row['id']}.json").read_text(encoding='utf-8'))['parsed']
         for c in row['defects']:
             total+=1;detected+=saved[c]['ok'] is False
     result={'mode':'historical_output_replay_not_live','legacy_holiday':{'passed':rule_count,'total':33},

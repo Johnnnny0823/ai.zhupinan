@@ -1,0 +1,27 @@
+......FF                                                                 [100%]
+=================================== FAILURES ===================================
+___________________ test_all_demo_text_reads_choose_encoding ___________________
+demo/tests/test_pr4_windows.py:67: in test_all_demo_text_reads_choose_encoding
+    assert not missing, missing
+E   AssertionError: ['demo/verify_baseline.py:16', 'demo/verify_baseline.py:29', 'demo/verify_baseline.py:24', 'demo/verify_baseline.py:32', 'demo/tests/test_acceptance.py:251', 'demo/tests/test_acceptance.py:282', ...]
+E   assert not ['demo/verify_baseline.py:16', 'demo/verify_baseline.py:29', 'demo/verify_baseline.py:24', 'demo/verify_baseline.py:32', 'demo/tests/test_acceptance.py:251', 'demo/tests/test_acceptance.py:282', ...]
+___________________ test_baseline_with_windows_cp950_default ___________________
+demo/tests/test_pr4_windows.py:79: in test_baseline_with_windows_cp950_default
+    verify_baseline.main()
+demo/verify_baseline.py:16: in main
+    holiday=json.loads((ROOT/'validation/docs_holiday/ground_truth.json').read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/pathlib.py:1028: in read_text
+    return f.read()
+           ^^^^^^^^
+E   UnicodeDecodeError: 'cp950' codec can't decode byte 0xe5 in position 68: illegal multibyte sequence
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/roylin/Desktop/竹娉安/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED demo/tests/test_pr4_windows.py::test_all_demo_text_reads_choose_encoding
+FAILED demo/tests/test_pr4_windows.py::test_baseline_with_windows_cp950_default
+2 failed, 6 passed, 1 warning in 0.16s
