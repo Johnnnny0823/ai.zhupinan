@@ -1,28 +1,27 @@
 <!doctype html>
 <html lang="zh-Hant-TW">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1c2822"><title>竹聘安｜市府視角地圖</title><meta name="description" content="新竹市東區、北區、香山區的高齡人口立體地圖，資料來自內政部戶政司開放資料。"><link rel="icon" href="/icons/icon-192.png"><link rel="stylesheet" href="/app.css"><script src="/city.js" type="module"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1c2822"><title>竹聘安｜新竹市地圖</title><meta name="description" content="新竹市東區、北區、香山區的高齡人口立體地圖。"><link rel="icon" href="/icons/icon-192.png"><link rel="stylesheet" href="/app.css"><script src="/city.js" type="module"></script></head>
 <body class="city-page">
 <a class="skip" href="#main">跳到主要內容</a>
-<div class="demo-bar">市府視角 · 區界：內政部國土測繪中心 · 人口：內政部戶政司開放資料（113 年 12 月底）</div>
-<header class="masthead city-head"><a class="brand" href="/" aria-label="竹聘安首頁"><span class="brand-mark" aria-hidden="true">竹</span><span>竹聘安<span class="brand-sub">市府視角 ／ 新竹市</span></span></a><a href="/">回到案件手帖 ↗</a></header>
+<header class="masthead city-head"><a class="brand" href="/" aria-label="竹聘安首頁"><span class="brand-mark" aria-hidden="true">竹</span><span>竹聘安<span class="brand-sub">市府視角</span></span></a><a href="/">回到首頁 ↗</a></header>
 <main id="main" class="city" tabindex="-1">
   <section class="city-panel">
-    <div class="eyebrow">市府視角 · 新竹市三區</div>
-    <h1>哪一區的長輩比較多，<br>試辦就先從那裡開始</h1>
-    <p class="city-lead">高度跟顏色深淺代表下面選的那個數字。點地圖上的區，或點表格的列，可以看那一區的細節。</p>
-    <div class="city-switch" role="group" aria-label="要看的數字">
-      <button data-metric="age65" aria-pressed="true">65 歲以上人口</button>
-      <button data-metric="age80" aria-pressed="false">80 歲以上人口</button>
-      <button data-metric="ratio" aria-pressed="false">65 歲以上比例</button>
+    <div class="eyebrow">市府視角</div>
+    <h1>新竹市高齡人口</h1>
+    <div class="city-switch" role="group" aria-label="切換數字">
+      <button data-metric="age65" aria-pressed="true">65 歲以上</button>
+      <button data-metric="age80" aria-pressed="false">80 歲以上</button>
+      <button data-metric="ratio" aria-pressed="false">比例</button>
     </div>
     <div id="city-detail" class="city-detail" aria-live="polite"></div>
     <table class="city-table" id="city-table"><caption class="visually-hidden">各區人口</caption></table>
     <p class="city-note" id="city-source"></p>
   </section>
-  <section class="city-stage" aria-label="新竹市三區立體地圖，可點選區域，也可以拖曳轉動">
+  <section class="city-stage" aria-label="新竹市三區立體地圖">
     <div id="city-canvas" class="city-canvas"></div>
     <div id="city-labels" class="city-labels"></div>
-    <p class="city-hint">點區域看細節 · 拖曳可以轉動</p>
+    <div class="city-stat" aria-hidden="true"><span id="stat-label">65 歲以上</span><strong id="stat-value">0</strong><span id="stat-where">新竹市</span></div>
+    <div class="city-compass" aria-hidden="true"><span>N</span></div>
   </section>
 </main>
 </body></html>

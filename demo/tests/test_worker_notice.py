@@ -49,7 +49,7 @@ def test_live_translation_must_keep_dates(clients, monkeypatch):
     good = f'{{"text": "Periksa antara {task["start_date"]} dan {task["due_date"]}. Hubungi 1955."}}'
     monkeypatch.setattr(llm, 'call', lambda *a, **k: good)
     r = c.post(f"/api/tasks/{task['id']}/worker-notice", json={'lang': 'id', 'mode': 'live'})
-    assert r.status_code == 200 and '核對' in r.json()['mode']
+    assert r.status_code == 200 and '已核對' in r.json()['mode']
     monkeypatch.setattr(llm, 'call', lambda *a, **k: '{"text": "Periksa sebelum 2099-01-01. Hubungi 1955."}')
     assert c.post(f"/api/tasks/{task['id']}/worker-notice", json={'lang': 'id', 'mode': 'live'}).status_code == 422
 

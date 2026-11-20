@@ -7,7 +7,7 @@ from demo.server.app import app
 def test_city_page_and_assets_are_served(env):
     c = TestClient(app)
     page = c.get('/city.html')
-    assert page.status_code == 200 and '內政部戶政司' in page.text
+    assert page.status_code == 200 and '新竹市高齡人口' in page.text
     assert "script-src 'self'" in page.headers['Content-Security-Policy']
     assert '<script>' not in page.text and 'style=' not in page.text
     assert c.get('/vendor/three.module.min.js').status_code == 200

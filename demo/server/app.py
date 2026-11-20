@@ -403,7 +403,7 @@ async def worker_notice_text(tid:str,body:WorkerNotice,a=Depends(auth.employer))
     with db.transaction() as c: task=owned_task(c,tid,a['id'])
     zh=worker_notice.compose(task,'zh')
     if body.mode=='stored':
-        text=worker_notice.compose(task,body.lang);mode='預存句型（人工撰寫，未經母語審閱）'
+        text=worker_notice.compose(task,body.lang);mode='預存句型'
     else:
         prompt=f"翻成 {worker_notice.LANG_NAMES[body.lang]}：\n{zh}"
         try: data=await run_in_threadpool(lambda:llm.parse_json(llm.call(worker_notice.SYSTEM,prompt)))
@@ -412,7 +412,7 @@ async def worker_notice_text(tid:str,body:WorkerNotice,a=Depends(auth.employer))
         missing,extra=worker_notice.check_translation(text,task)
         if not text or missing or extra:
             raise HTTPException(422,'翻譯結果的日期或專線號碼跟原文對不上，已擋下來；請改用預存句型。')
-        mode='即時模型翻譯（日期與專線已由程式核對）'
+        mode='即時翻譯 · 日期已核對'
     with db.transaction() as c: db.audit(c,a['id'],task['case_id'],'task',tid,'worker_notice')
     return {'lang':body.lang,'lang_name':worker_notice.LANGS[body.lang],'zh':zh,'text':text,'mode':mode,
             'notice':'只含事項與日期，不含姓名、證號、地址。正式發出前，建議請通譯或懂這個語言的人看過。','synthetic':True}

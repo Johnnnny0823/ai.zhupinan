@@ -146,3 +146,33 @@ nav button:hover{background:#d3e0d7}
 main:focus,main:focus-visible{outline:none}
 nav button[aria-current=page] .nav-index{color:#c9d8cf}
 @media(max-width:700px){nav button[aria-current=page] .nav-index{color:var(--muted)}}
+/* 地圖頁：精簡版面＋舞台裝飾 */
+.city{grid-template-columns:minmax(300px,380px) minmax(0,1fr);align-items:stretch}
+.city h1{font-size:clamp(30px,3vw,44px);margin-bottom:20px}
+.city-switch{background:#22302a;border-radius:12px;padding:4px;gap:4px;display:inline-flex;margin:0 0 20px}
+.city-switch button{border:0;border-radius:9px;min-height:40px;padding:6px 14px;background:transparent;color:#c9d8cf;font-weight:600}
+.city-switch button[aria-pressed=true]{background:#f2efe4;color:#1c2822}
+.city-detail{border:0;background:#22302a;border-radius:14px;padding:18px 20px;min-height:0;transition:background-color .2s}
+.city-detail.open{background:#2b3d33;animation:cityIn .35s ease-out}
+@keyframes cityIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.city-detail h2{display:flex;align-items:center;gap:10px;font-size:26px;margin-bottom:10px}
+.city-detail dl{grid-template-columns:1fr auto;font-size:17px}.city-detail dd{text-align:right;font-variant-numeric:tabular-nums}
+.city-badge{font-size:13px;font-weight:700;background:#d9a35a;color:#1c2822;border-radius:999px;padding:3px 10px}
+.city-tip{color:#8fa197;margin:0}
+.city-table{margin-top:18px;font-variant-numeric:tabular-nums}.city-table td{text-align:right}.city-table thead th:not(:first-child){text-align:right}
+.city-note{font-size:13px;margin-top:14px}
+.city-stage{min-height:620px;border:0;border-radius:18px;background:radial-gradient(ellipse at 50% 55%,#26392f 0%,#17221d 62%,#121a16 100%);box-shadow:inset 0 0 0 1px #2c3d34}
+.city-stat{position:absolute;left:28px;top:24px;display:flex;flex-direction:column;pointer-events:none}
+.city-stat span{color:#a9bdb2;font-size:14px;letter-spacing:.06em}
+.city-stat strong{font-family:Georgia,"Noto Serif TC",serif;font-weight:500;font-size:clamp(40px,5vw,64px);line-height:1.05;color:#f2efe4;font-variant-numeric:tabular-nums}
+.city-compass{position:absolute;right:26px;top:24px;width:52px;height:52px;border-radius:50%;border:1px solid #5f7d6d;display:grid;place-items:start center;pointer-events:none}
+.city-compass span{font-size:12px;font-weight:700;color:#d9a35a;margin-top:3px}
+.city-compass:after{content:"";position:absolute;left:50%;top:50%;width:2px;height:16px;margin:-14px 0 0 -1px;background:#d9a35a;border-radius:2px}
+.city-labels .city-label{transition:background-color .15s,border-color .15s,transform .05s linear}
+.city-labels .city-label.hover{border-color:#a9bdb2;background:#fff}
+@media(max-width:900px){.city{grid-template-columns:1fr}.city-stage{min-height:460px}.city-stat strong{font-size:40px}}
+.atlas-row{transition:background-color .15s}.atlas-row:hover{background:var(--wash)}
+.atlas-row:hover .atlas-bar{opacity:.8}.atlas-row:hover .atlas-dot{transform:translateY(-50%) scale(1.35)}
+.atlas-dot{transition:transform .15s}
+.task-row{transition:background-color .15s}.task-row:hover{background:#fffefa}
+.hero{border-radius:14px;box-shadow:0 10px 28px #26352e12}
