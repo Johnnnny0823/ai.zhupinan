@@ -24,6 +24,7 @@
 | GET `/api/cases` | employer | items，僅owner本人 |
 | GET `/api/cases/{id}` | employer owner | case、tasks、documents、synthetic |
 | GET `/api/demo/samples` | employer | 三份固定合成文字及label；供選樣及明示備援 |
+| GET `/api/demo/replay` | 公開，唯讀 | 開場案例重播：依公開訴願決定日期，以`compute_traced`重算第18個月健檢期間、依`REMINDER_DAYS`列LINE提醒時點、以`proof_verdict`判讀實際日期；不讀資料庫，不含任何帳號或案件資料 |
 | POST `/api/documents/extract` | employer＋Origin | multipart file、mode=live或stored；回draft_id、document_kind、workers、fields、masked_preview、mode、warning；不寫案件 |
 | DELETE `/api/documents/drafts/{id}` | employer＋Origin | 取消記憶體草稿；相同呼叫可重跑 |
 | POST `/api/documents/confirm` | employer owner＋Origin | 見下例；回task_ids、duplicate、warnings；preview_only不寫入 |

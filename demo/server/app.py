@@ -18,8 +18,8 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field
 from starlette.concurrency import run_in_threadpool
-from . import config, db, auth, storage, llm, notifications, missing, documents
-from .domain import owned_case, owned_task, serialize_task, save_document, calculations, RULES_VERSION, law_versions, uid
+from . import config, db, auth, storage, llm, notifications, missing, documents, replay
+from .domain import owned_case, owned_task, serialize_task, save_document, calculations, proof_verdict, RULES_VERSION, law_versions, uid
 from .samples import SAMPLES, SCAN_SAMPLES, penalty_sample
 from demo.reset import reset
 # domain adds the validation path. These are the shared, unchanged retrieval/checker modules.
@@ -227,6 +227,11 @@ async def make_draft(aid, raw, filename, kind, fields, preview, mode, is_image=F
 def samples(a=Depends(auth.employer)):
     return {'items':[{'id':k,'label':v['label'],'text':v['text']} for k,v in SAMPLES.items()]}
 
+@app.get('/api/demo/replay')
+def demo_replay():
+    # Public and read-only: fixed dates from a published appeal decision, no account data.
+    return replay.build()
+
 @app.post('/api/documents/extract')
 async def extract(file:UploadFile=File(...),mode:Literal['live','stored']=Form('live'),a=Depends(auth.employer)):
     filename=file.filename or 'upload.txt';mime=file.content_type
@@ -340,7 +345,7 @@ async def proof(tid:str,file:UploadFile=File(...),mode:Literal['live','stored']=
     verdict='unknown'
     if data.get('relevant') is False: verdict='mismatch'
     elif observed:
-        verdict='early' if task['start_date'] and observed<task['start_date'] else 'late' if observed>task['due_date'] else 'on_time'
+        verdict=proof_verdict(task['start_date'],task['due_date'],observed)
     excerpt=mask(str(data.get('evidence','')))[0][:300]
     if excerpt not in masked: excerpt='未取得可核對的日期原文';verdict='unknown'
     source_digest=hashlib.sha256(raw).hexdigest()
@@ -373,7 +378,7 @@ def complete(tid:str,body:Complete,a=Depends(auth.employer)):
         observed=body.observed_date.isoformat()
         if task['start_date'] and observed<task['start_date'] and not body.outside_window_acknowledged:
             raise HTTPException(422,'辦理日早於期間，需再核對並明確確認例外')
-        verdict='late' if observed>task['due_date'] else 'early' if task['start_date'] and observed<task['start_date'] else 'on_time'
+        verdict=proof_verdict(task['start_date'],task['due_date'],observed)
         c.execute('UPDATE proofs SET confirmed_at=?,observed_date=?,verdict=? WHERE id=?',(config.stamp(),observed,verdict,body.proof_id))
         c.execute("UPDATE tasks SET status='done' WHERE id=?",(tid,))
         db.audit(c,a['id'],task['case_id'],'task',tid,'confirm_done')
