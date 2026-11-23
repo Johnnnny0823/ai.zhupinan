@@ -20,6 +20,14 @@ def account(request: Request):
         raise HTTPException(401, '登入已失效，請使用示範登入碼重新登入')
     return dict(row)
 
+def has_session(token: str) -> bool:
+    """Cheap pre-check used before buffering large uploads; full checks still run in the route."""
+    if not token:
+        return False
+    with db.transaction() as c:
+        return c.execute('SELECT 1 FROM sessions WHERE id_hash=? AND expires_at>?',
+                         (digest(token), config.stamp())).fetchone() is not None
+
 def employer(request: Request):
     a = account(request)
     if a['role'] != 'employer':

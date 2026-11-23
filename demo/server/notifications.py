@@ -20,6 +20,8 @@ TITLE = {
 
 # Days before the due date on which a LINE reminder is pushed (0 = the due date itself).
 REMINDER_DAYS = (30, 14, 7, 3, 0)
+PAIR_FAILURES = 5
+PAIR_LOCK_MINUTES = 10
 UPCOMING_LIMIT = 8
 
 def text_for(task, days_left=None):
@@ -151,11 +153,27 @@ def event(event):
                 c.execute('DELETE FROM pair_codes WHERE account_id=?',(binding['account_id'],))
             reply='已取消綁定，之後不再接收案件提醒。'
         elif event.get('type')=='message' and len(text)==6 and text.isascii() and text.isdigit():
-            code=c.execute('SELECT * FROM pair_codes WHERE code_hash=? AND consumed_at IS NULL AND expires_at>?',(auth.digest(text),config.stamp())).fetchone()
-            if not code: reply='配對碼無效或已過期，請登入雇主網頁重新取得。'
+            guard=auth.digest('line-pair|'+user)
+            attempt=c.execute('SELECT * FROM login_attempts WHERE key_hash=?',(guard,)).fetchone()
+            current=config.now().isoformat()
+            code=None
+            if attempt and attempt['blocked_until'] and attempt['blocked_until']>current:
+                reply=f'配對碼錯誤次數過多，請於{PAIR_LOCK_MINUTES}分鐘後再試。'
+            else:
+                code=c.execute('SELECT * FROM pair_codes WHERE code_hash=? AND consumed_at IS NULL AND expires_at>?',(auth.digest(text),config.stamp())).fetchone()
+            if reply: pass
+            elif not code:
+                # Throttle guesses per LINE user: a six-digit code must not be brute-forced.
+                failures=1 if not attempt or (attempt['blocked_until'] and attempt['blocked_until']<=current) else attempt['failures']+1
+                blocked=(config.now()+timedelta(minutes=PAIR_LOCK_MINUTES)).isoformat() if failures>=PAIR_FAILURES else None
+                c.execute('INSERT INTO login_attempts VALUES(?,?,?,?) ON CONFLICT(key_hash) DO UPDATE SET '
+                          'failures=excluded.failures,blocked_until=excluded.blocked_until,updated_at=excluded.updated_at',
+                          (guard,failures,blocked,current))
+                reply='配對碼無效或已過期，請登入雇主網頁重新取得。'
             elif binding and binding['account_id']!=code['account_id']:
                 reply='此 LINE 已有綁定，請先取消原綁定。'
             else:
+                c.execute('DELETE FROM login_attempts WHERE key_hash=?',(guard,))
                 c.execute('UPDATE pair_codes SET consumed_at=? WHERE code_hash=?',(config.stamp(),auth.digest(text)))
                 c.execute('INSERT INTO line_bindings VALUES(?,?,?,NULL) ON CONFLICT(account_id) DO UPDATE SET line_user_id=excluded.line_user_id,bound_at=excluded.bound_at,revoked_at=NULL',
                           (code['account_id'],user,config.stamp()))

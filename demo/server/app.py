@@ -52,12 +52,19 @@ async def lifespan(app):
 
 app=FastAPI(title='竹聘安｜合成示範',version=RULES_VERSION,lifespan=lifespan)
 
+UPLOAD_PATH=re.compile(r'/api/documents/extract|/api/tasks/[^/]+/proof')
+
 class BodyLimit:
     """Buffer a bounded request before multipart parsing can spool any file."""
     def __init__(self,app): self.app=app
     async def __call__(self,scope,receive,send):
         if scope['type']!='http': return await self.app(scope,receive,send)
-        limit=16*1024*1024 if scope['path'].endswith(('/extract','/proof')) else 512*1024
+        # Only signed-in users on the two upload routes may send large bodies; others get the small limit.
+        upload=scope.get('method')=='POST' and UPLOAD_PATH.fullmatch(scope['path'])
+        if upload:
+            token=Request(scope).cookies.get(auth.COOKIE,'')
+            upload=await run_in_threadpool(auth.has_session,token)
+        limit=16*1024*1024 if upload else 512*1024
         chunks=[];used=0
         while True:
             msg=await receive()
