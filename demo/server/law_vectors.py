@@ -46,7 +46,7 @@ def connect():
     return QdrantClient(path=str(config.LAW_VECTOR_PATH), force_disable_check_same_thread=True)
 
 
-def build_index(articles):
+def build_index(articles, *, local_only=False):
     from qdrant_client import models
 
     collection = snapshot_collection(articles)
@@ -56,7 +56,7 @@ def build_index(articles):
         exists = client.collection_exists(collection)
         if exists and client.count(collection, exact=True).count == len(chunks):
             return len(chunks)
-        embedder = load_embedder(local_only=False)
+        embedder = load_embedder(local_only=local_only)
         if not exists:
             client.create_collection(collection, vectors_config=models.VectorParams(
                 size=DIMENSION, distance=models.Distance.COSINE,

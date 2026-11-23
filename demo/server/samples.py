@@ -17,5 +17,9 @@ SCAN_SAMPLES = {
  '聘僱許可函_掃描.png': {'kind':'聘僱許可函','fields':[{'name':'移工代號01','entry_date':'2027-01-20','permit_start':'2027-01-20','permit_end':'2030-01-19','evidence':{'entry_date':'入國日期：116年1月20日','permit_start':'自116年1月20日起','permit_end':'至119年1月19日止'}}]},
 }
 
+# The approved PDF contains the same synthetic scan and has its own file digest.
+SCAN_SAMPLES['住宿地點變更_合成掃描.pdf'] = SCAN_SAMPLES['住宿地點變更_掃描.png']
+
+
 def penalty_sample():
     return (config.ROOT/'validation'/'penalty'/'p01.txt').read_text(encoding='utf-8')

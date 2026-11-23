@@ -15,6 +15,8 @@ OCR_PYTHON = Path(os.getenv('DEMO_OCR_PYTHON') or ROOT / '.venv-ocr' / (
     'Scripts/python.exe' if os.name == 'nt' else 'bin/python'
 ))
 QDRANT_URL = os.getenv('DEMO_QDRANT_URL', '')
+CLAUDE_MODEL = os.getenv('DEMO_CLAUDE_MODEL') or 'claude-sonnet-5-5'
+GEMINI_CROSSCHECK = os.getenv('DEMO_GEMINI_CROSSCHECK') == '1'
 LAW_VECTOR_PATH = HERE / 'data' / 'qdrant'
 LAW_EMBEDDING_CACHE = HERE / 'data' / 'law_embeddings'
 PUBLIC_ORIGIN = os.getenv('PUBLIC_ORIGIN', 'http://127.0.0.1:8765').rstrip('/')

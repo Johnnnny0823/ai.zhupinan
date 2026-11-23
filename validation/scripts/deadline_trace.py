@@ -6,6 +6,8 @@ are separate so disagreement cannot silently become a displayed deadline.
 from calendar import monthrange
 from datetime import date, timedelta
 
+import numpy as np
+
 DAY_LIMITS = {
     'apply_permit': 15,
     'recheck_report': 15,
@@ -59,15 +61,28 @@ def rebuild(kind, worker, key, off_days, holiday_notes, calendar_years):
     elif key == 'health_entry':
         event = date.fromisoformat(worker['entry_date'])
         counting_start = event + timedelta(days=1)
-        current, counted = event, 0
+        day = counting_start
+        counted = 0
+        holidays = np.asarray(sorted(off_days), dtype='datetime64[D]')
+        known_years = [int(year) for year in calendar_years]
         while counted < 3:
-            current += timedelta(days=1)
-            if off(current):
-                skip(current)
-            else:
-                counted += 1
-                steps.append(f'第{counted}個工作日：{current.isoformat()}')
-        raw = due = current
+            days = np.arange(np.datetime64(day), np.datetime64(day + timedelta(days=31)), dtype='datetime64[D]')
+            years = days.astype('datetime64[Y]').astype(int) + 1970
+            # The official calendar records make-up working weekends explicitly.
+            flags = np.where(np.isin(years, known_years),
+                             np.is_busday(days, weekmask='1111111', holidays=holidays),
+                             np.is_busday(days))
+            for value, workday in zip(days.tolist(), flags, strict=True):
+                examined.append(value)
+                if workday:
+                    counted += 1
+                    steps.append(f'第{counted}個工作日：{value.isoformat()}')
+                    if counted == 3:
+                        break
+                else:
+                    skip(value)
+            day += timedelta(days=31)
+        raw = due = value
         rule = '入國翌日起，依政府辦公日曆累計3個工作日；休息日不計'
     elif key in ('health_6m', 'health_18m', 'health_30m'):
         if kind in ('入國通報受理證明書', '家事移工預定入國'):

@@ -6,7 +6,8 @@ import subprocess
 from pathlib import Path
 from threading import Lock
 from fastapi import HTTPException
-from . import config
+from . import config, pdf_to_md
+from .samples import SCAN_SAMPLES
 
 MAX_BYTES = 15 * 1024 * 1024
 PDF_LOCK = Lock()
@@ -51,10 +52,7 @@ def inspect(raw, filename, content_type, *, markdown=False):
                     raise HTTPException(400, 'PDF 須為未加密文件，且不超過 10 頁')
                 pages = [page.get_text(sort=markdown) for page in document]
                 scanned = any(len(content.strip()) < 20 or page.get_images() for page, content in zip(document, pages))
-                if markdown:
-                    text = '\n\n'.join(f'## 第 {i} 頁\n\n{content.strip()}' for i, content in enumerate(pages, 1))
-                else:
-                    text = '\n'.join(pages)
+                text = pdf_to_md.convert(document) if markdown and not scanned else '\n'.join(pages)
         elif suffix in ('.png','.jpg','.jpeg'):
             from PIL import Image
             with Image.open(io.BytesIO(raw)) as im:
@@ -72,13 +70,31 @@ def inspect(raw, filename, content_type, *, markdown=False):
     except Exception:
         raise HTTPException(415, '檔案內容損壞，或實際格式與副檔名不符') from None
     if scanned:
-        known = {hashlib.sha256(p.read_bytes()).hexdigest() for p in (config.WEB/'samples').glob('*.png')}
+        known = {hashlib.sha256((config.WEB/'samples'/name).read_bytes()).hexdigest() for name in SCAN_SAMPLES}
         if not config.DEMO_DATA or hashlib.sha256(raw).hexdigest() not in known:
             raise HTTPException(422, '圖片／含圖 PDF 僅允許系統提供的合成範例。真實掃描件已停止處理，不會送出模型。請選合成範例展示。')
     return text, scanned
 
 def read_scan_text(raw):
     """Read a previously validated synthetic scan in memory."""
+    if raw.startswith(b'%PDF-'):
+        import fitz
+
+        with PDF_LOCK, fitz.open(stream=raw, filetype='pdf') as document:
+            pages = []
+            for page in document:
+                images = page.get_images(full=True)
+                if len(images) == 1 and not images[0][1] and not page.get_text().strip():
+                    # Preserve the embedded scan's native pixels when it is the only page content.
+                    image = fitz.Pixmap(document, images[0][0])
+                else:
+                    image = page.get_pixmap(dpi=200, alpha=False)
+                pages.append(image.tobytes('png'))
+        return pdf_to_md.from_scan_pages([paddle_text(page) for page in pages])
+    return paddle_text(raw)
+
+
+def paddle_text(raw):
     if not config.OCR_PYTHON.is_file() or not (config.OCR_MODELS_PATH / 'official_models').is_dir():
         raise HTTPException(503, '尚未安裝本機 PaddleOCR 或模型。請依開發文件完成安裝，或切換預存示範結果。')
     try:

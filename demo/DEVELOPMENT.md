@@ -100,6 +100,24 @@ $env:DEMO_QDRANT_URL = 'http://127.0.0.1:6333'
 .venv\Scripts\python -m demo.run serve
 ```
 
+## 每月法規同步與模型設定
+
+### 法規同步
+
+```powershell
+.venv\Scripts\python -m pip install -c demo/requirements.lock.txt -r demo/requirements-law-sync.txt -r demo/requirements-vector.txt
+.venv\Scripts\python -m demo.sync_laws --index
+```
+
+程式透過全國法規資料庫的六個固定公開網址取得法條，拒收身分不符、舊版、重複條號及異常短缺的資料。新的 Qdrant 索引建立成功後，以原子替換寫入 `demo/law_data/current.json`。若下載、解析或索引失敗，既有問答快照仍可使用。GitHub Actions 每月 1 日 09:17（Asia/Taipei）檢查，有內容異動才提交快照。使用該流程需將工作流程合併至遠端預設分支。部署環境取得變更後重啟服務，會優先使用相同版本的 Qdrant 索引；本機已有向量模型時可自動重建。期限規則及其參照存檔位於 `validation/`，月更不直接修改那些檔案。[全國法規資料庫](https://law.moj.gov.tw/)
+
+### PDFToMD、RAG 與雙模型交叉比對
+
+- 文字 PDF 在本機轉成含頁碼、段落及可辨識表格的 Markdown。內建合成掃描 PDF 先在記憶體進行 PaddleOCR，再組成 Markdown。
+- Markdown 遮蔽後才交給模型。展示畫面可核對及下載同一份遮蔽 Markdown。真實掃描或未知來源的掃描 PDF 會在 OCR 之前拒絕。
+- 問答及文件擷取共用 `demo/server/prompts.py` 的直聘移工管理專家提示。問答依當次取得的條文與已確認案件日期組織回覆。
+- Claude Code CLI 使用 `claude-sonnet-5-5` 讀取公文。若要啟用雙模型比對，請在啟動終端提供 `GEMINI_API_KEY`，並設定 `DEMO_GEMINI_CROSSCHECK=1`。Gemini 預設為 `gemini-3.1-pro-preview`，兩家模型只接收同一份已遮蔽文本。比對不一致須逐欄核對；服務未回應時會在畫面註明。
+
 ## LINE與Windows每日排程
 
 在 `.env` 設定 `LINE_CHANNEL_ACCESS_TOKEN`、`LINE_CHANNEL_SECRET`。HTTPS對外入口與`PUBLIC_ORIGIN`必須一致，Webhook設為`https://展示來源/line/webhook`。

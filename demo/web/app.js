@@ -172,10 +172,21 @@ async function submitProof(fd){const area=$('#proof-area');try{area.setAttribute
 async function documentsPage(){
   const r=await api('/api/demo/samples');
   main.innerHTML=heading('讀取文件','上傳公文','')+
-    `<div class="step"><span class="active">01 選擇文件</span><span>→</span><span>02 核對日期</span><span>→</span><span>03 新增待辦</span></div>${caseSelect()}<div class="two-column"><section class="section"><h2>選一份合成公文</h2><p class="muted">下列範例使用固定內容，可在模型故障時切換預存結果。</p><div class="sample-list">${r.items.map(s=>`<button data-sample="${h(s.id)}">${h(s.label)}<span>↗</span></button>`).join('')}<button id="scan-sample" class="secondary">住宿變更 · 合成掃描範例<span>↗</span></button></div><label for="extract-mode">讀取方式</label><select id="extract-mode"><option value="live">即時模型擷取</option><option value="stored">預存示範結果（固定範例）</option></select></section><section class="section"><h2>或選取合成檔案</h2><form id="extract-form"><div class="upload"><label for="document-file">合成公文檔案</label><input id="document-file" type="file" accept=".txt,.pdf,.png,.jpg,.jpeg" required><p class="hint">JPG、PNG、PDF、TXT；上限15 MB，PDF最多10頁。即時讀取會先以本機 PaddleOCR 辨識合成掃描圖，並將遮蔽後的文字交給模型。圖片僅支援內建合成範例。</p></div><label class="check"><input id="synthetic-confirm" type="checkbox" required>我確認這是合成測試資料。</label><button type="submit">讀取文件欄位 →</button></form></section></div><div id="extract-status" role="status"></div>`;
+    `<div class="step"><span class="active">01 選擇文件</span><span>→</span><span>02 核對日期</span><span>→</span><span>03 新增待辦</span></div>${caseSelect()}<div class="two-column"><section class="section"><h2>選一份合成公文</h2><p class="muted">下列範例使用固定內容，可在模型故障時切換預存結果。</p><div class="sample-list">${r.items.map(s=>`<button data-sample="${h(s.id)}">${h(s.label)}<span>↗</span></button>`).join('')}<button id="scan-sample" class="secondary">住宿變更 · 合成掃描圖<span>↗</span></button><button id="scan-pdf-sample" class="secondary">住宿變更 · 合成掃描 PDF<span>↗</span></button></div><label for="extract-mode">讀取方式</label><select id="extract-mode"><option value="live">即時模型擷取</option><option value="stored">預存示範結果（固定範例）</option></select></section><section class="section"><h2>或選取合成檔案</h2><form id="extract-form"><div class="upload"><label for="document-file">合成公文檔案</label><input id="document-file" type="file" accept=".txt,.pdf,.png,.jpg,.jpeg" required><p class="hint">JPG、PNG、PDF、TXT；上限15 MB，PDF最多10頁。即時讀取會先以本機 PaddleOCR 辨識合成掃描圖，並將遮蔽後的文字交給模型。圖片僅支援內建合成範例。</p></div><label class="check"><input id="synthetic-confirm" type="checkbox" required>我確認這是合成測試資料。</label><button type="submit">讀取文件欄位 →</button></form></section></div><div id="extract-status" role="status"></div>`;
   wireCase();
   main.querySelectorAll('[data-sample]').forEach(b=>b.onclick=async()=>{const s=r.items.find(s=>s.id===b.dataset.sample);await extractDocument(new File([s.text],s.id+'.txt',{type:'text/plain'}),$('#extract-mode').value);});
-  $('#scan-sample').onclick=async()=>{try{const response=await fetch('/samples/'+encodeURIComponent('住宿地點變更_掃描.png'),{cache:'no-store'});await extractDocument(new File([await response.blob()],'住宿地點變更_掃描.png',{type:'image/png'}),$('#extract-mode').value);}catch(e){error(e.message);}};
+  for (const [id, name, type] of [
+    ['scan-sample', '住宿地點變更_掃描.png', 'image/png'],
+    ['scan-pdf-sample', '住宿地點變更_合成掃描.pdf', 'application/pdf'],
+  ]) {
+    $('#' + id).onclick = async () => {
+      try {
+        const response = await fetch('/samples/' + encodeURIComponent(name), {cache:'no-store'});
+        if (!response.ok) throw new Error('合成範例讀取失敗');
+        await extractDocument(new File([await response.blob()],name,{type}),$('#extract-mode').value);
+      } catch (e) { error(e.message); }
+    };
+  }
   $('#extract-form').onsubmit=async e=>{e.preventDefault();if($('#synthetic-confirm').checked)await extractDocument($('#document-file').files[0],$('#extract-mode').value);};
 }
 async function extractDocument(file,mode){
@@ -236,10 +247,12 @@ function confirmationPage() {
   main.innerHTML = heading('文件邊註 / 02', '請把日期，逐一核對。', '原文留在邊註，日期可以修改。有提示的日期請逐欄勾選，或改成你已確認的日期。') +
     `<div class="step"><span>01 已選文件</span><span>→</span><span class="active">02 核對日期</span><span>→</span><span>03 新增待辦</span></div>
     <div class="note"><strong>${h(draft.mode)}</strong><br>${h(draft.warning)}；10分鐘後確認頁失效。</div>
+    ${draft.cross_check && draft.cross_check !== "off" ? `<p class="note" role="status">${h({agreement:"Claude 與 Gemini 讀到相同的文件類型與日期，仍請核對。",disagreement:"Claude 與 Gemini 讀值不一致，請逐欄核對原件。",unavailable:"Gemini 暫時未完成交叉比對，請依原件核對。"}[draft.cross_check])}</p>` : ""}
     <form id="confirmation-form">${caseSelect()}
       <label for="document-kind">這是什麼文件</label><select id="document-kind">${['入國通報受理證明書','聘僱許可函','期滿續聘許可函','再檢查診斷證明書','住宿地點變更','家事移工預定入國','聘僱關係終止'].map(kind => `<option ${draft.document_kind === kind ? 'selected' : ''}>${h(kind)}</option>`).join('')}</select>
       <div class="two-column"><section><h2 class="section">逐欄確認</h2>${draft.workers.map((worker, index) => `<fieldset class="section"><legend>移工代號 ${String(index + 1).padStart(2, '0')} · 合成</legend>${Object.entries(fieldLabels).filter(([field]) => worker[field] || ['entry_date','event_date','permit_end'].includes(field)).map(([field, label]) => dateField(worker, index, field, label)).join('')}</fieldset>`).join('')}</section>
-      <section class="section"><details open><summary>送出模型前的文字遮蔽預覽</summary><pre>${h(draft.masked_preview || '合成掃描範例，無可本機遮蔽的文字；僅此固定範例可處理。')}</pre></details>
+      <section class="section"><details open><summary>${draft.source_format === "markdown" ? "PDFToMD Markdown 遮蔽預覽" : "送出模型前的文字遮蔽預覽"}</summary><pre>${h(draft.masked_preview || '合成掃描範例，無可本機遮蔽的文字；僅此固定範例可處理。')}</pre></details>
+        ${draft.source_format === "markdown" ? '<button type="button" class="secondary" id="download-md">下載遮蔽後的 Markdown</button>' : ""}
         <div class="note" id="task-count" role="status">請核對文件日期後預覽待辦數量。</div>
         <label class="check"><input id="confirm-fields" type="checkbox" required>我已逐欄核對文件種類與日期，同意以這些日期產生待辦。</label>
         <div class="actions"><button type="submit" id="confirm-button">確認日期，新增待辦 →</button><button type="button" class="secondary" id="cancel-document">取消讀取</button></div>
@@ -247,6 +260,15 @@ function confirmationPage() {
     </form>`;
   wireCase();
   $('#case-select').onchange = () => { state.caseId = $('#case-select').value; previewCount(); };
+  const download = $('#download-md');
+  if (download) download.onclick = () => {
+    const url = URL.createObjectURL(new Blob([draft.masked_preview], {type:'text/markdown;charset=utf-8'}));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'synthetic-document-masked.md';
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
   let timer;
   main.querySelectorAll('input[type=date],#document-kind').forEach(input => input.oninput = () => {
     if (input.type === 'date') {
@@ -300,7 +322,7 @@ async function linePage(){
 function qaPage(){
   main.innerHTML=heading('法規問答','法規問答','')+
     `<form id="qa-form">${state.account.role==='employer'?caseSelect():''}<label for="question">想確認什麼</label><textarea id="question" required maxlength="2000" placeholder="例如：這個案件的住宿變更最晚何時通知？"></textarea><label for="qa-mode">回答方式</label><select id="qa-mode"><option value="text">條文文字模式</option><option value="live">即時模型協助白話說明</option></select><div class="actions"><button type="submit">查已確認資料與相關規定 →</button></div></form><div id="qa-result" aria-live="polite"></div>`;
-  wireCase();$('#qa-form').onsubmit=async e=>{e.preventDefault();const b=$('button[type=submit]',e.target);b.disabled=true;const output=$('#qa-result');output.innerHTML='<p class="loading">正在查詢已確認資料與條文…</p>';try{const r=await api('/api/qa',{method:'POST',body:{case_id:state.account.role==='employer'?state.caseId:null,question:$('#question').value,mode:$('#qa-mode').value}});output.innerHTML=`<div class="note">${h(r.mode)} · ${r.retrieval==="qdrant_bm25"?"Qdrant 向量＋關鍵詞檢索":"BM25 關鍵詞檢索"} · ${h(r.answered_at)}</div>`+Object.entries(r.sections).map(([k,v])=>`<section class="qa-section"><h2>${h(k)}</h2><pre>${h(v)}</pre></section>`).join('')+`<details><summary>查到的條文與資料版本</summary>${r.citations.map(c=>`<p>${h(c.law+c.no)}</p>`).join('')}<pre>${h(JSON.stringify(r.data_version,null,2))}</pre></details>`;}catch(err){output.replaceChildren();error(err.message,output);}finally{b.disabled=false;}};
+  wireCase();$('#qa-form').onsubmit=async e=>{e.preventDefault();const b=$('button[type=submit]',e.target);b.disabled=true;const output=$('#qa-result');output.innerHTML='<p class="loading">正在查詢已確認資料與條文…</p>';try{const r=await api('/api/qa',{method:'POST',body:{case_id:state.account.role==='employer'?state.caseId:null,question:$('#question').value,mode:$('#qa-mode').value}});output.innerHTML=`<div class="note">${h(r.mode)} · ${r.retrieval==="qdrant_bm25"?"Qdrant 向量＋關鍵詞檢索":"BM25 關鍵詞檢索"} · ${h(r.answered_at)}</div>`+Object.entries(r.sections).map(([k,v])=>`<section class="qa-section"><h2>${h(k)}</h2><pre>${h(v)}</pre></section>`).join('')+`<details><summary>查到的條文與資料版本</summary>${r.citations.map(c=>`<p>${/^https:\/\/law\.moj\.gov\.tw\/LawClass\/LawAll\.aspx\?pcode=[A-Z]\d{7}$/.test(c.source_url||'') ? `<a href="${h(c.source_url)}" target="_blank" rel="noopener noreferrer">${h(c.law+c.no)}</a>` : h(c.law+c.no)}</p>`).join('')}<pre>${h(JSON.stringify(r.data_version,null,2))}</pre></details>`;}catch(err){output.replaceChildren();error(err.message,output);}finally{b.disabled=false;}};
 }
 function missingPage(){
   main.innerHTML=heading('聯絡確認','聯絡不上時','')+

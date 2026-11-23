@@ -43,7 +43,7 @@ jobs:
           mkdir -p artifacts/pr4
           python -c "import json,os,platform,sys,locale; assert 'PYTHONUTF8' not in os.environ; assert sys.prefix != sys.base_prefix; print(json.dumps(dict(platform=platform.platform(),python=platform.python_version(),encoding=locale.getpreferredencoding(False),utf8_mode=sys.flags.utf8_mode,PYTHONUTF8_set='PYTHONUTF8' in os.environ,fresh_venv=sys.prefix != sys.base_prefix)))" | tee artifacts/pr4/environment.json
       - name: Install
-        run: python -m pip install -r demo/requirements-dev.txt
+        run: python -m pip install -r demo/requirements-dev.txt -r demo/requirements-law-sync.txt
       - name: Acceptance tests (no model calls)
         run: |
           set -o pipefail

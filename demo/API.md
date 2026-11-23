@@ -17,7 +17,7 @@
 
 | 方法／路徑 | 權限 | 請求／回應重點 |
 |---|---|---|
-| GET `/api/health` | 公開 | service、rules_version、calendar_years、demo_data、law_versions、law_retrieval；不含金鑰 |
+| GET `/api/health` | 公開 | service、rules_version、calendar_years、demo_data、law_versions、law_retrieval、retrieval_law_versions；不含金鑰 |
 | POST `/api/session` | 公開＋Origin | account_id、code；成功回account並設cookie；401錯碼／過期／已用、相同帳號＋來源五次失敗後429鎖五分鐘；另有帳號跨來源10分鐘50次總上限 |
 | GET `/api/session` | 已登入 | account、synthetic |
 | DELETE `/api/session` | 已登入＋Origin | Session即失效；清除cookie及記憶體草稿 |
@@ -25,7 +25,7 @@
 | GET `/api/cases/{id}` | employer owner | case、tasks、documents、synthetic |
 | GET `/api/demo/samples` | employer | 三份固定合成文字及label；供選樣及明示備援 |
 | GET `/api/demo/replay` | 公開，唯讀 | 開場案例重播：依公開訴願決定日期，以`compute_traced`重算第18個月健檢期間、依`REMINDER_DAYS`列LINE提醒時點、以`proof_verdict`判讀實際日期；不讀資料庫，不含任何帳號或案件資料 |
-| POST `/api/documents/extract` | employer＋Origin | multipart file、mode=live或stored；合成掃描圖的即時模式使用 PaddleOCR；回draft_id、document_kind、workers、fields、masked_preview、mode、warning；不寫案件 |
+| POST `/api/documents/extract` | employer＋Origin | multipart file、mode=live或stored；合成掃描圖的即時模式使用 PaddleOCR；回draft_id、document_kind、workers、fields、masked_preview、source_format、cross_check、mode、warning；不寫案件 |
 | DELETE `/api/documents/drafts/{id}` | employer＋Origin | 取消記憶體草稿；相同呼叫可重跑 |
 | POST `/api/documents/confirm` | employer owner＋Origin | 見下例；回task_ids、duplicate、warnings；preview_only不寫入 |
 | DELETE `/api/documents/{id}` | employer owner＋Origin | 刪文件、相關待辦／證明／通知，清除草稿；不保存原件 |
@@ -42,7 +42,7 @@
 | POST `/api/line/send-demo` | employer＋Origin | 只選本帳號最近一項待辦；status、recipients、reason、request_id；當日冪等 |
 | POST `/line/webhook` | LINE HMAC簽章 | **原始body先驗簽才parse JSON**；配對、待辦、取消綁定／unfollow；事件去重 |
 | POST `/api/missing/guide` | employer＋Origin | 班表與聯絡事實，見下例；回status、missing_facts、next_step、law_ref、official_url；不新增失聯待辦 |
-| POST `/api/qa` | 已登入＋Origin | question、case_id（雇主必填）、mode=text或live；四段sections、citations、case_context、data_version、answered_at、retrieval（qdrant_bm25 或 bm25） |
+| POST `/api/qa` | 已登入＋Origin | question、case_id（雇主必填）、mode=text或live；四段sections、citations、case_context、data_version、deadline_rule_version、answered_at、retrieval（qdrant_bm25 或 bm25） |
 | GET `/api/penalty/sample` | officer | 固定合成text |
 | POST `/api/penalty/check` | officer＋Origin | text、mode=live或stored；七項items及耗時；不保留草稿原文 |
 | POST `/api/demo/reset` | officer且is_admin＋Origin | `{"rebuild":true}`清空重建，false只清空；Session全失效 |

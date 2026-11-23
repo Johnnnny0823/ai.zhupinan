@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 from demo.server import config,db,auth
 from demo.server.app import app,DRAFTS
 from demo.seed import seed
+from demo import law_catalog
 
 @pytest.fixture
 def env(tmp_path,monkeypatch):
@@ -12,6 +13,7 @@ def env(tmp_path,monkeypatch):
     monkeypatch.setattr(config,'TEMP_PATH',tmp_path/'temp')
     monkeypatch.setattr(config,'LAW_VECTOR_PATH',tmp_path/'qdrant')
     monkeypatch.setattr(config,'QDRANT_URL','')
+    monkeypatch.setattr(law_catalog,'SNAPSHOT',tmp_path/'official-laws.json')
     monkeypatch.setattr(config,'DEMO_DATA',True)
     monkeypatch.setattr(config,'PUBLIC_ORIGIN','http://testserver')
     monkeypatch.setenv('DEMO_LOGIN_A','test-code-A')

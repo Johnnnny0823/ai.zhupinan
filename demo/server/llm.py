@@ -15,6 +15,8 @@ class LLMError(RuntimeError):
         super().__init__(message)
 
 def call(system: str, user: str, model='haiku', timeout=90):
+    if model == 'sonnet':
+        model = config.CLAUDE_MODEL
     exe = shutil.which('claude.cmd') or shutil.which('claude')
     if not exe:
         raise LLMError('找不到 Claude CLI。請安裝並登入，或明確切換「預存示範結果」。')
