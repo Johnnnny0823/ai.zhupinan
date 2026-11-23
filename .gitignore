@@ -44,3 +44,4 @@ test-results/
 
 # Ephemeral CI evidence; selected results are copied into demo/evidence for delivery.
 artifacts/
+.venv-ocr/

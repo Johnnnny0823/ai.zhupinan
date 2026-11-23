@@ -10,6 +10,8 @@ from demo.seed import seed
 def env(tmp_path,monkeypatch):
     monkeypatch.setattr(config,'DB_PATH',tmp_path/'demo.sqlite3')
     monkeypatch.setattr(config,'TEMP_PATH',tmp_path/'temp')
+    monkeypatch.setattr(config,'LAW_VECTOR_PATH',tmp_path/'qdrant')
+    monkeypatch.setattr(config,'QDRANT_URL','')
     monkeypatch.setattr(config,'DEMO_DATA',True)
     monkeypatch.setattr(config,'PUBLIC_ORIGIN','http://testserver')
     monkeypatch.setenv('DEMO_LOGIN_A','test-code-A')

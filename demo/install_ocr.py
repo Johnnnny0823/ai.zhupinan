@@ -1,34 +1,18 @@
-"""Install the fixed Tesseract language models used by the synthetic demo."""
-import hashlib
-import tempfile
-from pathlib import Path
-from urllib.request import urlopen
+"""Download and load the PaddleOCR mobile models before the demo."""
+import subprocess
 
-from .server.config import OCR_DATA_PATH
-
-REVISION = '65727574dfcd264acbb0c3e07860e4e9e9b22185'
-URL = f'https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/{REVISION}/'
-MODELS = {
-    'chi_tra.traineddata': '529c5b5797d64b126065cd55f2bb4c7fd7b15790798091b1ff259941a829330b',
-    'eng.traineddata': '7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2',
-}
+from .server.config import HERE, OCR_MODELS_PATH, OCR_PYTHON
 
 
 def main():
-    OCR_DATA_PATH.mkdir(parents=True, exist_ok=True)
-    with tempfile.TemporaryDirectory(dir=OCR_DATA_PATH) as temp:
-        for filename, digest in MODELS.items():
-            target = OCR_DATA_PATH / filename
-            if target.is_file() and hashlib.sha256(target.read_bytes()).hexdigest() == digest:
-                continue
-            with urlopen(URL + filename, timeout=30) as response:
-                data = response.read(8 * 1024 * 1024)
-            if hashlib.sha256(data).hexdigest() != digest:
-                raise SystemExit(f'OCR model verification failed: {filename}')
-            pending = Path(temp) / filename
-            pending.write_bytes(data)
-            pending.replace(target)
-    print('OCR language data installed and verified.')
+    if not OCR_PYTHON.is_file():
+        raise SystemExit('請先建立 .venv-ocr，並安裝 demo/requirements-ocr.txt。')
+    OCR_MODELS_PATH.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        [str(OCR_PYTHON), str(HERE / 'ocr_worker.py'), '--prepare'],
+        cwd=OCR_MODELS_PATH, check=True, timeout=600,
+    )
+    print('PaddleOCR models prepared.')
 
 
 if __name__ == '__main__':

@@ -93,10 +93,24 @@ def test_live_scan_sends_only_masked_ocr_text_and_keeps_manual_check(clients, mo
     response = clients['employer-a'].post('/api/documents/extract', files={'file':('synthetic.png', image, 'image/png')})
     assert response.status_code == 200, response.text
     draft = response.json()
-    assert draft['mode'] == '本機 OCR ＋即時模型擷取'
+    assert draft['mode'] == '本機 PaddleOCR ＋即時模型擷取'
     assert draft['fields'][0]['warning']
     assert set(draft['workers'][0]['evidence']) == {'event_date'}
     assert 'A123456789' not in draft['masked_preview']
+
+
+def test_scan_with_unstructured_evidence_requires_manual_review(clients, monkeypatch):
+    monkeypatch.setattr(storage, 'read_scan_text', lambda raw: '變更日：2026-03-20')
+    structured = {'doc_type': '住宿地點變更', 'workers': [
+        {'event_date': '2026-03-20', 'evidence': '變更日：2026-03-20'},
+    ]}
+    monkeypatch.setattr(llm, 'call', lambda *args, **kwargs: json.dumps(structured))
+    sample = (config.WEB / 'samples' / '住宿地點變更_掃描.png').read_bytes()
+    response = clients['employer-a'].post('/api/documents/extract',
+                                          files={'file': ('synthetic.png', sample, 'image/png')})
+    assert response.status_code == 200
+    field = response.json()['fields'][0]
+    assert field['value'] == '2026-03-20' and field['warning'] and not field['source_excerpt']
 
 
 def test_unknown_scan_never_enters_ocr_or_model(clients, monkeypatch):
@@ -112,12 +126,12 @@ def test_unknown_scan_never_enters_ocr_or_model(clients, monkeypatch):
 
 
 def test_missing_ocr_language_data_leaves_stored_mode_available(clients, monkeypatch, tmp_path):
-    monkeypatch.setattr(config, 'OCR_DATA_PATH', tmp_path / 'no-models')
+    monkeypatch.setattr(config, 'OCR_MODELS_PATH', tmp_path / 'no-models')
     image = (config.WEB / 'samples' / '住宿地點變更_掃描.png').read_bytes()
     files = {'file': ('synthetic.png', image, 'image/png')}
     a = clients['employer-a']
     response = a.post('/api/documents/extract', files=files)
-    assert response.status_code == 503 and '本機 OCR' in response.text
+    assert response.status_code == 503 and '本機 PaddleOCR' in response.text
     assert a.post('/api/documents/extract', files=files, data={'mode':'stored'}).status_code == 200
 
 

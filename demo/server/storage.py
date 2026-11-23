@@ -1,8 +1,8 @@
 """Inspect actual formats in memory; scan processing is restricted to known seed bytes."""
 import hashlib
 import io
+import json
 import subprocess
-import sys
 from pathlib import Path
 from threading import Lock
 from fastapi import HTTPException
@@ -79,20 +79,17 @@ def inspect(raw, filename, content_type, *, markdown=False):
 
 def read_scan_text(raw):
     """Read a previously validated synthetic scan in memory."""
-    if any(not (config.OCR_DATA_PATH / filename).is_file() for filename in ('chi_tra.traineddata', 'eng.traineddata')):
-        raise HTTPException(503, '尚未安裝本機 OCR 語言資料。請安裝後重試，或切換預存示範結果。')
-
-    # The native OCR engine uses a relative data path so Windows can read the
-    # language files even when the project directory contains non-ASCII text.
+    if not config.OCR_PYTHON.is_file() or not (config.OCR_MODELS_PATH / 'official_models').is_dir():
+        raise HTTPException(503, '尚未安裝本機 PaddleOCR 或模型。請依開發文件完成安裝，或切換預存示範結果。')
     try:
         result = subprocess.run(
-            [sys.executable, str(Path(__file__).with_name('ocr_worker.py'))],
-            input=raw, capture_output=True, cwd=config.OCR_DATA_PATH, timeout=30, check=True,
+            [str(config.OCR_PYTHON), str(Path(__file__).with_name('ocr_worker.py'))],
+            input=raw, capture_output=True, cwd=config.OCR_MODELS_PATH, timeout=60, check=True,
             creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0),
         )
-        text = result.stdout.decode('utf-8').strip()
-    except (OSError, subprocess.SubprocessError, UnicodeError) as error:
-        raise HTTPException(503, '本機 OCR 暫時無法讀取，請檢查語言資料，或切換預存示範結果。') from error
+        text = json.loads(result.stdout.splitlines()[-1])['text'].strip()
+    except (OSError, subprocess.SubprocessError, ValueError, IndexError, KeyError, AttributeError) as error:
+        raise HTTPException(503, '本機 PaddleOCR 暫時無法讀取，請檢查模型，或切換預存示範結果。') from error
     if not text:
         raise HTTPException(422, '本機 OCR 沒有讀到文字。請核對原件，或切換預存示範結果。')
     return text

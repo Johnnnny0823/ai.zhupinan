@@ -79,11 +79,26 @@ reset在單一SQLite交易刪除；暫存刪除失敗會回滾資料庫。SQLite
 
 即時擷取與檢核需要在展示電腦安裝並登入Claude CLI（`claude auth login`）。
 文字 PDF 先依頁整理成 Markdown，文字經 `privacy.mask` 遮蔽後才交給模型。只有雜湊符合內建合成範例的掃描圖可進行本機 OCR。掃描原圖不交給模型。
-合成掃描的即時模式需先執行 `python -m demo.install_ocr`，安裝並驗證固定版本的繁體中文與英文語言資料。預設儲存在 `demo/server/data/tessdata`，可透過系統環境變數 `TESSDATA_PREFIX` 指定其他位置。
+合成掃描的即時模式使用 PaddleOCR，安裝方式見下方。
 模型或 OCR 不可用時會顯示原因。選「預存示範結果」後只接受固定合成內容，畫面持續標示。
 問答預設採工作包第7節允許的「已確認日期＋相關條文」文字模式；不保存聊天歷史。
 即時模型說明可選，回傳未確認ISO日期時會被拒絕。
 `/local-demo.html` 是獨立的公開固定預存展示；不讀取Session，不發LINE。
+
+## PaddleOCR 與 Qdrant
+
+依照 [README 的安裝步驟](../README.md#啟用-paddleocr-與-qdrant) 準備兩個元件。PaddleOCR 使用 PP-OCRv5 行動版偵測及辨識模型。獨立的 `.venv-ocr` 負責辨識，模型預設位於 `demo/server/data/paddle_models/`。安裝模型後可離線辨識。macOS／Linux 對應的 Python 路徑是 `.venv-ocr/bin/python`，亦可設置 `DEMO_OCR_PYTHON` 指定 Python 執行檔。[PP-OCRv5 官方模型](https://www.paddleocr.ai/v3.3.1/en/version3.x/module_usage/text_recognition.html)
+
+Qdrant 保存從倉庫公開法條快照產生的 BGE 中文向量及條文索引。回答引用的原文取自倉庫快照。雇主案件、掃描文件、草稿、詢問與聊天紀錄皆不寫入向量庫。向量結果補充 BM25，缺少可用索引時會在畫面標示 BM25。資料快照更新後，在服務停止時重建索引，再重啟 FastAPI。[FastEmbed 本機向量化](https://qdrant.tech/documentation/embeddings/fastembed/)
+
+預設使用 Qdrant local mode，索引放在 `demo/server/data/qdrant/`。若要使用獨立的 Qdrant 服務，可在同一個終端指定本機網址，建立索引後再啟動網站。
+
+```powershell
+docker run -d --name zhupinan-qdrant -p 127.0.0.1:6333:6333 -v zhupinan-qdrant:/qdrant/storage qdrant/qdrant:v1.16.2
+$env:DEMO_QDRANT_URL = 'http://127.0.0.1:6333'
+.venv\Scripts\python -m demo.index_laws
+.venv\Scripts\python -m demo.run serve
+```
 
 ## LINE與Windows每日排程
 
