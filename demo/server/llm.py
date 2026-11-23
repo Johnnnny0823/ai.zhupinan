@@ -14,7 +14,7 @@ class LLMError(RuntimeError):
         logging.getLogger('zhupinan').warning('model_unavailable')
         super().__init__(message)
 
-def call(system: str, user: str, model='haiku', timeout=90):
+def call(system: str, user: str, model='haiku', timeout=90, *, response_schema=None):
     if model == 'sonnet':
         model = config.CLAUDE_MODEL
     exe = shutil.which('claude.cmd') or shutil.which('claude')
@@ -27,22 +27,36 @@ def call(system: str, user: str, model='haiku', timeout=90):
             system_file.write_text(system,encoding='utf-8')
             cmd=[exe,'-p','--model',model,'--system-prompt-file',str(system_file),'--strict-mcp-config',
                  '--no-session-persistence','--output-format','json']
-            cmd += ['--tools','']
+            cmd += ['--tools', '', '--disable-slash-commands', '--setting-sources', '',
+                    '--settings', '{"disableAllHooks":true}']
+            if response_schema is not None:
+                cmd += ['--json-schema', json.dumps(response_schema, separators=(',', ':'))]
             p=subprocess.run(cmd,input=user,capture_output=True,text=True,encoding='utf-8',timeout=timeout,cwd=temp)
             try: env=json.loads(p.stdout)
             except (ValueError,TypeError): raise LLMError('模型回覆無法讀取，請重試或切換預存示範結果') from None
             if p.returncode or env.get('is_error'):
                 raise LLMError('模型服務不可用或登入已失效。請執行 claude auth login，或切換預存示範結果。')
+            if response_schema is not None:
+                return json.dumps(env.get('structured_output'), ensure_ascii=False)
             return env.get('result') or ''
     except subprocess.TimeoutExpired:
         raise LLMError('模型回應逾時，請重試或切換預存示範結果') from None
     except OSError:
         raise LLMError('模型程序無法啟動，請檢查 CLI 安裝') from None
 
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('Duplicate JSON key')
+        result[key] = value
+    return result
+
+
 def parse_json(text):
     text=re.sub(r'^```(?:json)?|```$','',text.strip(),flags=re.M).strip()
     try:
-        data=json.loads(text)
+        data=json.loads(text, object_pairs_hook=unique_object)
         if not isinstance(data,dict): raise ValueError()
         return data
     except ValueError:

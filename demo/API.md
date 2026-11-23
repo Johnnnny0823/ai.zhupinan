@@ -129,8 +129,7 @@ calc_trace含event、event_date、start_date、rule、original_due_date、holida
 
 ## 問答與裁處書
 
-問答的CaseContext由owner查詢後組裝，不接收客戶端提供的個案事實；未確認草稿不帶入。
-模型不得補日期，條文文字模式不作模型推論；audit僅保存條文ID、版本與時間。
+問答案件資料由伺服器依 owner 查詢已確認的文件與待辦後組裝。即時選文只將遮蔽後的問題與候選法條提供給模型，模型回覆限當次的條文編號。API 以已確認日期與候選條文原文組裝內容。audit 僅保存條文 ID、版本與時間。
 處分書每項回name、status、reason、source_excerpt、law_ref、next_step；狀態只為「已找到／可能缺漏／需人工判斷」。
 草稿明顯標示僅輔助，不送出處分。
 

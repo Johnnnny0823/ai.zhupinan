@@ -82,7 +82,7 @@ reset在單一SQLite交易刪除；暫存刪除失敗會回滾資料庫。SQLite
 合成掃描的即時模式使用 PaddleOCR，安裝方式見下方。
 模型或 OCR 不可用時會顯示原因。選「預存示範結果」後只接受固定合成內容，畫面持續標示。
 問答預設採工作包第7節允許的「已確認日期＋相關條文」文字模式；不保存聊天歷史。
-即時模型說明可選，回傳未確認ISO日期時會被拒絕。
+即時選文模式只讓模型從候選條文挑選編號。伺服器驗證編號與格式，並直接呈現官方原文及案件已確認的日期。
 `/local-demo.html` 是獨立的公開固定預存展示；不讀取Session，不發LINE。
 
 ## PaddleOCR 與 Qdrant
@@ -115,7 +115,7 @@ $env:DEMO_QDRANT_URL = 'http://127.0.0.1:6333'
 
 - 文字 PDF 在本機轉成含頁碼、段落及可辨識表格的 Markdown。內建合成掃描 PDF 先在記憶體進行 PaddleOCR，再組成 Markdown。
 - Markdown 遮蔽後才交給模型。展示畫面可核對及下載同一份遮蔽 Markdown。真實掃描或未知來源的掃描 PDF 會在 OCR 之前拒絕。
-- 問答及文件擷取共用 `demo/server/prompts.py` 的直聘移工管理專家提示。問答依當次取得的條文與已確認案件日期組織回覆。
+- 問答及文件擷取共用 `demo/server/prompts.py` 的直聘移工管理專家提示。使用者輸入及資料來源透過 JSON 與系統指令分開傳入。問答模型只接收遮蔽問題與候選條文，案件資料由伺服器直接呈現。
 - Claude Code CLI 使用 `claude-sonnet-5-5` 讀取公文。啟用雙模型比對後，Gemini CLI 以非互動 JSON 模式接收同一份遮蔽 Markdown。竹聘安使用專用 CLI 登入設定目錄，並清理該設定目錄中的暫存工作階段。比對不一致須逐欄核對。Gemini 未登入、逾時或回應無法解析時，畫面會標示比對不可用，保留原草稿供人工確認。
 - Gemini 模型預設為 `gemini-3.1-pro-preview`。如帳號未開放該模型，可用 `DEMO_GEMINI_MODEL` 指定可用的 Gemini 模型。
 

@@ -3,6 +3,19 @@ import sqlite3
 from contextlib import contextmanager
 from . import config
 
+RUNTIME_ACTIONS = {
+    sqlite3.SQLITE_SELECT, sqlite3.SQLITE_READ, sqlite3.SQLITE_INSERT,
+    sqlite3.SQLITE_UPDATE, sqlite3.SQLITE_DELETE, sqlite3.SQLITE_TRANSACTION,
+    sqlite3.SQLITE_FUNCTION, sqlite3.SQLITE_RECURSIVE,
+}
+
+
+def authorize_runtime(action, first, second, database, source):
+    if action == sqlite3.SQLITE_FUNCTION and second in {'load_extension', 'readfile', 'writefile'}:
+        return sqlite3.SQLITE_DENY
+    return sqlite3.SQLITE_OK if action in RUNTIME_ACTIONS else sqlite3.SQLITE_DENY
+
+
 @contextmanager
 def transaction():
     config.DB_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -10,6 +23,8 @@ def transaction():
     conn.row_factory = sqlite3.Row
     conn.execute('PRAGMA foreign_keys = ON')
     conn.execute('PRAGMA busy_timeout = 15000')
+    conn.execute('PRAGMA trusted_schema = OFF')
+    conn.set_authorizer(authorize_runtime)
     try:
         conn.execute('BEGIN IMMEDIATE')
         yield conn

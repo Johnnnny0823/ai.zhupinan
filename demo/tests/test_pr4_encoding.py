@@ -15,7 +15,7 @@ def test_supported_text_encodings_reach_extraction_without_garbling(clients, mon
     monkeypatch.setattr(llm, 'call', model)
     response = clients['employer-a'].post('/api/documents/extract', files={'file': ('sample.txt', TEXT.encode(encoding), 'text/plain')})
     assert response.status_code == 200, response.text
-    assert TEXT in seen[0]
+    assert json.loads(seen[0])['document'] == TEXT
     assert response.json()['fields'][0]['warning']
 
 
