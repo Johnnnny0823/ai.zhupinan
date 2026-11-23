@@ -6,6 +6,15 @@
 
 這是使用合成資料的**競賽決賽示範系統**。請使用內建範例操作，示範結果僅供理解系統流程。實際案件的期限與處分仍須由當事人或主管機關確認。
 
+## 原始碼與測試
+
+| 審查項目 | 程式入口 |
+| --- | --- |
+| FastAPI 後端與 SQLite | [API 路由](demo/server/app.py) · [登入](demo/server/auth.py) · [案件歸屬](demo/server/domain.py) · [資料庫連線與權限](demo/server/db.py) |
+| 文件擷取與模型輸入 | [PDF 轉 Markdown](demo/server/pdf_to_md.py) · [本機 PaddleOCR](demo/server/ocr_worker.py) · [模型提示](demo/server/prompts.py) · [Gemini CLI](demo/server/gemini.py) |
+| 法規檢索與期限計算 | [Qdrant 檢索](demo/server/law_vectors.py) · [法規月更](demo/sync_laws.py) · [期限規則](validation/scripts/rules.py) |
+| 網頁與驗證 | [前端](demo/web/) · [回歸測試](demo/tests/) · [本機重現步驟](demo/DEVELOPMENT.md) |
+
 ## 雇主端｜從文件到待辦
 
 1. **選擇合成公文**。使用範例聘僱許可函等文件，擷取姓名、入國日或許可期間等欄位及原文片段。文字 PDF 依頁整理後再擷取；內建合成掃描圖先經本機 PaddleOCR，再以遮蔽後的文字擷取。
