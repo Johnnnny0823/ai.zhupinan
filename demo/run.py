@@ -22,7 +22,7 @@ def main():
     logging.basicConfig(filename=config.DB_PATH.parent/'errors.log',level=logging.WARNING,format='%(asctime)s %(levelname)s %(name)s %(message)s')
     if args.command=='serve':
         import uvicorn
-        uvicorn.run('demo.server.app:app',host='127.0.0.1',port=8765,access_log=False)
+        uvicorn.run('demo.server.app:app',host='127.0.0.1',port=8765,access_log=False,proxy_headers=False)
     elif args.command=='notify':
         from .server.notifications import run_schedule
         print(run_schedule())

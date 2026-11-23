@@ -18,6 +18,8 @@ notepad demo/.env
 
 在 `.env` 保留 `DEMO_DATA=true`，將三個 `DEMO_LOGIN_*` 改成**不同且至少8字元**的登入碼。
 本機使用 `PUBLIC_ORIGIN=http://127.0.0.1:8765`；用瀏覽器開啟同一來源，不能改用 localhost。
+
+登入限流使用 ASGI 的連線來源。本機啟動器忽略代理標頭。若由反向代理提供 HTTPS，只將實際代理的 IP 加入 Uvicorn 的 `--forwarded-allow-ips`，並讓邊界代理覆寫外部帶入的 `X-Forwarded-For`。
 `.env`、LINE金鑰、SQLite、原件與本機log不進版控。
 
 ```powershell

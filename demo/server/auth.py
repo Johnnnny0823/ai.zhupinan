@@ -4,7 +4,6 @@ import hmac
 import os
 import secrets
 from datetime import datetime, timedelta
-from ipaddress import ip_address
 from fastapi import HTTPException, Request
 from . import config, db
 
@@ -40,12 +39,7 @@ ACCOUNT_WINDOW_MINUTES = 10
 
 
 def client_ip(request: Request) -> str:
-    first = request.headers.get('x-forwarded-for', '').split(',')[0].strip()
-    if first:
-        try:
-            return str(ip_address(first))
-        except ValueError:
-            pass
+    # Uvicorn applies forwarding headers only for a trusted proxy.
     return request.client.host if request.client else 'local'
 
 
