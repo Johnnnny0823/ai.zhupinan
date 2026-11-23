@@ -19,19 +19,48 @@ TITLE = {
 }
 
 # Days before the due date on which a LINE reminder is pushed (0 = the due date itself).
-REMINDER_DAYS = (7, 3, 1, 0)
+REMINDER_DAYS = (30, 14, 7, 3, 0)
+UPCOMING_LIMIT = 8
 
-def text_for(task):
+def text_for(task, days_left=None):
     # Only server-owned task titles/code/date, never worker names or document fields.
     title=TITLE.get(task['rule_key'].split(':')[0],'查看待辦')
-    return f"【竹聘安｜合成示範】\n{task['display_code']}｜{title}\n期限：{task['due_date'] or '需人工確認'}\n請登入查看：{config.PUBLIC_ORIGIN}/"
+    due = task['due_date'] or '需人工確認'
+    if days_left is not None:
+        due += '（今天到期）' if days_left == 0 else f'（剩 {days_left} 天）'
+    return f"【竹聘安｜合成示範】\n{task['display_code']}｜{title}\n期限：{due}\n請登入查看：{config.PUBLIC_ORIGIN}/"
+
+def upcoming_tasks(connection, account_id, today, limit=UPCOMING_LIMIT):
+    return connection.execute(
+        """
+        SELECT t.id, t.rule_key, t.due_date, c.display_code, COUNT(*) OVER () AS total
+        FROM tasks t JOIN cases c ON c.id=t.case_id
+        WHERE c.owner_id=? AND t.status NOT IN ('done','needs_review')
+          AND t.due_date BETWEEN ? AND ?
+        ORDER BY t.due_date, t.id LIMIT ?
+        """,
+        (account_id, today.isoformat(), (today + timedelta(days=max(REMINDER_DAYS))).isoformat(), limit),
+    ).fetchall()
+
+
+def upcoming_text(rows):
+    if not rows:
+        return f'未來 {max(REMINDER_DAYS)} 天沒有已確認期限的待辦。'
+    text = '\n\n'.join(text_for(row) for row in rows)
+    if rows[0]['total'] > len(rows):
+        text += f"\n\n另有 {rows[0]['total'] - len(rows)} 項待辦，請登入查看完整清單。"
+    return text
+
 
 def preview(aid):
     with db.transaction() as c:
-        rows=c.execute("SELECT t.*,c.display_code FROM tasks t JOIN cases c ON c.id=t.case_id WHERE c.owner_id=? AND t.status NOT IN ('done','needs_review') AND t.due_date<=? ORDER BY t.due_date LIMIT 8",(aid,(config.today()+timedelta(days=30)).isoformat())).fetchall()
+        rows = upcoming_tasks(c, aid, config.today())
         bound=bool(c.execute('SELECT 1 FROM line_bindings WHERE account_id=? AND revoked_at IS NULL',(aid,)).fetchone())
-    return {'count':len(rows),'bound':bound,'configured':bool(os.getenv('LINE_CHANNEL_ACCESS_TOKEN') and os.getenv('LINE_CHANNEL_SECRET')),
-            'text':'\n\n'.join(text_for(t) for t in rows) if rows else '目前沒有需要提醒的事項。','synthetic':True}
+    return {'count': rows[0]['total'] if rows else 0, 'bound':bound,
+            'configured':bool(os.getenv('LINE_CHANNEL_ACCESS_TOKEN') and os.getenv('LINE_CHANNEL_SECRET')),
+            'text':upcoming_text(rows), 'reminder_days':list(REMINDER_DAYS),
+            'upcoming_days':max(REMINDER_DAYS), 'synthetic':True}
+
 
 def pair_code(aid):
     with db.transaction() as c:
@@ -71,7 +100,7 @@ def line_request(path,payload,retry=None):
     except httpx.RequestError:
         return {'status':'uncertain','reason':'LINE_NETWORK_UNCERTAIN','request_id':None}
 
-def send_task(aid,tid,notice_type,send_date):
+def send_task(aid,tid,notice_type,send_date,*,days_left=None):
     with db.transaction() as c:
         # Hold write transaction during request: revoke/reset cannot race a send.
         task=c.execute("SELECT t.*,c.display_code FROM tasks t JOIN cases c ON c.id=t.case_id WHERE t.id=? AND c.owner_id=? AND t.status NOT IN ('done','needs_review')",(tid,aid)).fetchone()
@@ -84,15 +113,17 @@ def send_task(aid,tid,notice_type,send_date):
         retry=log['retry_key'] if log else str(uuid.uuid4())
         if not log:
             c.execute("INSERT INTO notification_log(account_id,task_id,notice_type,send_date,status,retry_key,claimed_at) VALUES(?,?,?,?,'pending',?,?)",(aid,tid,notice_type,send_date,retry,config.stamp()))
-        result=line_request('push',{'to':binding['line_user_id'],'messages':[{'type':'text','text':text_for(task)}]},retry)
+        result=line_request('push',{'to':binding['line_user_id'],'messages':[{'type':'text','text':text_for(task,days_left)}]},retry)
         c.execute('UPDATE notification_log SET status=?,line_request_id=?,failure_reason=? WHERE account_id=? AND task_id=? AND notice_type=? AND send_date=?',
                   (result['status'],result['request_id'],result['reason'],aid,tid,notice_type,send_date))
         return {**result,'recipients':1 if result['status']=='sent' else 0}
 
 def send_demo(aid):
+    today = config.today()
     with db.transaction() as c:
-        row=c.execute("SELECT t.id FROM tasks t JOIN cases c ON c.id=t.case_id WHERE c.owner_id=? AND t.status NOT IN ('done','needs_review') ORDER BY t.due_date LIMIT 1",(aid,)).fetchone()
-    return send_task(aid,row['id'],'demo',config.today().isoformat()) if row else {'status':'skipped','recipients':0,'reason':'目前沒有待辦'}
+        rows = upcoming_tasks(c, aid, today, limit=1)
+    return send_task(aid,rows[0]['id'],'demo',today.isoformat()) if rows else {'status':'skipped','recipients':0,'reason':'目前沒有近期待辦'}
+
 
 def run_schedule(on=None):
     on=on or config.today()
@@ -101,7 +132,7 @@ def run_schedule(on=None):
     results=[]
     for row in rows:
         days=(date.fromisoformat(row['due_date'])-on).days
-        if days in REMINDER_DAYS: results.append(send_task(row['owner_id'],row['id'],f'due-{days}',on.isoformat()))
+        if days in REMINDER_DAYS: results.append(send_task(row['owner_id'],row['id'],f'due-{days}',on.isoformat(),days_left=days))
     return results
 
 def event(event):
@@ -132,8 +163,8 @@ def event(event):
                 reply='已綁定此雇主的合成示範案件。輸入「待辦」查詢，或「取消綁定」解除。'
         elif event.get('type')=='message' and text=='待辦':
             if binding:
-                rows=c.execute("SELECT t.*,c.display_code FROM tasks t JOIN cases c ON c.id=t.case_id WHERE c.owner_id=? AND t.status NOT IN ('done','needs_review') AND t.due_date<=? ORDER BY t.due_date LIMIT 8",(binding['account_id'],(config.today()+timedelta(days=30)).isoformat())).fetchall()
-                reply='\n\n'.join(text_for(row) for row in rows) or '目前沒有近期事項。'
+                rows = upcoming_tasks(c, binding['account_id'], config.today())
+                reply = upcoming_text(rows)
             else: reply='請登入雇主網頁取得六位配對碼，再於此對話輸入。'
         elif event.get('type') in ('message','follow'):
             reply='請輸入「待辦」或「取消綁定」；配對請先登入雇主網頁取得六位配對碼。'

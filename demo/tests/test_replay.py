@@ -21,7 +21,7 @@ def test_replay_is_public_and_matches_appeal_decision(env):
 def test_replay_reminders_follow_live_schedule(env):
     data = TestClient(app).get('/api/demo/replay').json()
     assert [x['days_left'] for x in data['reminders']] == list(REMINDER_DAYS)
-    assert [x['date'] for x in data['reminders']] == ['2025-05-01', '2025-05-05', '2025-05-07', '2025-05-08']
+    assert [x['date'] for x in data['reminders']] == ['2025-04-08', '2025-04-24', '2025-05-01', '2025-05-05', '2025-05-08']
 
 
 def test_replay_contains_no_account_or_case_data(clients):

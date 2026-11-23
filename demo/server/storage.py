@@ -1,11 +1,15 @@
 """Inspect actual formats in memory; scan processing is restricted to known seed bytes."""
 import hashlib
 import io
+import subprocess
+import sys
 from pathlib import Path
+from threading import Lock
 from fastapi import HTTPException
 from . import config
 
 MAX_BYTES = 15 * 1024 * 1024
+PDF_LOCK = Lock()
 
 TEXT_ENCODING_ERROR = '文字檔無法辨識：請另存為 UTF-8 編碼的純文字檔'
 
@@ -28,7 +32,7 @@ def decode_text(raw: bytes) -> str | None:
     return None
 
 
-def inspect(raw, filename, content_type):
+def inspect(raw, filename, content_type, *, markdown=False):
     if not raw:
         raise HTTPException(400, '檔案沒有內容')
     if len(raw) > MAX_BYTES:
@@ -42,11 +46,15 @@ def inspect(raw, filename, content_type):
         if suffix == '.pdf':
             import fitz
             if not raw.startswith(b'%PDF-'): raise ValueError()
-            with fitz.open(stream=raw, filetype='pdf') as document:
+            with PDF_LOCK, fitz.open(stream=raw, filetype='pdf') as document:
                 if document.needs_pass or not 1 <= len(document) <= 10:
                     raise HTTPException(400, 'PDF 須為未加密文件，且不超過 10 頁')
-                text = '\n'.join(p.get_text() for p in document)
-                scanned = any(len(p.get_text().strip()) < 20 or p.get_images() for p in document)
+                pages = [page.get_text(sort=markdown) for page in document]
+                scanned = any(len(content.strip()) < 20 or page.get_images() for page, content in zip(document, pages))
+                if markdown:
+                    text = '\n\n'.join(f'## 第 {i} 頁\n\n{content.strip()}' for i, content in enumerate(pages, 1))
+                else:
+                    text = '\n'.join(pages)
         elif suffix in ('.png','.jpg','.jpeg'):
             from PIL import Image
             with Image.open(io.BytesIO(raw)) as im:
@@ -68,6 +76,27 @@ def inspect(raw, filename, content_type):
         if not config.DEMO_DATA or hashlib.sha256(raw).hexdigest() not in known:
             raise HTTPException(422, '圖片／含圖 PDF 僅允許系統提供的合成範例。真實掃描件已停止處理，不會送出模型。請選合成範例展示。')
     return text, scanned
+
+def read_scan_text(raw):
+    """Read a previously validated synthetic scan in memory."""
+    if any(not (config.OCR_DATA_PATH / filename).is_file() for filename in ('chi_tra.traineddata', 'eng.traineddata')):
+        raise HTTPException(503, '尚未安裝本機 OCR 語言資料。請安裝後重試，或切換預存示範結果。')
+
+    # The native OCR engine uses a relative data path so Windows can read the
+    # language files even when the project directory contains non-ASCII text.
+    try:
+        result = subprocess.run(
+            [sys.executable, str(Path(__file__).with_name('ocr_worker.py'))],
+            input=raw, capture_output=True, cwd=config.OCR_DATA_PATH, timeout=30, check=True,
+            creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0),
+        )
+        text = result.stdout.decode('utf-8').strip()
+    except (OSError, subprocess.SubprocessError, UnicodeError) as error:
+        raise HTTPException(503, '本機 OCR 暫時無法讀取，請檢查語言資料，或切換預存示範結果。') from error
+    if not text:
+        raise HTTPException(422, '本機 OCR 沒有讀到文字。請核對原件，或切換預存示範結果。')
+    return text
+
 
 async def read_upload(file):
     try:

@@ -14,7 +14,7 @@ class LLMError(RuntimeError):
         logging.getLogger('zhupinan').warning('model_unavailable')
         super().__init__(message)
 
-def call(system: str, user: str, model='haiku', image: Path | None=None, timeout=90):
+def call(system: str, user: str, model='haiku', timeout=90):
     exe = shutil.which('claude.cmd') or shutil.which('claude')
     if not exe:
         raise LLMError('找不到 Claude CLI。請安裝並登入，或明確切換「預存示範結果」。')
@@ -25,10 +25,7 @@ def call(system: str, user: str, model='haiku', image: Path | None=None, timeout
             system_file.write_text(system,encoding='utf-8')
             cmd=[exe,'-p','--model',model,'--system-prompt-file',str(system_file),'--strict-mcp-config',
                  '--no-session-persistence','--output-format','json']
-            if image:
-                cmd += ['--tools','Read','--allowedTools','Read','--add-dir',str(image.parent)]
-                user=f'Use Read for this synthetic sample: {image}\n\n{user}'
-            else: cmd += ['--tools','']
+            cmd += ['--tools','']
             p=subprocess.run(cmd,input=user,capture_output=True,text=True,encoding='utf-8',timeout=timeout,cwd=temp)
             try: env=json.loads(p.stdout)
             except (ValueError,TypeError): raise LLMError('模型回覆無法讀取，請重試或切換預存示範結果') from None

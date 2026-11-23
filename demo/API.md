@@ -38,7 +38,7 @@
 | DELETE `/api/tasks/{id}/proof/{proof_id}` | employer owner＋Origin | 刪未完成之證明；無剩餘證明回todo；done不可刪409 |
 | POST `/api/line/pair-code` | employer＋Origin | code、expires_at、instruction；六位、一次性、10分鐘 |
 | DELETE `/api/line/binding` | employer＋Origin | 撤銷此帳號綁定及配對碼 |
-| POST `/api/line/preview` | employer＋Origin | count、bound、configured、text；只有本帳號近30日事項，無全名／地址等 |
+| POST `/api/line/preview` | employer＋Origin | count（範圍內總數）、bound、configured、text、reminder_days、upcoming_days。只列本帳號今天起至 30 天後共最多 8 項近期待辦，無全名／地址等 |
 | POST `/api/line/send-demo` | employer＋Origin | 只選本帳號最近一項待辦；status、recipients、reason、request_id；當日冪等 |
 | POST `/line/webhook` | LINE HMAC簽章 | **原始body先驗簽才parse JSON**；配對、待辦、取消綁定／unfollow；事件去重 |
 | POST `/api/missing/guide` | employer＋Origin | 班表與聯絡事實，見下例；回status、missing_facts、next_step、law_ref、official_url；不新增失聯待辦 |

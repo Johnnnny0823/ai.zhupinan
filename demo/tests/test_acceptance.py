@@ -295,6 +295,7 @@ def ev(user,text,id='event1'):return {'webhookEventId':id,'type':'message','sour
 
 
 def test_line_pair_query_revoke_signature_and_expired(clients,monkeypatch):
+    monkeypatch.setattr(config,'today',lambda:date(2026,11,15))
     monkeypatch.setenv('LINE_CHANNEL_SECRET','line-secret');seen=[]
     monkeypatch.setattr(notifications,'line_request',lambda path,payload,retry=None:seen.append((path,payload)) or {'status':'sent','reason':None,'request_id':'request'})
     a,b=clients['employer-a'],clients['employer-b']
@@ -315,6 +316,7 @@ def test_line_pair_query_revoke_signature_and_expired(clients,monkeypatch):
 
 
 def test_line_push_account_idempotency_schedule_failure_retry(clients,monkeypatch):
+    monkeypatch.setattr(config,'today',lambda:date(2026,11,15))
     with db.transaction() as c:
         c.execute('INSERT INTO line_bindings VALUES(?,?,?,NULL)',('employer-a','U_A',config.stamp()))
         c.execute('INSERT INTO line_bindings VALUES(?,?,?,NULL)',('employer-b','U_B',config.stamp()))
