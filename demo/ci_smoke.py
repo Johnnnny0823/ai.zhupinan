@@ -101,7 +101,7 @@ def main():
 
                     page.locator('[data-page="documents"]').click()
                     page.get_by_label('讀取方式', exact=True).select_option('stored')
-                    page.get_by_role('button', name='住宿變更 · 合成掃描範例 ↗', exact=True).click()
+                    page.get_by_role('button', name='住宿變更 · 合成掃描圖 ↗', exact=True).click()
                     expect(page.get_by_role('heading', name='請把日期，逐一核對。', exact=True)).to_be_visible()
                     page.locator('#confirm-fields').check()
                     page.get_by_role('button', name='確認日期，新增待辦 →', exact=True).click()
