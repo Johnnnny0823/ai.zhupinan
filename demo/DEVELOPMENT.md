@@ -116,7 +116,20 @@ $env:DEMO_QDRANT_URL = 'http://127.0.0.1:6333'
 - 文字 PDF 在本機轉成含頁碼、段落及可辨識表格的 Markdown。內建合成掃描 PDF 先在記憶體進行 PaddleOCR，再組成 Markdown。
 - Markdown 遮蔽後才交給模型。展示畫面可核對及下載同一份遮蔽 Markdown。真實掃描或未知來源的掃描 PDF 會在 OCR 之前拒絕。
 - 問答及文件擷取共用 `demo/server/prompts.py` 的直聘移工管理專家提示。問答依當次取得的條文與已確認案件日期組織回覆。
-- Claude Code CLI 使用 `claude-sonnet-5-5` 讀取公文。若要啟用雙模型比對，請在啟動終端提供 `GEMINI_API_KEY`，並設定 `DEMO_GEMINI_CROSSCHECK=1`。Gemini 預設為 `gemini-3.1-pro-preview`，兩家模型只接收同一份已遮蔽文本。比對不一致須逐欄核對；服務未回應時會在畫面註明。
+- Claude Code CLI 使用 `claude-sonnet-5-5` 讀取公文。啟用雙模型比對後，Gemini CLI 以非互動 JSON 模式接收同一份遮蔽 Markdown。竹聘安使用專用 CLI 登入設定目錄，並清理該設定目錄中的暫存工作階段。比對不一致須逐欄核對。Gemini 未登入、逾時或回應無法解析時，畫面會標示比對不可用，保留原草稿供人工確認。
+- Gemini 模型預設為 `gemini-3.1-pro-preview`。如帳號未開放該模型，可用 `DEMO_GEMINI_MODEL` 指定可用的 Gemini 模型。
+
+Windows PowerShell 可用下列指令安裝 Gemini CLI 0.70.0，並在竹聘安的專用設定目錄完成 Google 登入。啟動 Gemini 後選擇 **Login with Google**，完成登入後退出 Gemini，再從同一個 PowerShell 啟動展示服務。
+
+```powershell
+$geminiInstall = Join-Path $env:LOCALAPPDATA 'Zhupinan\gemini-cli'
+npm install --prefix $geminiInstall @google/gemini-cli@0.70.0
+$env:GEMINI_CLI_HOME = Join-Path $env:LOCALAPPDATA 'Zhupinan\gemini-profile'
+& (Join-Path $geminiInstall 'node_modules\.bin\gemini.cmd')
+$env:DEMO_GEMINI_CROSSCHECK = '1'
+```
+
+Linux 與 macOS 可將 `gemini` 安裝到 PATH，登入時以 `GEMINI_CLI_HOME="$HOME/.local/share/zhupinan/gemini-profile" gemini` 指定專用設定目錄，完成後以 `DEMO_GEMINI_CROSSCHECK=1` 啟動展示服務。[Gemini CLI 登入說明](https://geminicli.com/docs/get-started/authentication/)
 
 ## LINE與Windows每日排程
 

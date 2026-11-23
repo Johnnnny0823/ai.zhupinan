@@ -65,7 +65,8 @@ def test_pdf_to_md_preserves_table_cells_and_heading():
     assert result.count('Entry date') == 1
 
 
-def test_two_model_disagreement_flags_date_and_only_sends_masked_markdown(clients, monkeypatch):
+@pytest.mark.parametrize('cross_check', ['disagreement', 'unavailable'])
+def test_two_model_cross_check_preserves_draft_and_only_sends_masked_markdown(clients, monkeypatch, cross_check):
     with fitz.open() as document:
         document.new_page().insert_text((72, 72), 'Entry 2026-11-13, synthetic ID A123456789')
         pdf = document.tobytes()
@@ -77,13 +78,15 @@ def test_two_model_disagreement_flags_date_and_only_sends_masked_markdown(client
     def fake_gemini(system, source):
         assert '直聘移工管理專家' in system and 'PDFToMD Markdown' in source
         assert '## 第 1 頁' in source and 'A123456789' not in source
+        if cross_check == 'unavailable':
+            raise llm.LLMError('Gemini CLI unavailable')
         return {'doc_type':'入國通報受理證明書','workers':[{'entry_date':'2026-11-14'}]}
     monkeypatch.setattr(gemini,'call',fake_gemini)
     response = clients['employer-a'].post('/api/documents/extract',
                                           files={'file':('synthetic.pdf',pdf,'application/pdf')})
     assert response.status_code == 200, response.text
     draft = response.json()
-    assert draft['cross_check'] == 'disagreement' and draft['source_format'] == 'markdown'
+    assert draft['cross_check'] == cross_check and draft['source_format'] == 'markdown'
     assert draft['fields'][0]['warning'] and draft['fields'][0]['value'] == '2026-11-13'
 
 
@@ -107,18 +110,54 @@ def test_approved_scan_pdf_uses_ocr_before_markdown(clients, monkeypatch):
     assert result['source_format'] == 'markdown' and result['fields'][0]['warning']
 
 
-def test_gemini_transport_sets_system_prompt_and_requests_json(monkeypatch):
-    monkeypatch.setenv('GEMINI_API_KEY', 'fixture-token')
-    monkeypatch.delenv('DEMO_GEMINI_MODEL', raising=False)
-    import httpx
+def test_gemini_cli_reads_markdown_on_stdin_and_cleans_history(monkeypatch, tmp_path):
+    import json
+    from pathlib import Path
+    from subprocess import CompletedProcess
 
-    def fake_post(url, **options):
-        assert url.endswith('/models/gemini-3.1-pro-preview:generateContent')
-        assert options['headers']['x-goog-api-key'] == 'fixture-token'
-        assert options['json']['systemInstruction'] == {'parts': [{'text':'直聘移工管理專家'}]}
-        assert options['json']['contents'][0]['parts'][0]['text'] == '已遮蔽 Markdown'
-        assert options['json']['generationConfig']['responseMimeType'] == 'application/json'
-        return httpx.Response(200, request=httpx.Request('POST', url),
-            json={'candidates':[{'content':{'parts':[{'text':'{"doc_type":"住宿地點變更","workers":[]}'}]}}]})
-    monkeypatch.setattr(gemini.httpx, 'post', fake_post)
+    monkeypatch.delenv('DEMO_GEMINI_MODEL', raising=False)
+    monkeypatch.setattr(gemini, 'app_directory', lambda: tmp_path)
+    monkeypatch.setattr(gemini, 'cli_command', lambda: ['gemini'])
+    workspace = []
+    profile = tmp_path / 'gemini-profile' / '.gemini'
+
+    def fake_run(command, **options):
+        cwd = Path(options['cwd'])
+        workspace.append(cwd)
+        assert command[:3] == ['gemini', '--model', 'gemini-3.1-pro-preview']
+        assert '--output-format' in command and '--admin-policy' in command
+        assert options['input'] == '已遮蔽 Markdown'
+        assert options['input'] not in command
+        assert Path(options['env']['GEMINI_SYSTEM_MD']).read_text(encoding='utf-8') == '直聘移工管理專家'
+        assert Path(options['env']['GEMINI_CLI_HOME']) == profile.parent
+        assert 'decision = "deny"' in (cwd / 'deny-tools.toml').read_text(encoding='utf-8')
+        (profile / 'tmp').mkdir(parents=True)
+        (profile / 'tmp' / 'session.json').touch()
+        (profile / 'settings.json').touch()
+        extraction = {'doc_type': '住宿地點變更', 'workers': []}
+        return CompletedProcess(command, 0, stdout=json.dumps({'response': json.dumps(extraction)}))
+
+    monkeypatch.setattr(gemini.subprocess, 'run', fake_run)
     assert gemini.call('直聘移工管理專家','已遮蔽 Markdown')['doc_type'] == '住宿地點變更'
+    assert not workspace[0].exists()
+    assert not (profile / 'tmp').exists() and (profile / 'settings.json').exists()
+
+
+@pytest.mark.parametrize('failure', ['not_authenticated', 'malformed', 'timeout'])
+def test_gemini_cli_failure_can_be_handled_as_unavailable(monkeypatch, tmp_path, failure):
+    from subprocess import CompletedProcess, TimeoutExpired
+
+    monkeypatch.setattr(gemini, 'app_directory', lambda: tmp_path)
+    monkeypatch.setattr(gemini, 'cli_command', lambda: ['gemini'])
+    history = tmp_path / 'gemini-profile' / '.gemini' / 'tmp'
+
+    def fake_run(command, **options):
+        history.mkdir(parents=True)
+        if failure == 'timeout':
+            raise TimeoutExpired(command, options['timeout'])
+        return CompletedProcess(command, int(failure == 'not_authenticated'), stdout='invalid')
+
+    monkeypatch.setattr(gemini.subprocess, 'run', fake_run)
+    with pytest.raises(llm.LLMError):
+        gemini.call('system', 'masked markdown')
+    assert not history.exists()

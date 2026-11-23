@@ -71,7 +71,7 @@ Copy-Item demo/.env.example demo/.env
 
 - **完整展示**請開啟 <http://127.0.0.1:8765/>，以 `employer-a`、`employer-b` 或 `officer` 登入。登入碼已使用時，可在另一個終端執行 `.venv\Scripts\python -m demo.run codes` 重新啟用。
 - **預存展示**可在文件或草稿檢核中選擇預存結果。也可開啟獨立的 [無須登入展示頁](http://127.0.0.1:8765/local-demo.html)。
-- **即時文件擷取與草稿檢核**依賴已登入的 Claude CLI。合成公文擷取使用 Claude Sonnet 5.5，選配 Gemini 3.1 Pro Preview 交叉比對日期。合成掃描的即時讀取需先準備 PaddleOCR，法規向量查詢需先建立 Qdrant 索引。LINE 需另設定頻道環境變數及 HTTPS Webhook。見 [開發環境與備援](demo/DEVELOPMENT.md)、[LINE 串接教學](demo/LINE串接教學.md)。
+- **即時文件擷取與草稿檢核**依賴已登入的 Claude CLI。合成公文擷取使用 Claude Sonnet 5.5，可選擇使用已登入的 Gemini CLI 交叉比對日期。合成掃描的即時讀取需先準備 PaddleOCR，法規向量查詢需先建立 Qdrant 索引。LINE 需另設定頻道環境變數及 HTTPS Webhook。見 [開發環境與備援](demo/DEVELOPMENT.md)、[LINE 串接教學](demo/LINE串接教學.md)。
 
 ## 啟用 PaddleOCR 與 Qdrant
 
